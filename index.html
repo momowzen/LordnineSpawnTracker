@@ -676,17 +676,33 @@ async function loadTimersFromFirestore() {
     const snapshot = await getDoc(docRef);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      console.log("📥 Firestore data:", data);
+      console.log("📥 Loaded from Firestore:", data);
       return data.timers || {};
     } else {
-      console.warn("⚠️ No data found in Firestore.");
+      console.warn("⚠️ No document found in Firestore.");
       return {};
     }
   } catch (error) {
-    console.error("❌ Error loading Firestore data:", error);
+    console.error("❌ Firestore load error:", error);
     return {};
   }
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  loadingOverlay.style.display = "flex";
+
+  console.log("🔄 Starting Firestore load...");
+  const timers = await loadTimersFromFirestore();
+  console.log("✅ Firestore load complete:", timers);
+
+  // Example: render timers or initialize UI
+  renderTimers(timers);
+
+  loadingOverlay.style.display = "none";
+  console.log("🎉 Overlay hidden");
+});
+
 
 
 /* ---------- APP START ---------- */
