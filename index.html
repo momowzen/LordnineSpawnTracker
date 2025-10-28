@@ -1064,24 +1064,49 @@ const db = getFirestore(app);
 
 // Global variable for timers
 let timers = {};
-
-// Load timers from Firestore
+// === Firestore load ===
 async function loadTimersFromFirestore() {
   try {
     const docRef = doc(db, "timers", "global");
     const snapshot = await getDoc(docRef);
     if (snapshot.exists()) {
-      console.log("📥 Loaded from Firestore:", snapshot.data());
-      return snapshot.data().timers || {};
+      const data = snapshot.data();
+      console.log("📥 Loaded from Firestore:", data);
+      timers = data.timers || {};
+      return true; // ✅ Success
     } else {
       console.warn("⚠️ No document found in Firestore.");
-      return {};
+      timers = {};
+      return true; // Still allow rendering (empty)
     }
   } catch (error) {
     console.error("🔥 Firestore load error:", error);
-    return {};
+    timers = {};
+    return false; // ❌ Failed
   }
 }
+
+// === Main ===
+document.addEventListener("DOMContentLoaded", async () => {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  loadingOverlay.style.display = "flex";
+
+  console.log("🔄 Fetching timers from Firestore...");
+  const success = await loadTimersFromFirestore();
+
+  if (success) {
+    console.log("✅ Timers ready:", timers);
+    if (typeof renderAll === "function") {
+      renderAll();
+    }
+  } else {
+    console.error("❌ Failed to load timers from Firestore");
+  }
+
+  // Hide overlay only after Firebase confirmed load and render
+  loadingOverlay.style.display = "none";
+  console.log("🎉 Loading overlay hidden AFTER Firebase confirmed load and render");
+});
 
 // Save timers to Firestore
 async function saveTimersToFirestore() {
@@ -1093,35 +1118,6 @@ async function saveTimersToFirestore() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const loadingOverlay = document.getElementById("loadingOverlay");
-  loadingOverlay.style.display = "flex";
-
-  try {
-    console.log("🔄 Loading timers...");
-    timers = await loadTimersFromFirestore();
-    console.log("✅ Timers loaded:", timers);
-
-    // Force rendering after data is loaded
-    if (typeof renderAll === "function") {
-      await renderAll();
-    }
-
-    // Wait until next frame paint + small buffer
-    await new Promise(requestAnimationFrame);
-    await new Promise(r => setTimeout(r, 500));
-
-  } catch (error) {
-    console.error("⚠️ Error during loading:", error);
-  }
-
-  // Hide overlay only after full rendering cycle
-  loadingOverlay.style.opacity = "0";
-  setTimeout(() => {
-    loadingOverlay.style.display = "none";
-  }, 400);
-  console.log("🎉 Loading overlay hidden after rendering complete");
-});
 </script>
 </body>
 </html>
