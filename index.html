@@ -810,34 +810,36 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 
   // Render functions
   function renderBossList() {
-    bossListEl.innerHTML = '';
-    for (const b of BOSSES) {
-      const isWeekly = !!b.weeklyRespawns;
-      const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-      const node = document.createElement('div');
-      node.className = 'boss' + (isWeekly ? ' weekly' : '');
+  bossListEl.innerHTML = '';
+  for (const b of BOSSES) {
+    const isWeekly = !!b.weeklyRespawns;
+    const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
+    const node = document.createElement('div');
+    node.className = 'boss' + (isWeekly ? ' weekly' : '');
 
-      const respawnText = isWeekly
-        ? b.weeklyRespawns.map(r => `${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][r.day]} ${String(r.hour).padStart(2,'0')}:${String(r.minute).padStart(2,'0')}`).join(', ')
-        : (b.respawn / 3600) + ' hr';
+    const respawnText = isWeekly
+      ? b.weeklyRespawns.map(r => `${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][r.day]} ${String(r.hour).padStart(2,'0')}:${String(r.minute).padStart(2,'0')}`).join(', ')
+      : (b.respawn / 3600) + ' hr';
 
-      node.innerHTML = `
-        <div class="meta">
-          <div class="name">${b.name}</div>
-          <div class="sub">Respawn: ${respawnText}</div>
-        </div>
-        ${isWeekly ? '' : `
-        <div class="buttons">
-          <button data-id="${b.id}" class="killBtn ${isActive ? 'active' : ''}">${isActive ? 'Killed' : 'Mark Dead'}</button>
-          <button data-id="${b.id}" class="setTimeBtn">Set Time</button>
-        </div>`}
-      `;
-      bossListEl.appendChild(node);
-    }
-
-    bossListEl.querySelectorAll('.killBtn').forEach(btn => btn.addEventListener('click', e => startTimer(e.currentTarget.dataset.id)));
-    bossListEl.querySelectorAll('.setTimeBtn').forEach(btn => btn.addEventListener('click', e => openTimeModal(e.currentTarget.dataset.id)));
+    // KEEP the visible label always "Mark Dead". Use the active class for glow,
+    // and a title attribute to give hover feedback about current state.
+    node.innerHTML = `
+      <div class="meta">
+        <div class="name">${b.name}</div>
+        <div class="sub">Respawn: ${respawnText}</div>
+      </div>
+      ${isWeekly ? '' : `
+      <div class="buttons">
+        <button data-id="${b.id}" class="killBtn ${isActive ? 'active' : ''}" title="${isActive ? 'Marked (timer running)' : 'Mark this boss as dead'}">Mark Dead</button>
+        <button data-id="${b.id}" class="setTimeBtn">Set Time</button>
+      </div>`}
+    `;
+    bossListEl.appendChild(node);
   }
+
+  bossListEl.querySelectorAll('.killBtn').forEach(btn => btn.addEventListener('click', e => startTimer(e.currentTarget.dataset.id)));
+  bossListEl.querySelectorAll('.setTimeBtn').forEach(btn => btn.addEventListener('click', e => openTimeModal(e.currentTarget.dataset.id)));
+}
 
   function renderTimers() {
     timersEl.innerHTML = '';
