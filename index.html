@@ -1093,7 +1093,6 @@ async function saveTimersToFirestore() {
   }
 }
 
-// Wait for DOM to load
 document.addEventListener("DOMContentLoaded", async () => {
   const loadingOverlay = document.getElementById("loadingOverlay");
   loadingOverlay.style.display = "flex";
@@ -1102,12 +1101,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("🔄 Loading timers...");
     timers = await loadTimersFromFirestore();
     console.log("✅ Timers loaded:", timers);
-    renderAll(); // your existing render function
+
+    // Ensure timers are ready before rendering
+    renderAll();
+
+    // Wait a brief moment to allow UI to fully paint
+    await new Promise(r => setTimeout(r, 300));
   } catch (error) {
     console.error("⚠️ Error during loading:", error);
   } finally {
-    loadingOverlay.style.display = "none"; // always hide
-    console.log("🎉 Loading overlay hidden");
+    // Hide only after everything is ready
+    loadingOverlay.style.display = "none";
+    console.log("🎉 Loading overlay hidden after renderAll()");
   }
-});</script></body>
+});
+
+</script>
+</body>
 </html>
