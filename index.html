@@ -1073,17 +1073,42 @@ async function loadTimersFromFirestore() {
       const data = snapshot.data();
       console.log("📥 Loaded from Firestore:", data);
       timers = data.timers || {};
-      return true; // ✅ Success
+      return true;
     } else {
       console.warn("⚠️ No document found in Firestore.");
       timers = {};
-      return true; // Still allow rendering (empty)
+      return true;
     }
   } catch (error) {
     console.error("🔥 Firestore load error:", error);
     timers = {};
-    return false; // ❌ Failed
+    return false;
   }
+}
+
+// === Wait for UI panels to render ===
+async function waitForPanelsToRender() {
+  const maxWait = 5000; // maximum 5 seconds
+  const start = Date.now();
+
+  while (Date.now() - start < maxWait) {
+    const nextBossPanel = document.querySelector(".next-boss-panel");
+    const activePanel = document.querySelector(".active-timers-panel");
+
+    // If both panels exist and have children, they are rendered
+    if (
+      nextBossPanel &&
+      nextBossPanel.children.length > 0 &&
+      activePanel &&
+      activePanel.children.length > 0
+    ) {
+      console.log("✅ Panels detected as rendered");
+      return;
+    }
+    await new Promise(r => setTimeout(r, 100)); // check every 100ms
+  }
+
+  console.warn("⚠️ Timed out waiting for panels to render.");
 }
 
 // === Main ===
@@ -1099,15 +1124,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (typeof renderAll === "function") {
       renderAll();
     }
+    await waitForPanelsToRender(); // ✅ Wait until DOM is actually populated
   } else {
     console.error("❌ Failed to load timers from Firestore");
   }
 
-  // Hide overlay only after Firebase confirmed load and render
+  // Now safe to hide overlay
   loadingOverlay.style.display = "none";
-  console.log("🎉 Loading overlay hidden AFTER Firebase confirmed load and render");
+  console.log("🎉 Overlay hidden AFTER panels rendered");
 });
-
 // Save timers to Firestore
 async function saveTimersToFirestore() {
   try {
