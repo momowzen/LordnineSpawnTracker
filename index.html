@@ -654,9 +654,10 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 
 <script type="module">
 /* ---------- FIREBASE + APP LOGIC (single merged script) ---------- */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
+// === Firebase Initialization ===
 const firebaseConfig = {
   apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
   authDomain: "lordnine-timer-9f21e.firebaseapp.com",
@@ -665,42 +666,47 @@ const firebaseConfig = {
   messagingSenderId: "644000692891",
   appId: "1:644000692891:web:224bca1478655a43c0243e"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Firestore helpers
+// === Global Data ===
+let timers = {};
+
+// === Firestore Loader ===
 async function loadTimersFromFirestore() {
   try {
     const docRef = doc(db, "timers", "global");
     const snapshot = await getDoc(docRef);
     if (snapshot.exists()) {
-      const data = snapshot.data();
-      console.log("📥 Loaded from Firestore:", data);
-      return data.timers || {};
+      console.log("📥 Loaded from Firestore:", snapshot.data());
+      return snapshot.data().timers || {};
     } else {
       console.warn("⚠️ No document found in Firestore.");
       return {};
     }
   } catch (error) {
-    console.error("❌ Firestore load error:", error);
+    console.error("🔥 Firestore load error:", error);
     return {};
   }
 }
 
-let timers = {}; // define globally near top of script
-
+// === Main DOMContentLoaded Handler ===
 document.addEventListener('DOMContentLoaded', async () => {
   const loadingOverlay = document.getElementById("loadingOverlay");
   loadingOverlay.style.display = "flex";
 
-  console.log("🔄 Starting Firestore load...");
-  timers = await loadTimersFromFirestore(); // assign to global
-  console.log("✅ Firestore load complete:", timers);
+  console.log("🔄 Loading timers...");
+  timers = await loadTimersFromFirestore();
+  console.log("✅ Timers loaded:", timers);
 
-  renderAll(); // not just renderTimers
+  if (typeof renderAll === "function") {
+    renderAll();
+  } else {
+    console.warn("⚠️ renderAll() not found — skipping render.");
+  }
+
   loadingOverlay.style.display = "none";
-  console.log("🎉 Overlay hidden");
+  console.log("🎉 Loading overlay hidden");
 });
 
   // Local helpers: save only when user clicks (explicit actions)
