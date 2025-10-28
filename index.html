@@ -714,9 +714,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
   }
 
-  // discord
-    }
-
   // compute next weekly respawn timestamp
   function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
     const now = new Date(fromTime);
