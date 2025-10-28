@@ -601,8 +601,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 <button id="resetAll">Reset All Timers</button>
 <button id="exportBtn">Export JSON</button>
 <button id="importBtn">Import JSON</button>
-
-
 </div>
 </header>
 <div class="wrap">
@@ -643,7 +641,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 </div>
 </div>
 </div>
-
 <script type="module">
   // Local helpers: save only when user clicks (explicit actions)
   async function saveTimers() {
@@ -745,7 +742,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     }
     // Explicit user action -> save
     saveTimers();
-    renderAll();
     const respawnTime = new Date(endTime).toLocaleString();
     }
 
@@ -753,8 +749,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     delete timers[bossId];
     // Explicit user action -> save
     saveTimers();
-    renderAll();
-  }
+    }
 
   function resetAll() {
     if (!confirm('Reset all timers?')) return;
@@ -774,8 +769,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     timers = preserved;
     // Explicit user action -> save
     saveTimers();
-    renderAll();
-  }
+    }
 
   // Manual time modal logic
   let currentBossForTime = null;
@@ -811,7 +805,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     }
     // Explicit user action -> save
     saveTimers();
-    renderAll();
     closeTimeModal();
     });
 
@@ -1021,7 +1014,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
           // Merge: imported values overwrite existing keys, others preserved
           timers = { ...timers, ...imported };
           await saveTimers(); // explicit save on import
-          renderAll();
           alert('Timers imported and saved successfully!');
         } catch {
           alert('Invalid JSON file.');
@@ -1054,10 +1046,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 
   // Clear button (Reset All) - already wired in resetAll() above
   resetAllBtn.addEventListener('click', resetAll);
-
-  // Initialize UI
-  renderAll();
-
 	/* ---------- FIREBASE + APP LOGIC (single merged script) ---------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
