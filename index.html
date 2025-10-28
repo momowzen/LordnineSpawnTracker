@@ -603,49 +603,100 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   </div>
 </div>
 
-<!-- FULL SCRIPT BELOW (now a module with Firebase integration) -->
 <script type="module">
-  // ---- Firebase imports ----
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-  // ---- Paste your Firebase config here (replace the placeholders) ----
-  const firebaseConfig = {
-    apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-    authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-    projectId: "lordnine-timer-9f21e",
-    storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-    messagingSenderId: "644000692891",
-    appId: "1:644000692891:web:224bca1478655a43c0243e"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
+  authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+  projectId: "lordnine-timer-9f21e",
+  storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
+  messagingSenderId: "644000692891",
+  appId: "1:644000692891:web:224bca1478655a43c0243e"
+};
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  // Firestore-based load/save
-  async function loadTimersFromFirestore() {
-    try {
-      const snap = await getDoc(doc(db, "timers", "global"));
-      if (snap.exists()) {
-        const data = snap.data();
-        // Expect { data: { ...timers... } }
-        return (data && data.data) ? data.data : {};
+async function loadTimersFromFirestore() {
+  try {
+    const snap = await getDoc(doc(db, "timers", "global"));
+    if (snap.exists()) return snap.data().data || {};
+  } catch (err) {
+    console.warn("⚠️ Failed to load timers:", err);
+  }
+  return {};
+}
+
+async function saveTimersToFirestore(timersObj) {
+  try {
+    await setDoc(doc(db, "timers", "global"), { data: timersObj });
+    console.log("💾 Saved timers to Firestore");
+  } catch (err) {
+    console.warn("⚠️ Failed to save timers:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  let timers = {};
+  let initialized = false;
+
+  // --- Load timers once on page start ---
+  timers = await loadTimersFromFirestore();
+  initialized = true;
+  console.log("✅ Loaded timers from Firebase:", timers);
+
+  // --- Import JSON and also save it to Firebase ---
+  document.getElementById("importBtn").addEventListener("click", async () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      try {
+        const importedData = JSON.parse(text);
+        if (importedData && typeof importedData === "object") {
+          timers = importedData;
+          console.log("✅ Imported JSON timers:", timers);
+          await saveTimersToFirestore(timers); // ✅ save imported data
+          renderTimers();
+        }
+      } catch (err) {
+        alert("Invalid JSON file.");
       }
-      return {};
-    } catch (err) {
-      console.warn("Failed to load timers from Firestore:", err);
-      return {};
-    }
-  }
+    };
+    input.click();
+  });
 
-  async function saveTimersToFirestore(timersObj) {
-    try {
-      await setDoc(doc(db, "timers", "global"), { data: timersObj });
-    } catch (err) {
-      console.warn("Failed to save timers to Firestore:", err);
+  // --- Export JSON ---
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(timers, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "timers-export.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // --- Example: manually update a boss timer ---
+  document.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("killBtn")) {
+      const id = e.target.dataset.id;
+      const now = Date.now();
+      timers[id] = { killedAt: now };
+      await saveTimersToFirestore(timers); // ✅ only save when boss killed
+      console.log(`💀 ${id} killed and saved.`);
     }
+  });
+
+  function renderTimers() {
+    // your render logic (boss list, timers, etc.)
   }
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
 
