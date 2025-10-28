@@ -1102,20 +1102,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     timers = await loadTimersFromFirestore();
     console.log("✅ Timers loaded:", timers);
 
-    // Ensure timers are ready before rendering
-    renderAll();
+    // Force rendering after data is loaded
+    if (typeof renderAll === "function") {
+      await renderAll();
+    }
 
-    // Wait a brief moment to allow UI to fully paint
-    await new Promise(r => setTimeout(r, 300));
+    // Wait until next frame paint + small buffer
+    await new Promise(requestAnimationFrame);
+    await new Promise(r => setTimeout(r, 500));
+
   } catch (error) {
     console.error("⚠️ Error during loading:", error);
-  } finally {
-    // Hide only after everything is ready
-    loadingOverlay.style.display = "none";
-    console.log("🎉 Loading overlay hidden after renderAll()");
   }
-});
 
+  // Hide overlay only after full rendering cycle
+  loadingOverlay.style.opacity = "0";
+  setTimeout(() => {
+    loadingOverlay.style.display = "none";
+  }, 400);
+  console.log("🎉 Loading overlay hidden after rendering complete");
+});
 </script>
 </body>
 </html>
