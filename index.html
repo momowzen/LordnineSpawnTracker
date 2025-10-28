@@ -1120,19 +1120,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   const success = await loadTimersFromFirestore();
 
   if (success) {
-    console.log("✅ Timers ready:", timers);
+    console.log("✅ Timers loaded from Firestore:", timers);
+
+    // Render everything with loaded data
     if (typeof renderAll === "function") {
       renderAll();
     }
-    await waitForPanelsToRender(); // ✅ Wait until DOM is actually populated
+
+    // Wait until boss list and timers are actually populated
+    await new Promise(resolve => {
+      const checkInterval = setInterval(() => {
+        const bossListReady = document.querySelectorAll("#bossList .boss").length > 0;
+        const timersReady = document.querySelectorAll("#timers .timer").length >= 0;
+        if (bossListReady) {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 150);
+    });
+
+    console.log("✅ Data fully rendered, hiding overlay...");
   } else {
     console.error("❌ Failed to load timers from Firestore");
   }
 
-  // Now safe to hide overlay
+  // Hide only after confirmed
   loadingOverlay.style.display = "none";
-  console.log("🎉 Overlay hidden AFTER panels rendered");
+  console.log("🎉 Overlay hidden AFTER Firebase + UI ready");
 });
+
 // Save timers to Firestore
 async function saveTimersToFirestore() {
   try {
