@@ -654,25 +654,23 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 
 <script type="module">
 /* ---------- FIREBASE + APP LOGIC (single merged script) ---------- */
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-// === Firebase Initialization ===
+// Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-  authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-  projectId: "lordnine-timer-9f21e",
-  storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-  messagingSenderId: "644000692891",
-  appId: "1:644000692891:web:224bca1478655a43c0243e"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// === Global Data ===
+// Global variable for timers
 let timers = {};
 
-// === Firestore Loader ===
+// Load timers from Firestore
 async function loadTimersFromFirestore() {
   try {
     const docRef = doc(db, "timers", "global");
@@ -690,25 +688,33 @@ async function loadTimersFromFirestore() {
   }
 }
 
-// === Main DOMContentLoaded Handler ===
-document.addEventListener('DOMContentLoaded', async () => {
+// Save timers to Firestore
+async function saveTimersToFirestore() {
+  try {
+    await setDoc(doc(db, "timers", "global"), { timers });
+    console.log("💾 Saved timers:", timers);
+  } catch (error) {
+    console.error("🔥 Firestore save error:", error);
+  }
+}
+
+// Wait for DOM to load
+document.addEventListener("DOMContentLoaded", async () => {
   const loadingOverlay = document.getElementById("loadingOverlay");
   loadingOverlay.style.display = "flex";
 
-  console.log("🔄 Loading timers...");
-  timers = await loadTimersFromFirestore();
-  console.log("✅ Timers loaded:", timers);
-
-  if (typeof renderAll === "function") {
-    renderAll();
-  } else {
-    console.warn("⚠️ renderAll() not found — skipping render.");
+  try {
+    console.log("🔄 Loading timers...");
+    timers = await loadTimersFromFirestore();
+    console.log("✅ Timers loaded:", timers);
+    renderAll(); // your existing render function
+  } catch (error) {
+    console.error("⚠️ Error during loading:", error);
+  } finally {
+    loadingOverlay.style.display = "none"; // always hide
+    console.log("🎉 Loading overlay hidden");
   }
-
-  loadingOverlay.style.display = "none";
-  console.log("🎉 Loading overlay hidden");
 });
-
   // Local helpers: save only when user clicks (explicit actions)
   async function saveTimers() {
     try {
