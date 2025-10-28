@@ -1109,14 +1109,21 @@ document.getElementById('importBtn').addEventListener('click', () => {
   });
 
   
-  // --- Auto-activate weekly spawn bosses ---
-  for (const boss of BOSSES) {
-    if (boss.weeklyRespawns && !timers[boss.id]) {
-      const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-      timers[boss.id] = { endTime: nextTime, startedAt: Date.now(), weekly: true, notifiedSoon: false };
-    }
+  // --- Auto-activate weekly spawn bosses (don't overwrite Firestore data) ---
+let addedWeekly = false;
+
+for (const boss of BOSSES) {
+  if (boss.weeklyRespawns && !timers[boss.id]) {
+    const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
+    timers[boss.id] = { endTime: nextTime, startedAt: Date.now(), weekly: true, notifiedSoon: false };
+    addedWeekly = true;
   }
+}
+
+// ✅ Only save if we actually added new weekly timers (not every reload)
+if (addedWeekly) {
   saveTimers();
+}
 
 // === SEARCH FILTER WITH CLEAR BUTTON ===
 const searchInput = document.getElementById('bossSearch');
