@@ -604,6 +604,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 </div>
 
 <script type="module">
+/* ---------- FIREBASE + APP LOGIC (single merged script) ---------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
@@ -619,6 +620,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Firestore helpers
 async function loadTimersFromFirestore() {
   try {
     const snap = await getDoc(doc(db, "timers", "global"));
@@ -628,7 +630,6 @@ async function loadTimersFromFirestore() {
   }
   return {};
 }
-
 async function saveTimersToFirestore(timersObj) {
   try {
     await setDoc(doc(db, "timers", "global"), { data: timersObj });
@@ -638,122 +639,43 @@ async function saveTimersToFirestore(timersObj) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  let timers = {};
-  let initialized = false;
-
-  // --- Load timers once on page start ---
-  timers = await loadTimersFromFirestore();
-  initialized = true;
-  console.log("✅ Loaded timers from Firebase:", timers);
-
-  // --- Import JSON and also save it to Firebase ---
-  document.getElementById("importBtn").addEventListener("click", async () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const text = await file.text();
-      try {
-        const importedData = JSON.parse(text);
-        if (importedData && typeof importedData === "object") {
-          timers = importedData;
-          console.log("✅ Imported JSON timers:", timers);
-          await saveTimersToFirestore(timers); // ✅ save imported data
-          renderTimers();
-        }
-      } catch (err) {
-        alert("Invalid JSON file.");
-      }
-    };
-    input.click();
-  });
-
-  // --- Export JSON ---
-  document.getElementById("exportBtn").addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(timers, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "timers-export.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  // --- Example: manually update a boss timer ---
-  document.addEventListener("click", async (e) => {
-    if (e.target.classList.contains("killBtn")) {
-      const id = e.target.dataset.id;
-      const now = Date.now();
-      timers[id] = { killedAt: now };
-      await saveTimersToFirestore(timers); // ✅ only save when boss killed
-      console.log(`💀 ${id} killed and saved.`);
-    }
-  });
-
-  function renderTimers() {
-    // your render logic (boss list, timers, etc.)
-  }
-});
-
+/* ---------- APP START ---------- */
 document.addEventListener('DOMContentLoaded', async () => {
 
-// === SETTINGS DROPDOWN LOGIC ===
-const settingsBtn = document.getElementById('settingsBtn');
-const settingsMenu = document.getElementById('settingsMenu');
-const gearIcon = settingsBtn.querySelector('.gear-icon');
-
-// Ensure hidden on load
-settingsMenu.classList.remove('show');
-settingsMenu.style.display = 'none';
-
-settingsBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  const isVisible = settingsMenu.classList.contains('show');
-  if (isVisible) {
-    gearIcon.classList.remove('rotating');
-    settingsMenu.classList.remove('show');
-    setTimeout(() => (settingsMenu.style.display = 'none'), 200);
-  } else {
-    settingsMenu.style.display = 'flex';
-    requestAnimationFrame(() => settingsMenu.classList.add('show'));
-    gearIcon.classList.add('rotating');
-  }
-});
-
-document.addEventListener('click', () => {
-  if (settingsMenu.classList.contains('show')) {
-    settingsMenu.classList.remove('show');
-    gearIcon.classList.remove('rotating');
-    setTimeout(() => (settingsMenu.style.display = 'none'), 200);
-  }
-});
-
-// Hide dropdown after clicking a menu item
-settingsMenu.querySelectorAll('button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    settingsMenu.classList.remove('show');
-    gearIcon.classList.remove('rotating');
-    setTimeout(() => (settingsMenu.style.display = 'none'), 200);
-  });
-});
-
-  const STORAGE_KEY = 'ln_boss_timers_v2'; // still used as key name for backward compat if you want
+  const STORAGE_KEY = 'ln_boss_timers_v2';
   const WEBHOOK_KEY = 'ln_discord_webhook';
-  // NOTE: timers will be loaded from Firestore below
-  let timers = {};
-  let justLoaded = true;
-  let webhookUrl = localStorage.getItem(WEBHOOK_KEY) || '';
 
+  // Shared single timers object (loaded once)
+  let timers = await loadTimersFromFirestore(); // load once, do NOT overwrite
+  if (!timers || typeof timers !== 'object') timers = {};
+  console.log("✅ Loaded timers from Firestore:", timers);
+
+  // Local helpers: save only when user clicks (explicit actions)
+  async function saveTimers() {
+    try {
+      await saveTimersToFirestore(timers);
+    } catch (err) {
+      console.warn('saveTimers error', err);
+    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(timers)); } catch(e){}
+  }
+
+  // DOM refs
   const bossListEl = document.getElementById('bossList');
   const timersEl = document.getElementById('timers');
   const nextBossEl = document.getElementById('nextBoss');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsMenu = document.getElementById('settingsMenu');
+  const gearIcon = settingsBtn.querySelector('.gear-icon');
   const resetAllBtn = document.getElementById('resetAll');
   const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
   const setWebhookBtn = document.getElementById('setWebhook');
   const testWebhookBtn = document.getElementById('testWebhook');
+  const searchInput = document.getElementById('bossSearch');
+
+  let justLoaded = true;
+  let webhookUrl = localStorage.getItem(WEBHOOK_KEY) || '';
 
   const BOSSES = [
     { id: 'Venatus', name: 'Venatus', respawn: 60*60*10 },
@@ -790,34 +712,18 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
     { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day:0, hour:22, minute:0 }] }
   ];
 
+  // time formatting
   function formatSec(s) {
-	  if (s <= 0) return 'Ready';
-	  const d = Math.floor(s / 86400); s %= 86400;
-	  const h = Math.floor(s / 3600); s %= 3600;
-	  const m = Math.floor(s / 60); const sec = s % 60;
-
-	  if (d > 0) return `${d}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
-	  if (h > 0) return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
-	  return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
-	}
-
-  // --- Replacing localStorage load/save with Firestore-backed functions ---
-  // loadTimers() and saveTimers() used later. These wrappers call Firestore functions.
-  async function loadTimers() {
-    // Try Firestore first
-    const fromFs = await loadTimersFromFirestore();
-    if (fromFs && typeof fromFs === 'object') return fromFs;
-    // fallback to localStorage (migration)
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
-  }
-  function saveTimers() {
-    // Use the global `timers` object (same as before)
-    // Fire-and-forget write to Firestore
-    saveTimersToFirestore(timers).catch(err => console.warn('saveTimers error', err));
-    // Keep localStorage copy as fallback/migration
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(timers)); } catch(e){}
+    if (s <= 0) return 'Ready';
+    const d = Math.floor(s / 86400); s %= 86400;
+    const h = Math.floor(s / 3600); s %= 3600;
+    const m = Math.floor(s / 60); const sec = s % 60;
+    if (d > 0) return `${d}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
+    if (h > 0) return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
+    return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
   }
 
+  // discord
   async function sendToDiscord(message){
     if (!webhookUrl) return;
     try {
@@ -826,13 +732,12 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: message })
       });
-    } catch(err) {
-      console.warn('Discord webhook failed:', err);
-    }
+    } catch(err) { console.warn('Discord webhook failed:', err); }
   }
 
-  function getNextWeeklyRespawn(respawns) {
-    const now = new Date();
+  // compute next weekly respawn timestamp
+  function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+    const now = new Date(fromTime);
     let soonest = null;
     for (const { day, hour, minute } of respawns) {
       const target = new Date(now);
@@ -844,6 +749,9 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
     return soonest ? soonest.getTime() : now.getTime();
   }
 
+  // -----------------------
+  // Core actions that must save (only via clicks)
+  // -----------------------
   function startTimer(bossId) {
     const boss = BOSSES.find(b => b.id === bossId);
     if (!boss) return;
@@ -851,11 +759,12 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
     let endTime;
     if (boss.weeklyRespawns) {
       endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-      timers[bossId] = { endTime, startedAt: now, weekly: true };
+      timers[bossId] = { endTime, startedAt: now, weekly: true, notifiedSoon: false };
     } else {
       endTime = now + boss.respawn * 1000;
-      timers[bossId] = { endTime, startedAt: now };
+      timers[bossId] = { endTime, startedAt: now, notifiedSoon: false };
     }
+    // Explicit user action -> save
     saveTimers();
     renderAll();
     const respawnTime = new Date(endTime).toLocaleString();
@@ -864,34 +773,33 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
 
   function clearTimer(bossId) {
     delete timers[bossId];
+    // Explicit user action -> save
     saveTimers();
     renderAll();
   }
 
   function resetAll() {
-	  // Keep only weekly bosses
-	  const preserved = {};
+    if (!confirm('Reset all timers?')) return;
+    // Keep only weekly bosses (recompute)
+    const preserved = {};
+    for (const boss of BOSSES) {
+      if (boss.weeklyRespawns) {
+        const existing = timers[boss.id];
+        preserved[boss.id] = existing || {
+          endTime: getNextWeeklyRespawn(boss.weeklyRespawns),
+          startedAt: Date.now(),
+          weekly: true,
+          notifiedSoon: false
+        };
+      }
+    }
+    timers = preserved;
+    // Explicit user action -> save
+    saveTimers();
+    renderAll();
+  }
 
-	  for (const boss of BOSSES) {
-		if (boss.weeklyRespawns) {
-		  const existing = timers[boss.id];
-		  // if timer exists, keep it — else, recompute next weekly spawn
-		  preserved[boss.id] = existing || {
-			endTime: getNextWeeklyRespawn(boss.weeklyRespawns),
-			startedAt: Date.now(),
-			weekly: true,
-			notifiedSoon: false
-		  };
-		}
-	  }
-
-	  timers = preserved; // overwrite with only weekly bosses
-	  saveTimers();
-	  renderAll();
-	}
-
-
-  // --- Manual time modal
+  // Manual time modal logic
   let currentBossForTime = null;
   function openTimeModal(bossId) {
     const boss = BOSSES.find(b => b.id === bossId);
@@ -915,67 +823,49 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
     const boss = currentBossForTime;
     let endTime;
     if (boss.weeklyRespawns) {
-      endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-      // make sure next weekly respawn after killedAt
-      while (endTime <= killedAt) {
-        // advance by one week by creating a fake now at killedAt + 1ms
-        const fakeNow = new Date(killedAt + 1);
-        let soonest = null;
-        for (const { day, hour, minute } of boss.weeklyRespawns) {
-          const target = new Date(fakeNow);
-          target.setHours(hour, minute, 0, 0);
-          target.setDate(fakeNow.getDate() + ((day + 7 - fakeNow.getDay()) % 7));
-          if (target <= fakeNow) target.setDate(target.getDate() + 7);
-          if (!soonest || target < soonest) soonest = target;
-        }
-        endTime = soonest ? soonest.getTime() : killedAt;
-        // if still <= killedAt, add 7 days
-        if (endTime <= killedAt) endTime += 7*24*60*60*1000;
-        break;
-      }
+      endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1);
+      // ensure it's after killedAt
+      while (endTime <= killedAt) endTime += 7*24*60*60*1000;
       timers[boss.id] = { endTime, startedAt: killedAt, weekly: true, notifiedSoon: false };
     } else {
       endTime = killedAt + boss.respawn * 1000;
       timers[boss.id] = { endTime, startedAt: killedAt, notifiedSoon: false };
     }
+    // Explicit user action -> save
     saveTimers();
     renderAll();
     closeTimeModal();
     sendToDiscord(`@everyone \n⚔️ **${boss.name}** manually set.\nRespawn expected at **${new Date(endTime).toLocaleString()}**.`);
   });
 
-  // --- Render functions
+  // Render functions
   function renderBossList() {
     bossListEl.innerHTML = '';
-		for (const b of BOSSES) {
-	  const isWeekly = !!b.weeklyRespawns;
-	  const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-	  const node = document.createElement('div');
-	  node.className = 'boss' + (isWeekly ? ' weekly' : '');
+    for (const b of BOSSES) {
+      const isWeekly = !!b.weeklyRespawns;
+      const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
+      const node = document.createElement('div');
+      node.className = 'boss' + (isWeekly ? ' weekly' : '');
 
-	  const respawnText = isWeekly
-		? b.weeklyRespawns.map(r =>
-			`${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][r.day]} ${String(r.hour).padStart(2,'0')}:${String(r.minute).padStart(2,'0')}`
-		  ).join(', ')
-		: (b.respawn / 3600) + ' hr';
+      const respawnText = isWeekly
+        ? b.weeklyRespawns.map(r => `${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][r.day]} ${String(r.hour).padStart(2,'0')}:${String(r.minute).padStart(2,'0')}`).join(', ')
+        : (b.respawn / 3600) + ' hr';
 
-	  node.innerHTML = `
-		<div class="meta">
-		  <div class="name">${b.name}</div>
-		  <div class="sub">Respawn: ${respawnText}</div>
-		</div>
-		${isWeekly ? '' : `
-		<div class="buttons">
-		  <button data-id="${b.id}" class="killBtn ${isActive ? 'active' : ''}">${isActive ? 'Killed' : 'Mark Dead'}</button>
-		  <button data-id="${b.id}" class="setTimeBtn">Set Time</button>
-		</div>`}
-	  `;
-
-	  bossListEl.appendChild(node);
-	}
+      node.innerHTML = `
+        <div class="meta">
+          <div class="name">${b.name}</div>
+          <div class="sub">Respawn: ${respawnText}</div>
+        </div>
+        ${isWeekly ? '' : `
+        <div class="buttons">
+          <button data-id="${b.id}" class="killBtn ${isActive ? 'active' : ''}">${isActive ? 'Killed' : 'Mark Dead'}</button>
+          <button data-id="${b.id}" class="setTimeBtn">Set Time</button>
+        </div>`}
+      `;
+      bossListEl.appendChild(node);
+    }
 
     bossListEl.querySelectorAll('.killBtn').forEach(btn => btn.addEventListener('click', e => startTimer(e.currentTarget.dataset.id)));
-    bossListEl.querySelectorAll('.clearBtn').forEach(btn => btn.addEventListener('click', e => clearTimer(e.currentTarget.dataset.id)));
     bossListEl.querySelectorAll('.setTimeBtn').forEach(btn => btn.addEventListener('click', e => openTimeModal(e.currentTarget.dataset.id)));
   }
 
@@ -1024,92 +914,114 @@ settingsMenu.querySelectorAll('button').forEach(btn => {
     }
     const soon = upcoming[0];
     const seconds = Math.round((soon.endTime - Date.now()) / 1000);
-    // Update Next Boss panel content
-	const oldNameEl = nextBossEl.querySelector(".boss-name");
-	const oldName = oldNameEl ? oldNameEl.textContent : "";
+    const oldNameEl = nextBossEl.querySelector(".boss-name");
+    const oldName = oldNameEl ? oldNameEl.textContent : "";
 
-	nextBossEl.innerHTML = `
-	  <div class="boss-name">${soon.boss.name}</div>
-	  <div class="time-remaining">${formatSec(Math.max(0, seconds))}</div>
-	`;
+    nextBossEl.innerHTML = `
+      <div class="boss-name">${soon.boss.name}</div>
+      <div class="time-remaining">${formatSec(Math.max(0, seconds))}</div>
+    `;
 
-	// Flash animation when boss changes
-	if (soon.boss.name !== oldName) {
-	  const newNameEl = nextBossEl.querySelector(".boss-name");
-	  newNameEl.classList.add("flash");
-	  setTimeout(() => newNameEl.classList.remove("flash"), 600);
-	}
-
-
+    if (soon.boss.name !== oldName) {
+      const newNameEl = nextBossEl.querySelector(".boss-name");
+      newNameEl.classList.add("flash");
+      setTimeout(() => newNameEl.classList.remove("flash"), 600);
+    }
   }
 
   function renderAll() {
-	renderBossList();
-	renderTimers();
+    renderBossList();
+    renderTimers();
 
-// --- Force Weekly Bosses to Appear in Active Timers Immediately ---
-	BOSSES.filter(boss => boss.type === "weekly").forEach(boss => {
-	  if (!timers[boss.id]) {
-		timers[boss.id] = {
-		  endTime: Date.now() + 7 * 24 * 60 * 60 * 1000, // placeholder 7 days
-		  type: "weekly",
-		};
-	  }
-	});
-	renderTimers();
+    // Add weekly placeholders locally if missing (do not save automatically)
+    for (const boss of BOSSES) {
+      if (boss.weeklyRespawns && !timers[boss.id]) {
+        timers[boss.id] = {
+          endTime: getNextWeeklyRespawn(boss.weeklyRespawns),
+          startedAt: Date.now(),
+          weekly: true,
+          notifiedSoon: false
+        };
+      }
+    }
+
+    renderTimers();
     computeNextBoss();
   }
 
- // --- Timer loop: update countdowns only
-setInterval(() => {
-  const now = Date.now();
-  let changed = false;
+  // Timer loop: update countdowns and advance spawn locally (no automatic save)
+  setInterval(() => {
+    const now = Date.now();
+    // only used for notification flags and local rotation
+    for (const id of Object.keys(timers)) {
+      const info = timers[id];
+      const boss = BOSSES.find(b => b.id === id);
+      if (!boss) continue;
+      const remainingMs = info.endTime - now;
 
-  for (const id of Object.keys(timers)) {
-    const info = timers[id];
-    const boss = BOSSES.find(b => b.id === id);
-    if (!boss) continue;
-    const remainingMs = info.endTime - now;
+      // avoid sending messages right after load
+      if (justLoaded) continue;
 
-    // 🚫 Prevent Discord messages immediately after reopening the page
-    if (justLoaded) continue;
-
-    // 5-minute warning
-    if (remainingMs <= 5 * 60 * 1000 && remainingMs > 0 && !info.notifiedSoon) {
-      const respawnTime = new Date(info.endTime).toLocaleString();
-      sendToDiscord(`@here \n⏳ **${boss.name}** will respawn in 5 minutes!\nExpected at **${respawnTime}**.`);
-      info.notifiedSoon = true;
-      changed = true;
-    }
-
-    // Respawn reached
-    if (info.endTime <= now) {
-      const respawnTime = new Date(info.endTime).toLocaleString();
-      sendToDiscord(`@everyone \n🕒 **${boss.name}** has respawned!\n(Respawn time: **${respawnTime}**)`);
-    if (boss.weeklyRespawns) {
-        const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-        timers[id] = { endTime: nextTime, startedAt: now, weekly: true, notifiedSoon: false };
-      } else {
-        const nextTime = now + boss.respawn * 1000 + 5 * 60 * 1000; // add buffer
-        timers[id] = { endTime: nextTime, startedAt: now, notifiedSoon: false };
+      // 5-minute warning (local only)
+      if (remainingMs <= 5 * 60 * 1000 && remainingMs > 0 && !info.notifiedSoon) {
+        const respawnTime = new Date(info.endTime).toLocaleString();
+        sendToDiscord(`@here \n⏳ **${boss.name}** will respawn in 5 minutes!\nExpected at **${respawnTime}**.`);
+        info.notifiedSoon = true;
       }
-      changed = true;
+
+      // Respawn reached — advance locally (do NOT save automatically)
+      if (info.endTime <= now) {
+        if (boss.weeklyRespawns) {
+          const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
+          timers[id] = { endTime: nextTime, startedAt: now, weekly: true, notifiedSoon: false };
+        } else {
+          const nextTime = now + (boss.respawn * 1000) + (5 * 60 * 1000); // small buffer
+          timers[id] = { endTime: nextTime, startedAt: now, notifiedSoon: false };
+        }
+        // Local rotation only — do not call saveTimers() here.
+        sendToDiscord(`@everyone \n🕒 **${boss.name}** has respawned!\n(Respawn time: **${new Date(now).toLocaleString()}**)`);
+      }
     }
-  }
 
-  if (changed) saveTimers();
+    renderTimers();
+    computeNextBoss();
+  }, 1000);
 
-  // only these two need to refresh live
-  renderTimers();
-  computeNextBoss();
-}, 1000);
+  // Allow notifications after startup grace period
+  setTimeout(() => { justLoaded = false; }, 5000);
 
-	// Allow Discord alerts again after 5 seconds
-setTimeout(() => { justLoaded = false; }, 5000);
+  // Settings dropdown UI
+  settingsMenu.classList.remove('show');
+  settingsMenu.style.display = 'none';
+  settingsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isVisible = settingsMenu.classList.contains('show');
+    if (isVisible) {
+      gearIcon.classList.remove('rotating');
+      settingsMenu.classList.remove('show');
+      setTimeout(() => (settingsMenu.style.display = 'none'), 200);
+    } else {
+      settingsMenu.style.display = 'flex';
+      requestAnimationFrame(() => settingsMenu.classList.add('show'));
+      gearIcon.classList.add('rotating');
+    }
+  });
+  document.addEventListener('click', () => {
+    if (settingsMenu.classList.contains('show')) {
+      settingsMenu.classList.remove('show');
+      gearIcon.classList.remove('rotating');
+      setTimeout(() => (settingsMenu.style.display = 'none'), 200);
+    }
+  });
+  settingsMenu.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      settingsMenu.classList.remove('show');
+      gearIcon.classList.remove('rotating');
+      setTimeout(() => (settingsMenu.style.display = 'none'), 200);
+    });
+  });
 
-  // --- Controls: reset/export/webhook/test
-  resetAllBtn.addEventListener('click', () => { if (confirm('Reset all timers?')) resetAll(); });
-
+  // Export JSON
   exportBtn.addEventListener('click', () => {
     const data = JSON.stringify(timers, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
@@ -1117,33 +1029,35 @@ setTimeout(() => { justLoaded = false; }, 5000);
     const a = document.createElement('a'); a.href = url; a.download = 'boss_timers.json'; a.click(); URL.revokeObjectURL(url);
   });
 
-	// --- Import JSON ---
-document.getElementById('importBtn').addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/json';
-  input.onchange = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      try {
-        const imported = JSON.parse(evt.target.result);
-        if (typeof imported !== 'object' || imported === null) throw new Error();
-        if (!confirm('Import this data and overwrite existing timers?')) return;
-        timers = imported;
-        saveTimers();
-        renderAll();
-        alert('Timers imported successfully!');
-      } catch {
-        alert('Invalid JSON file.');
-      }
+  // Import JSON (Option B merge) - explicit save after merge
+  importBtn.addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async evt => {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (typeof imported !== 'object' || imported === null) throw new Error();
+          if (!confirm('Import this data and merge with existing timers? (imported keys overwrite existing ones)')) return;
+          // Merge: imported values overwrite existing keys, others preserved
+          timers = { ...timers, ...imported };
+          await saveTimers(); // explicit save on import
+          renderAll();
+          alert('Timers imported and saved successfully!');
+        } catch {
+          alert('Invalid JSON file.');
+        }
+      };
+      reader.readAsText(file);
     };
-    reader.readAsText(file);
-  };
-  input.click();
-});
+    input.click();
+  });
 
+  // Webhook / test
   setWebhookBtn.addEventListener('click', () => {
     const url = prompt('Enter your Discord Webhook URL:', webhookUrl || '');
     if (url) {
@@ -1152,72 +1066,37 @@ document.getElementById('importBtn').addEventListener('click', () => {
       alert('Webhook URL saved!');
     }
   });
-
   testWebhookBtn.addEventListener('click', async () => {
     if (!webhookUrl) { alert('No webhook set yet!'); return; }
     await sendToDiscord('✅ Test sage from **Lord Nine Boss Timer** — webhook working!');
     alert('Test message sent to Discord!');
   });
 
-  
-  // --- Auto-activate weekly spawn bosses (merge, don't overwrite) ---
-let updated = false;
-
-for (const boss of BOSSES) {
-  if (boss.weeklyRespawns) {
-    // Only add if this weekly boss does not already exist
-    if (!timers[boss.id]) {
-      const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-      timers[boss.id] = { 
-        endTime: nextTime, 
-        startedAt: Date.now(), 
-        weekly: true, 
-        notifiedSoon: false 
-      };
-      updated = true;
-    }
-  }
-}
-
-// ✅ Only save if new weekly bosses were added, not every reload
-if (updated) {
-  saveTimers();
-}
-
-
-// === SEARCH FILTER WITH CLEAR BUTTON ===
-const searchInput = document.getElementById('bossSearch');
-
-searchInput.addEventListener('input', e => {
-  const query = e.target.value.toLowerCase().trim();
-  document.querySelectorAll('.boss').forEach(boss => {
-    const name = boss.querySelector('.name').textContent.toLowerCase();
-    boss.style.display = name.includes(query) ? '' : 'none';
+  // Search filter
+  searchInput.addEventListener('input', e => {
+    const query = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.boss').forEach(boss => {
+      const name = boss.querySelector('.name').textContent.toLowerCase();
+      boss.style.display = name.includes(query) ? '' : 'none';
+    });
+    searchInput.classList.toggle('has-text', query.length > 0);
   });
-  searchInput.classList.toggle('has-text', query.length > 0);
-});
-
-// Handle clicking on the X (only when visible)
-searchInput.addEventListener('click', e => {
-  if (searchInput.classList.contains('has-text')) {
-    const rect = searchInput.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    // Detect click on the right area near the X
-    if (clickX > rect.width - 24) {
-      searchInput.value = '';
-      searchInput.dispatchEvent(new Event('input'));
+  searchInput.addEventListener('click', e => {
+    if (searchInput.classList.contains('has-text')) {
+      const rect = searchInput.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      if (clickX > rect.width - 24) {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+      }
     }
-  }
-});
+  });
 
-  // Initialize render
-  // IMPORTANT: load timers from Firestore at startup (migration fallback inside loadTimers)
-  timers = await loadTimers();
-  if (!timers) timers = {};
+  // Clear button (Reset All) - already wired in resetAll() above
+  resetAllBtn.addEventListener('click', resetAll);
+
+  // Initialize UI
   renderAll();
-
-  // Utility: clear timers on unload? (not needed) — just keep localStorage/Firestore.
-
 }); // DOMContentLoaded end
 </script>
 </body>
