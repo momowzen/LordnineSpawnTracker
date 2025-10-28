@@ -702,31 +702,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadingOverlay.style.display = "none";
   console.log("🎉 Overlay hidden");
 });
-
-/* ---------- APP START ---------- */
-document.addEventListener('DOMContentLoaded', async () => {
-  const loadingOverlay = document.getElementById("loadingOverlay");
-  loadingOverlay.style.display = "flex"; // show loading window
-
-  const STORAGE_KEY = 'ln_boss_timers_v2';
-  const WEBHOOK_KEY = 'ln_discord_webhook';
-
-  // Wait for Firebase data to fully load
-  let timers = await loadTimersFromFirestore();
-
-  if (!timers || typeof timers !== 'object') timers = {};
-  console.log("✅ Loaded timers from Firestore:", timers);
-
-  // Render your timers or initialize your UI here
-  renderTimers(timers);
-  initializeButtons();
-  setupEventListeners();
-
-  // ✅ Hide only after everything (Firebase + UI) is ready
-  loadingOverlay.style.display = "none";
-});
-
-
   // Local helpers: save only when user clicks (explicit actions)
   async function saveTimers() {
     try {
