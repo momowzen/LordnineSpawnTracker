@@ -1032,14 +1032,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     input.click();
   });
 
-  // Webhook / test
-    if (url) {
-      alert('Webhook URL saved!');
-    }
-  });
-    await alert('Test message sent to Discord!');
-  });
-
   // Search filter
   searchInput.addEventListener('input', e => {
     const query = e.target.value.toLowerCase().trim();
