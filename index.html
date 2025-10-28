@@ -1,8 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Lord Nine Field Boss Timer</title>
 <style>
 :root {
@@ -579,77 +580,68 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 
 </style>
 </head>
-
 <body>
-		<!-- Floating Loading Screen -->
+<!-- Floating Loading Screen -->
 <div id="loadingOverlay">
-  <div class="loadingBox">
-    <div class="spinner"></div>
-    <p>Loading data from server...</p>
-  </div>
+<div class="loadingBox">
+<div class="spinner"></div>
+<p>Loading data from server...</p>
 </div>
-
+</div>
 <header>
-  <div>
-    <h1>LORDNINE FIELD BOSS TIMER</h1>    
-	  </div>
-	  <div>
-		<button id="settingsBtn" aria-label="Settings">
-		  <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" class="gear-icon" />
-		</button>
-	  </div>
+<div>
+<h1>LORDNINE FIELD BOSS TIMER</h1>
+</div>
+<div>
+<button aria-label="Settings" id="settingsBtn">
+<img class="gear-icon" src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png"/>
+</button>
+</div>
+<div class="" id="settingsMenu">
+<button id="resetAll">Reset All Timers</button>
+<button id="exportBtn">Export JSON</button>
+<button id="importBtn">Import JSON</button>
 
 
-  <div id="settingsMenu" class="">
-    <button id="resetAll">Reset All Timers</button>
-    <button id="exportBtn">Export JSON</button>
-    <button id="importBtn">Import JSON</button>
-    <button id="setWebhook">Discord Webhook URL</button>
-    <button id="testWebhook">Test Webhook</button>
-  </div>
+</div>
 </header>
-
 <div class="wrap">
-  <div class="panel-layout">
-    <!-- LEFT SIDE -->
-    <div class="left-panel card panel">
-	  <div class="panel-header">
-		<h3 class="panel-title">BOSS LIST</h3>
-		<input id="bossSearch" placeholder="Search boss..." />
-	  </div>
-	  <div id="bossList" aria-live="polite"></div>
-	  <footer style="padding:10px 12px; color:var(--muted); font-size:12px;">
+<div class="panel-layout">
+<!-- LEFT SIDE -->
+<div class="left-panel card panel">
+<div class="panel-header">
+<h3 class="panel-title">BOSS LIST</h3>
+<input id="bossSearch" placeholder="Search boss..."/>
+</div>
+<div aria-live="polite" id="bossList"></div>
+<footer style="padding:10px 12px; color:var(--muted); font-size:12px;">
 		Tip: click "Mark Dead" when a boss dies, or use "Set Time".
 	  </footer>
-	</div>
-
-
-    <!-- RIGHT SIDE -->
-    <div class="right-side">
-      <div class="card next" id="nextBoss">Next Boss: Calculating...</div>
-
-      <div class="card panel">
-        <h3 class="panel-title">ACTIVE TIMERS</h3>
-        <div id="timers" aria-live="polite"></div>
-        <footer style="padding:10px 12px; color:var(--muted); font-size:12px;">
+</div>
+<!-- RIGHT SIDE -->
+<div class="right-side">
+<div class="card next" id="nextBoss">Next Boss: Calculating...</div>
+<div class="card panel">
+<h3 class="panel-title">ACTIVE TIMERS</h3>
+<div aria-live="polite" id="timers"></div>
+<footer style="padding:10px 12px; color:var(--muted); font-size:12px;">
           Next spawns will auto-advance; Discord alerts optional.
         </footer>
-      </div>
-    </div>
-  </div>
 </div>
-
+</div>
+</div>
+</div>
 <!-- Manual Kill Time Modal -->
 <div id="timeModal">
-  <div class="modal-content">
-    <h3 id="modalBossName" style="margin:0 0 8px 0; font-size:16px;"></h3>
-    <p style="color:var(--muted); margin:0 0 8px 0;">Set custom killed time:</p>
-    <input type="datetime-local" id="killTimeInput" />
-    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
-      <button id="cancelTimeBtn">Cancel</button>
-      <button id="saveTimeBtn">Save</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 id="modalBossName" style="margin:0 0 8px 0; font-size:16px;"></h3>
+<p style="color:var(--muted); margin:0 0 8px 0;">Set custom killed time:</p>
+<input id="killTimeInput" type="datetime-local"/>
+<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+<button id="cancelTimeBtn">Cancel</button>
+<button id="saveTimeBtn">Save</button>
+</div>
+</div>
 </div>
 
 <script type="module">
@@ -673,13 +665,9 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   const resetAllBtn = document.getElementById('resetAll');
   const exportBtn = document.getElementById('exportBtn');
   const importBtn = document.getElementById('importBtn');
-  const setWebhookBtn = document.getElementById('setWebhook');
-  const testWebhookBtn = document.getElementById('testWebhook');
   const searchInput = document.getElementById('bossSearch');
 
   let justLoaded = true;
-  let webhookUrl = localStorage.getItem(WEBHOOK_KEY) || '';
-
   const BOSSES = [
     { id: 'Venatus', name: 'Venatus', respawn: 60*60*10 },
     { id: 'Viorent', name: 'Viorent', respawn: 60*60*10 },
@@ -727,16 +715,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   }
 
   // discord
-  async function sendToDiscord(message){
-    if (!webhookUrl) return;
-    try {
-      await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: message })
-      });
-    } catch(err) { console.warn('Discord webhook failed:', err); }
-  }
+    }
 
   // compute next weekly respawn timestamp
   function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
@@ -771,8 +750,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     saveTimers();
     renderAll();
     const respawnTime = new Date(endTime).toLocaleString();
-    sendToDiscord(`@everyone \n⚔️ **${boss.name}** defeated!\nRespawn expected at **${respawnTime}**.`);
-  }
+    }
 
   function clearTimer(bossId) {
     delete timers[bossId];
@@ -838,8 +816,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
     saveTimers();
     renderAll();
     closeTimeModal();
-    sendToDiscord(`@everyone \n⚔️ **${boss.name}** manually set.\nRespawn expected at **${new Date(endTime).toLocaleString()}**.`);
-  });
+    });
 
   // Render functions
   function renderBossList() {
@@ -968,7 +945,6 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
       // 5-minute warning (local only)
       if (remainingMs <= 5 * 60 * 1000 && remainingMs > 0 && !info.notifiedSoon) {
         const respawnTime = new Date(info.endTime).toLocaleString();
-        sendToDiscord(`@here \n⏳ **${boss.name}** will respawn in 5 minutes!\nExpected at **${respawnTime}**.`);
         info.notifiedSoon = true;
       }
 
@@ -982,8 +958,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
           timers[id] = { endTime: nextTime, startedAt: now, notifiedSoon: false };
         }
         // Local rotation only — do not call saveTimers() here.
-        sendToDiscord(`@everyone \n🕒 **${boss.name}** has respawned!\n(Respawn time: **${new Date(now).toLocaleString()}**)`);
-      }
+        }
     }
 
     renderTimers();
@@ -1061,18 +1036,11 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   });
 
   // Webhook / test
-  setWebhookBtn.addEventListener('click', () => {
-    const url = prompt('Enter your Discord Webhook URL:', webhookUrl || '');
     if (url) {
-      webhookUrl = url.trim();
-      localStorage.setItem(WEBHOOK_KEY, webhookUrl);
       alert('Webhook URL saved!');
     }
   });
-  testWebhookBtn.addEventListener('click', async () => {
-    if (!webhookUrl) { alert('No webhook set yet!'); return; }
-    await sendToDiscord('✅ Test sage from **Lord Nine Boss Timer** — webhook working!');
-    alert('Test message sent to Discord!');
+    await alert('Test message sent to Discord!');
   });
 
   // Search filter
@@ -1164,7 +1132,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadingOverlay.style.display = "none"; // always hide
     console.log("🎉 Loading overlay hidden");
   }
-});
-</script>
-</body>
+});</script></body>
 </html>
