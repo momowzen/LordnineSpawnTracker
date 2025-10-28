@@ -688,20 +688,21 @@ async function loadTimersFromFirestore() {
   }
 }
 
+let timers = {}; // define globally near top of script
+
 document.addEventListener('DOMContentLoaded', async () => {
   const loadingOverlay = document.getElementById("loadingOverlay");
   loadingOverlay.style.display = "flex";
 
   console.log("🔄 Starting Firestore load...");
-  const timers = await loadTimersFromFirestore();
+  timers = await loadTimersFromFirestore(); // assign to global
   console.log("✅ Firestore load complete:", timers);
 
-  // Example: render timers or initialize UI
-  renderTimers(timers);
-
+  renderAll(); // not just renderTimers
   loadingOverlay.style.display = "none";
   console.log("🎉 Overlay hidden");
 });
+
   // Local helpers: save only when user clicks (explicit actions)
   async function saveTimers() {
     try {
