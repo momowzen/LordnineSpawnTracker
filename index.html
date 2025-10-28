@@ -672,35 +672,46 @@ const db = getFirestore(app);
 // Firestore helpers
 async function loadTimersFromFirestore() {
   try {
-    const snap = await getDoc(doc(db, "timers", "global"));
-    if (snap.exists()) return snap.data().data || {};
-  } catch (err) {
-    console.warn("⚠️ Failed to load timers:", err);
+    const docRef = doc(db, "timers", "global");
+    const snapshot = await getDoc(docRef);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      console.log("📥 Firestore data:", data);
+      return data.timers || {};
+    } else {
+      console.warn("⚠️ No data found in Firestore.");
+      return {};
+    }
+  } catch (error) {
+    console.error("❌ Error loading Firestore data:", error);
+    return {};
   }
-  return {};
 }
-async function saveTimersToFirestore(timersObj) {
-  try {
-    await setDoc(doc(db, "timers", "global"), { data: timersObj });
-    console.log("💾 Saved timers to Firestore");
-  } catch (err) {
-    console.warn("⚠️ Failed to save timers:", err);
-  }
-}
+
 
 /* ---------- APP START ---------- */
 document.addEventListener('DOMContentLoaded', async () => {
-
   const loadingOverlay = document.getElementById("loadingOverlay");
   loadingOverlay.style.display = "flex"; // show loading window
+
   const STORAGE_KEY = 'ln_boss_timers_v2';
   const WEBHOOK_KEY = 'ln_discord_webhook';
 
-  // Shared single timers object (loaded once)
-  let timers = await loadTimersFromFirestore(); // load once, do NOT overwrite
-  loadingOverlay.style.display = "none"; // hide loading window once loaded
+  // Wait for Firebase data to fully load
+  let timers = await loadTimersFromFirestore();
+
   if (!timers || typeof timers !== 'object') timers = {};
   console.log("✅ Loaded timers from Firestore:", timers);
+
+  // Render your timers or initialize your UI here
+  renderTimers(timers);
+  initializeButtons();
+  setupEventListeners();
+
+  // ✅ Hide only after everything (Firebase + UI) is ready
+  loadingOverlay.style.display = "none";
+});
+
 
   // Local helpers: save only when user clicks (explicit actions)
   async function saveTimers() {
