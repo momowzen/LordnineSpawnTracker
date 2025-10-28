@@ -399,14 +399,16 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   background: linear-gradient(180deg, rgba(0,255,255,0.02), rgba(0,0,0,0.15));
 }
 .boss.active {
-  box-shadow: 0 0 15px 4px rgba(255, 80, 80, 0.7);
+  /* removed glow box-shadow for boss active state */
+  box-shadow: none;
   border-color: rgba(255, 80, 80, 0.9);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .boss.weekly .name {
   color: #4efcff;
   font-weight: 700;
-  text-shadow: 0 0 6px rgba(0,255,255,0.25);
+  /* remove glow/text-shadow on weekly boss names */
+  text-shadow: none;
 }
 
 .boss.weekly .sub {
@@ -423,7 +425,8 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 .boss .name {
   font-weight: 700;
   color: #e6fbff;
-  text-shadow: 0 0 10px rgba(0,255,255,0.12);
+  /* remove glow/text-shadow on boss names */
+  text-shadow: none;
   font-size: 1rem;
   white-space: nowrap;
   overflow: hidden;
@@ -468,7 +471,7 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
 }
 
 
-/* timer rows */
+ /* timer rows */
 .timer {
   display: flex;
   align-items: center;
