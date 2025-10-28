@@ -107,14 +107,33 @@ header.app-header{
 }
 
 /* Boss list */
-#bossList{display:flex;flex-direction:column;gap:8px;}
-.boss{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px;border-radius:8px;
-  background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
-  border:1px solid rgba(255,255,255,0.02);
-  font-size:13px;
+#bossList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  overflow-y: auto;        /* ✅ allows vertical scrolling */
+  overflow-x: hidden;      /* ✅ hides sideways scaling */
+  padding: 6px 4px;
+  max-height: 100%;        /* keeps it flexible within panel */
+  scroll-behavior: smooth;
 }
+
+
+.boss {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%; /* 🔹 slightly narrower to prevent overflow */
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
+  border: 1px solid rgba(255,255,255,0.02);
+  font-size: 13px;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
 .boss .meta{display:flex;flex-direction:column;gap:2px}
 .boss .name{font-weight:700}
 .boss .sub{font-size:11px;color:var(--muted)}
@@ -176,14 +195,31 @@ header.app-header{
   text-shadow: 0 0 6px rgba(125,211,252,0.5);
 }
 
-/* Timers */
-#timers{display:flex;flex-direction:column;gap:8px;}
-.timer{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px;border-radius:8px;
-  background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
-  border:1px solid rgba(255,255,255,0.02);
-  font-size:13px;
+/* Active Timers panel */
+#timers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  overflow-y: auto;       /* ✅ scrollable vertically */
+  overflow-x: hidden;     /* ✅ prevent horizontal overflow from scale */
+  padding: 6px 4px;
+  max-height: 100%;       /* keep flexible within its container */
+  scroll-behavior: smooth;
+}
+/* Timer card style */
+.timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;             /* 🔹 narrower width to contain hover */
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
+  border: 1px solid rgba(255,255,255,0.02);
+  font-size: 13px;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+  box-sizing: border-box;
 }
 .timer.ready{border-color:rgba(0,240,255,0.18)}
 
@@ -401,6 +437,47 @@ header.app-header{
 .logo-img:hover {
   transform: scale(1.05);
   filter: drop-shadow(0 0 10px rgba(0,240,255,0.7));
+}
+
+/* === Hover enlarge effect for panels + search bar === */
+#nextBoss,
+#timersPanel,
+#bossListPanel,
+.search-wrapper {
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+/* Hover animation */
+#nextBoss:hover,
+#timersPanel:hover,
+#bossListPanel:hover,
+.search-wrapper:hover {
+  transform: scale(1.02); /* 🔹 slight enlarge */
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+  z-index: 5;
+}
+
+/* === Dead boss indicator === */
+.boss.dead .name::after {
+  content: " 💀"; /* you can replace with any emoji or icon character */
+  font-size: 16px;
+  margin-left: 6px;
+  opacity: 0.85;
+  text-shadow: 0 0 6px rgba(255, 60, 60, 0.6);
+}
+
+/* === Hover enlarge effect for individual boss & timer cards === */
+.boss,
+.timer {
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+  border-radius: 10px;
+}
+
+.boss:hover,
+.timer:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.25);
+  z-index: 2;
 }
 
 
@@ -704,18 +781,22 @@ function renderBossList(){
 		node.innerHTML = `
 		  <div class="meta">
 			<div class="name">${b.name}</div>
-			<div class="sub">${isWeekly
-			  ? b.weeklyRespawns.map(r =>
-				  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][r.day] + ' ' +
-				  String(r.hour).padStart(2,'0') + ':' +
-				  String(r.minute).padStart(2,'0')
-				).join(', ')
-			  : (b.respawn / 3600) + ' hr'}
-			</div>
+			<div class="sub">${
+			  isWeekly
+				? b.weeklyRespawns.map(r =>
+					['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][r.day] + ' ' +
+					String(r.hour).padStart(2,'0') + ':' + String(r.minute).padStart(2,'0')
+				  ).join(', ')
+				: (b.respawn / 3600) + ' hr'
+			}</div>
 		  </div>
 		  <div class="actions">
-			<button class="kbtn" data-id="${b.id}" title="Mark dead">Mark Dead</button>
-			${isWeekly ? '' : `<button class="kbtn" data-id="${b.id}" data-set="1">Set Manual Time</button>`}
+			${
+			  isWeekly
+				? `<button class="kbtn" data-id="${b.id}" title="Mark dead">${isActive ? 'Killed' : 'Mark as Dead'}</button>`
+				: `<button class="kbtn" data-id="${b.id}" title="Mark dead">${isActive ? 'Killed' : 'Mark as Dead'}</button>
+				   <button class="kbtn" data-id="${b.id}" data-set="1">Set</button>`
+			}
 		  </div>`;
 
     bossListEl.appendChild(node);
