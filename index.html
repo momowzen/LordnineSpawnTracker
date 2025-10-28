@@ -1042,17 +1042,56 @@ async function init() {
   }
 
   // Combine both (Firestore overrides local)
-  timers = { ...localTimers, ...firestoreTimers };
+	timers = { ...localTimers, ...firestoreTimers };
+
+	// --- Fix timers that finished while offline: advance them to the next valid spawn ---
+	const now = Date.now();
+	let timersChanged = false;
+
+	for (const [id, info] of Object.entries(timers)) {
+	  const boss = BOSSES.find(b => b.id === id);
+	  if (!boss || !info || !info.endTime) continue;
+
+	  // if timer already expired while we were offline, advance it
+	  if (info.endTime <= now) {
+		if (boss.weeklyRespawns) {
+		  // set to the next weekly respawn after 'now'
+		  const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+		  timers[id] = { endTime: next, startedAt: now, weekly: true, notifiedSoon: false };
+		  timersChanged = true;
+		} else if (boss.respawn) {
+		  // for fixed-interval respawns: calculate how many cycles passed and advance
+		  const respMs = boss.respawn * 1000;
+		  // number of full cycles passed since stored endTime (at least 1)
+		  const cycles = Math.floor((now - info.endTime) / respMs) + 1;
+		  const newEnd = info.endTime + cycles * respMs;
+		  timers[id] = { endTime: newEnd, startedAt: now, notifiedSoon: false };
+		  timersChanged = true;
+		}
+	  }
+	}
+
+	// If we changed anything (timers rolled forward), persist the updated state immediately
+	if (timersChanged) {
+	  // saveTimers will persist to Firestore + localStorage
+	  await saveTimers();
+	}
+
 
   // Step 5: Mark Firestore as loaded and render everything
 	firebaseLoaded = true;
 	renderAll();
 
-	// Add delay before hiding the loading overlay
-	setTimeout(() => {
+	// Hide loading overlay immediately after data is rendered
+	if (Object.keys(timers).length > 0 || firestoreTimers || localTimers) {
 	  loadingOverlay.style.display = 'none';
-	}, 4000);}
-
+	} else {
+	  // fallback: small delay only if no data is loaded at all
+	  setTimeout(() => {
+		loadingOverlay.style.display = 'none';
+	  }, 1000);
+	}
+	}
 
 // Start initialization after the window loads
 window.addEventListener('load', () => init());
