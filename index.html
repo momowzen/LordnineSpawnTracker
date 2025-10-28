@@ -153,28 +153,28 @@ header.app-header{
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 18px 12px;
+  padding: 16px 12px; /* slightly tighter padding */
   border-radius: 10px;
-  border: 1px solid rgba(0,240,255,0.12);
+  border: 1px solid rgba(0, 240, 255, 0.15);
   background: linear-gradient(180deg, rgba(0,240,255,0.05), rgba(0,0,0,0.25));
-  box-shadow: 0 0 10px rgba(0,240,255,0.05);
+  box-shadow: 0 0 12px rgba(0,240,255,0.08);
 }
 
 #nextBoss .boss-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: var(--accent);
   text-shadow: 0 0 8px rgba(0,240,255,0.4);
+  margin-bottom: 1px; /* 🔹 reduced spacing between name & time */
 }
 
 #nextBoss .time-remaining {
-  margin-top: 6px;
-  font-size: 14px;
+  margin-top: 0; /* 🔹 remove extra gap */
+  font-size: 12px;
   color: var(--accent-2);
   font-weight: 700;
-  text-shadow: 0 0 6px rgba(125,211,252,0.4);
+  text-shadow: 0 0 6px rgba(125,211,252,0.5);
 }
-
 
 /* Timers */
 #timers{display:flex;flex-direction:column;gap:8px;}
@@ -771,21 +771,38 @@ function renderTimers(){
   });
 }
 
-function computeNextBoss(){
+function computeNextBoss() {
   const upcoming = Object.entries(timers)
-    .map(([id,info])=>({ id, endTime: info.endTime, boss: BOSSES.find(b=>b.id===id) }))
-    .filter(x=>x.boss)
-    .sort((a,b)=>a.endTime - b.endTime);
+    .map(([id, info]) => ({
+      id,
+      endTime: info.endTime,
+      boss: BOSSES.find(b => b.id === id)
+    }))
+    .filter(x => x.boss)
+    .sort((a, b) => a.endTime - b.endTime);
 
-  if(upcoming.length === 0){
+  if (upcoming.length === 0) {
     nextBossNameEl.textContent = 'Next Boss: —';
     nextTimeEl.textContent = '—';
     return;
   }
+
   const soon = upcoming[0];
-  const seconds = Math.max(0, Math.round((soon.endTime - Date.now())/1000));
+  const now = Date.now();
+  const remainingMs = Math.max(0, soon.endTime - now);
+  const totalSeconds = remainingMs / 1000;
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  const millis = Math.floor(remainingMs % 1000);
+
   nextBossNameEl.textContent = `${soon.boss.name}`;
-  nextTimeEl.textContent = formatSec(seconds);
+  nextTimeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes
+    .toString()
+    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${millis
+    .toString()
+    .padStart(3, '0')}`;
 }
 
 function renderAll() {
@@ -795,7 +812,7 @@ function renderAll() {
   // If Firestore not yet loaded, skip timers and next boss
   if (!firebaseLoaded) {
     timersEl.innerHTML = '';
-    nextBossEl.querySelector('.boss-name').textContent = 'Next Boss: — —';
+    nextBossNameEl.querySelector('.boss-name').textContent = 'Next Boss: — —';
     nextTimeEl.textContent = '— —';
     return;
   }
@@ -830,7 +847,7 @@ setInterval(()=>{
   }
   renderTimers();
   computeNextBoss();
-}, 1000);
+}, 10);
 
 
 setTimeout(()=>justLoaded = false, 5000);
@@ -917,8 +934,8 @@ async function init() {
   // Step 2: Do NOT render anything yet — keep panels empty
   bossListEl.innerHTML = '';
   timersEl.innerHTML = '';
-  // nextBossEl.textContent = '';
-  // nextTimeEl.textContent = '';
+  nextBossNameEl.textContent = '';
+  nextTimeEl.textContent = '';
 
   // Step 3: Load timers from Firestore
   let firestoreTimers = {};
