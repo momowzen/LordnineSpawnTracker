@@ -1088,7 +1088,7 @@ async function loadTimersFromFirestore() {
 
 // === Wait for UI panels to render ===
 async function waitForPanelsToRender() {
-  const maxWait = 5000; // maximum 5 seconds
+  const maxWait = 6000; // maximum 6 seconds
   const start = Date.now();
 
   while (Date.now() - start < maxWait) {
