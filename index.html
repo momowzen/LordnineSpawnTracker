@@ -1109,21 +1109,30 @@ document.getElementById('importBtn').addEventListener('click', () => {
   });
 
   
-  // --- Auto-activate weekly spawn bosses (don't overwrite Firestore data) ---
-let addedWeekly = false;
+  // --- Auto-activate weekly spawn bosses (merge, don't overwrite) ---
+let updated = false;
 
 for (const boss of BOSSES) {
-  if (boss.weeklyRespawns && !timers[boss.id]) {
-    const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-    timers[boss.id] = { endTime: nextTime, startedAt: Date.now(), weekly: true, notifiedSoon: false };
-    addedWeekly = true;
+  if (boss.weeklyRespawns) {
+    // Only add if this weekly boss does not already exist
+    if (!timers[boss.id]) {
+      const nextTime = getNextWeeklyRespawn(boss.weeklyRespawns);
+      timers[boss.id] = { 
+        endTime: nextTime, 
+        startedAt: Date.now(), 
+        weekly: true, 
+        notifiedSoon: false 
+      };
+      updated = true;
+    }
   }
 }
 
-// ✅ Only save if we actually added new weekly timers (not every reload)
-if (addedWeekly) {
+// ✅ Only save if new weekly bosses were added, not every reload
+if (updated) {
   saveTimers();
 }
+
 
 // === SEARCH FILTER WITH CLEAR BUTTON ===
 const searchInput = document.getElementById('bossSearch');
