@@ -399,8 +399,8 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   background: linear-gradient(180deg, rgba(0,255,255,0.02), rgba(0,0,0,0.15));
 }
 .boss.active {
-  box-shadow: 0 0 10px 3px rgba(255, 100, 100, 0.7); /* red-ish glow for active bosses */
-  border-color: rgba(255, 100, 100, 0.9);
+  box-shadow: 0 0 15px 4px rgba(255, 80, 80, 0.7);
+  border-color: rgba(255, 80, 80, 0.9);
 }
 .boss.weekly .name {
   color: #4efcff;
@@ -814,14 +814,16 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
   // Render functions
   function renderBossList() {
   bossListEl.innerHTML = '';
+
   for (const b of BOSSES) {
     const isWeekly = !!b.weeklyRespawns;
     const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
 
+    // Add both weekly and active glow states
     const node = document.createElement('div');
     node.className = 'boss' +
       (isWeekly ? ' weekly' : '') +
-      (isActive ? ' active' : ''); // glow the whole card if active
+      (isActive ? ' active' : '');
 
     const respawnText = isWeekly
       ? b.weeklyRespawns
@@ -838,17 +840,19 @@ h1 { font-size: 1.4rem; margin: 0; color: var(--accent); text-shadow: 0 0 10px v
       </div>
       ${isWeekly ? '' : `
       <div class="buttons">
-        <button data-id="${b.id}" class="killBtn" aria-pressed="${isActive ? 'true' : 'false'}"
+        <button data-id="${b.id}" class="killBtn"
+          aria-pressed="${isActive ? 'true' : 'false'}"
           title="${isActive ? 'Marked (timer running)' : 'Mark this boss as dead'}">
           Mark Dead
         </button>
         <button data-id="${b.id}" class="setTimeBtn">Set Time</button>
       </div>`}
     `;
+
     bossListEl.appendChild(node);
   }
 
-  // Event listeners
+  // Re-attach event handlers
   bossListEl.querySelectorAll('.killBtn').forEach(btn =>
     btn.addEventListener('click', e => startTimer(e.currentTarget.dataset.id))
   );
