@@ -722,10 +722,17 @@ function clearTimer(bossId){
   saveTimers();
   renderAll();
 }
-function resetAll(){
-  if(!confirm('Reset all timers?')) return;
+function resetAll() {
+  if (!confirm('Clear all non-weekly timers?')) return;
+
   const preserved = {};
-  
+  for (const [id, info] of Object.entries(timers)) {
+    const boss = BOSSES.find(b => b.id === id);
+    if (boss && boss.weeklyRespawns) {
+      // Keep weekly timers
+      preserved[id] = info;
+    }
+  }
 
   timers = preserved;
   saveTimers();
@@ -812,25 +819,25 @@ function renderBossList(){
   });
 }
 
-function renderTimers(){
+function renderTimers() {
   timersEl.innerHTML = '';
   const entries = Object.entries(timers)
-    .map(([id,info])=>({ id, info, boss: BOSSES.find(b=>b.id===id) }))
-    .filter(x=>x.boss)
-    .sort((a,b)=>a.info.endTime - b.info.endTime);
+    .map(([id, info]) => ({ id, info, boss: BOSSES.find(b => b.id === id) }))
+    .filter(x => x.boss)
+    .sort((a, b) => a.info.endTime - b.info.endTime);
 
-  if(entries.length === 0){
+  if (entries.length === 0) {
     timersEl.innerHTML = '<div class="small" style="color:var(--muted)">No active timers</div>';
     nextBossNameEl.textContent = 'Next Boss: —';
     nextTimeEl.textContent = '—';
     return;
   }
 
-  for(const e of entries){
-    const remainingSec = Math.round((e.info.endTime - Date.now())/1000);
+  for (const e of entries) {
+    const remainingSec = Math.round((e.info.endTime - Date.now()) / 1000);
     const remaining = Math.max(0, remainingSec);
     const node = document.createElement('div');
-    node.className = 'timer' + (remaining===0 ? ' ready' : '');
+    node.className = 'timer' + (remaining === 0 ? ' ready' : '');
     node.innerHTML = `
       <div>
         <div style="font-weight:700">${e.boss.name}</div>
@@ -838,19 +845,25 @@ function renderTimers(){
       </div>
       <div style="text-align:right">
         <div style="font-weight:800">${formatSec(remaining)}</div>
-        <div style="margin-top:6px"><button class="kbtn" data-id="${e.id}">Clear</button></div>
+        <div style="margin-top:6px">
+          <button class="kbtn clear-timer-btn" data-id="${e.id}">Clear</button>
+        </div>
       </div>
     `;
     timersEl.appendChild(node);
   }
 
-  // attach clear buttons
-  timersEl.querySelectorAll('.kbtn').forEach(btn=>{
-    btn.addEventListener('click', e=>{
-      clearTimer(e.currentTarget.dataset.id);
+  // ✅ Attach clear buttons properly
+  timersEl.querySelectorAll('.clear-timer-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const bossId = e.currentTarget.getAttribute('data-id');
+      if (bossId && timers[bossId]) {
+        clearTimer(bossId);
+      }
     });
   });
 }
+
 
 function computeNextBoss() {
   const upcoming = Object.entries(timers)
