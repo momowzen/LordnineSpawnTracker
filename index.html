@@ -577,6 +577,37 @@
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
   background: linear-gradient(90deg, rgba(0, 240, 255, 0.05), rgba(125, 211, 252, 0.05));
 }
+  /* === Animated background for Next Boss panel === */
+@keyframes pulseGlow {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+  }
+  50% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+  }
+  100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+  }
+}
+
+#nextBoss {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 240, 255, 0.08),
+    rgba(125, 211, 252, 0.06),
+    rgba(0, 240, 255, 0.08)
+  );
+  background-size: 300% 300%;
+  animation: pulseGlow 6s ease-in-out infinite;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
 </style>
 </head>
 <body>
