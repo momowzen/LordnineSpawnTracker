@@ -1040,7 +1040,13 @@ function sortActiveTimersSmoothly() {
       addOrUpdateTimerElement(boss.id);
       renderBossList();
       // send manual set embed (blue)
-      await sendDiscordEmbed(buildEmbed(`⏰ ${boss.name} manual time set`, 'Manual time set by user.', 0x3399ff));
+      await sendDiscordEmbed(
+        buildEmbed(
+          `⏰ ${boss.name} manual time set`,
+          `Next respawn: ${formatShortDateTime(timers[boss.id].endTime)}`,
+          0x3399ff
+        )
+      );
     });
 
     // -------------------------
