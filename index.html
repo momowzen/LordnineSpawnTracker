@@ -912,12 +912,20 @@ function sortActiveTimersSmoothly() {
       };
     }
     async function testWebhook(){
-      if(!cachedWebhookUrl && !webhookInput.value.trim()){ alert('No webhook URL configured.'); return; }
+      if(!cachedWebhookUrl && !webhookInput.value.trim()){ 
+        alert('No webhook URL configured.'); 
+        return; 
+      }
       if(!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
-      await sendDiscordEmbed(buildEmbed('🧪 Webhook test successful!', 'Sent from Lord Nine Tracker at ' + new Date().toLocaleString(), 0x00ff99, Date.now()));
+      await sendDiscordEmbed(
+        buildEmbed(
+          '🧪 Webhook test successful!',
+          'This is a test message from Lord Nine Tracker.',
+          0x00ff99
+        )
+      );
       alert('Test sent (check your Discord).');
     }
-
     // -------------------------
     // Firestore timers persistence
     // -------------------------
@@ -970,7 +978,13 @@ function sortActiveTimersSmoothly() {
       removeTimerElement(bossId);
       renderBossList();
       const boss = BOSSES.find(b=>b.id===bossId);
-      if(boss) await sendDiscordEmbed(buildEmbed(`${boss.name} timer cleared`, 'Timer was cleared manually.', 0x3399ff, Date.now()));
+      if(boss) await sendDiscordEmbed(
+        buildEmbed(
+          `💀 ${boss.name} defeated!`,
+          `Next respawn: ${formatShortDateTime(timers[bossId].endTime)}`,
+          0xff3333
+        )
+      );
     }
 
     function resetAll(){
