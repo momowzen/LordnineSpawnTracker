@@ -989,8 +989,8 @@ function sortActiveTimersSmoothly() {
       if(boss && endTime){
         await sendDiscordEmbed(
           buildEmbed(
-            `💀 ${boss.name} defeated!`,
-            `Next respawn: ${formatShortDateTime(endTime)}`,
+            `💀 ${boss.name} timer cleared`,
+            `Next respawn: Unknown`,
             0xff3333
           )
         );
