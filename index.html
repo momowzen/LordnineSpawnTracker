@@ -902,12 +902,15 @@ function sortActiveTimersSmoothly() {
       }
     }
 
-    function buildEmbed(title, description, colorHex, spawnTimeMs){
-      const embed = { title, description, color: colorHex, footer:{ text: 'Lord Nine Tracker' }, timestamp: new Date().toISOString() };
-      if(spawnTimeMs) embed.fields = [{ name: 'Respawn', value: new Date(spawnTimeMs).toLocaleString(), inline:false }];
-      return embed;
+    function buildEmbed(title, description, colorHex){
+      return {
+        title,
+        description,
+        color: colorHex,
+        footer: { text: 'Lord Nine Tracker' },
+        timestamp: new Date().toISOString()
+      };
     }
-
     async function testWebhook(){
       if(!cachedWebhookUrl && !webhookInput.value.trim()){ alert('No webhook URL configured.'); return; }
       if(!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
@@ -956,7 +959,7 @@ function sortActiveTimersSmoothly() {
       addOrUpdateTimerElement(bossId);
       renderBossList();
       // send killed embed (red)
-      await sendDiscordEmbed(buildEmbed(`💀 ${boss.name} defeated!`, 'Respawn tracking started.', 0xff3333, timers[bossId].endTime));
+      await sendDiscordEmbed(buildEmbed(`💀 ${boss.name} defeated!`, 'Respawn tracking started.', 0xff3333));
     }
 
     async function clearTimer(bossId){
@@ -1023,7 +1026,7 @@ function sortActiveTimersSmoothly() {
       addOrUpdateTimerElement(boss.id);
       renderBossList();
       // send manual set embed (blue)
-      await sendDiscordEmbed(buildEmbed(`⏰ ${boss.name} manual time set`, 'Manual time set by user.', 0x3399ff, timers[boss.id].endTime));
+      await sendDiscordEmbed(buildEmbed(`⏰ ${boss.name} manual time set`, 'Manual time set by user.', 0x3399ff));
     });
 
     // -------------------------
@@ -1193,8 +1196,8 @@ function sortActiveTimersSmoothly() {
         await sendDiscordEmbed(
           buildEmbed(
             `⚠️ ${boss.name} will spawn in 5 minutes!`,
-            `Expected spawn at: ${formatShortDateTime(info.endTime)}`,
-            0xffcc00,            
+            `Prepare for battle!`,
+            0xffcc00
           )
         );
       }
