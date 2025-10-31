@@ -1301,46 +1301,8 @@ function sortActiveTimersSmoothly() {
       renderBossList();
     });
 
-function relocateSettingsMenuToBody(){
-  // append to body once
-  if (settingsMenu && settingsMenu.parentElement !== document.body) {
-    document.body.appendChild(settingsMenu);
-    // set fixed positioning so we can place it relative to viewport
-    settingsMenu.style.position = 'fixed';
-    // very high z-index so it's above overlays (use large safe int)
-    settingsMenu.style.zIndex = '2147483647';
-    // ensure default is hidden
-    settingsMenu.style.display = 'none';
-  }
-})();
-    // toggle & position menu near the settings button
-    settingsBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      // measure the button
-      const rect = settingsBtn.getBoundingClientRect();
-      // small offset below the button
-      const offset = 8;
-    
-      // ensure menu is rendered (display:flex) so offsetWidth/Height are readable
-      if (settingsMenu.style.display === 'none' || !settingsMenu.style.display) {
-        settingsMenu.style.display = 'flex';
-        // position: prefer aligning right edge of menu with right edge of button
-        // If menu width is not yet measured, force a reflow by reading offsetWidth
-        const menuW = settingsMenu.offsetWidth;
-        const left = Math.max(8, rect.right - menuW); // keep some left padding
-        settingsMenu.style.left = `${left}px`;
-        settingsMenu.style.top = `${rect.bottom + offset}px`;
-      } else {
-        settingsMenu.style.display = 'none';
-      }
-    });
-    
-    // hide when clicking outside (but allow clicks inside menu)
-    document.addEventListener('click', (ev) => {
-      if (!settingsMenu.contains(ev.target) && ev.target !== settingsBtn) {
-        settingsMenu.style.display = 'none';
-      }
-    }, { capture: true });
+    settingsBtn.addEventListener('click', (e)=>{ e.stopPropagation(); settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex'; });
+    document.addEventListener('click', ()=> settingsMenu.style.display = 'none');
 
     discordWebhookBtn.addEventListener('click', async (e)=>{ e.stopPropagation(); settingsMenu.style.display='none'; await loadWebhookFromFirestore(); webhookBackdrop.style.display='flex'; });
     webhookBackdrop.addEventListener('click', (ev)=>{ if(ev.target === webhookBackdrop) webhookBackdrop.style.display='none'; });
