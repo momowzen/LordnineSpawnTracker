@@ -1232,7 +1232,7 @@ function sortActiveTimersSmoothly() {
           const remainEl = el.querySelector('.timer-remaining');
           const spawnEl = el.querySelector('.timer-spawn');
           if (remainEl) remainEl.textContent = formatSec(remainingSec);
-          if (spawnEl) spawnEl.textContent = formatShortDateTime(info.endTime);
+          if (spawnEl) spawnEl.textContent = `Next Spawn: ${formatShortDateTime(info.endTime)}`;
           if (remainingSec === 0) el.classList.add('ready');
           else el.classList.remove('ready');
 
