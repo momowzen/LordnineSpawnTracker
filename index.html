@@ -967,18 +967,7 @@ function sortActiveTimersSmoothly() {
       addOrUpdateTimerElement(bossId);
       renderBossList();
       // send killed embed (red)
-      await sendDiscordEmbed(buildEmbed(`💀 ${boss.name} defeated!`, 'Respawn tracking started.', 0xff3333));
-    }
-
-    async function clearTimer(bossId){
-      if(!timers[bossId]) return;
-      delete timers[bossId];
-      try{ await setDoc(doc(db, 'timers', 'global'), { timers }); }catch(e){ console.warn('Firestore update failed on clear', e); }
-      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(timers)); }catch(e){}
-      removeTimerElement(bossId);
-      renderBossList();
-      const boss = BOSSES.find(b=>b.id===bossId);
-      if(boss) await sendDiscordEmbed(
+      await sendDiscordEmbed(
         buildEmbed(
           `💀 ${boss.name} defeated!`,
           `Next respawn: ${formatShortDateTime(timers[bossId].endTime)}`,
@@ -986,7 +975,27 @@ function sortActiveTimersSmoothly() {
         )
       );
     }
-
+    async function clearTimer(bossId){
+      if(!timers[bossId]) return;
+      const boss = BOSSES.find(b=>b.id===bossId);
+      const endTime = timers[bossId]?.endTime; // store before deleting
+    
+      delete timers[bossId];
+      try { await setDoc(doc(db, 'timers', 'global'), { timers }); } catch(e){ console.warn('Firestore update failed on clear', e); }
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(timers)); } catch(e){}
+      removeTimerElement(bossId);
+      renderBossList();
+    
+      if(boss && endTime){
+        await sendDiscordEmbed(
+          buildEmbed(
+            `💀 ${boss.name} defeated!`,
+            `Next respawn: ${formatShortDateTime(endTime)}`,
+            0xff3333
+          )
+        );
+      }
+    }
     function resetAll(){
       if(!confirm('Clear all non-weekly timers?')) return;
       const preserved = {};
@@ -1104,8 +1113,8 @@ function sortActiveTimersSmoothly() {
     });
     function formatShortDateTime(ms) {
       const d = new Date(ms);
-      const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
-      return d.toLocaleString('en-US', options).replace(',', '');
+      const opts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+      return d.toLocaleString('en-US', opts).replace(/^(\w+)/, '$1.').replace(',', '');
     }
     function addOrUpdateTimerElement(bossId){
       const boss = BOSSES.find(b=>b.id===bossId);
