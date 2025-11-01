@@ -923,7 +923,42 @@ function sortActiveTimersSmoothly() {
         console.warn('discord send err', e);
       }
     }
-
+    // Prevent spam: only send once globally per boss + message type
+    async function sendDiscordEmbedOnce(type, boss) {
+      try {
+        const key = `${boss.id}_${type}`;
+        const ref = doc(db, 'notifications', key);
+        const snap = await getDoc(ref);
+        const now = Date.now();
+        const last = snap.exists() ? snap.data().lastSent || 0 : 0;
+    
+        // Skip if someone else already sent within 2 minutes
+        if (now - last < 120000) return;
+    
+        await setDoc(ref, { lastSent: now });
+        let embed;
+        if (type === 'killed') {
+          embed = buildEmbed(`💀 ${boss.name} defeated!`,
+            `Next respawn: ${formatShortDateTime(timers[boss.id].endTime)}`,
+            0xff3333);
+        } else if (type === 'soon') {
+          embed = buildEmbed(`⚠️ ${boss.name} will spawn in 5 minutes!`,
+            `Prepare for battle!`,
+            0xffcc00);
+        } else if (type === 'spawn') {
+          embed = buildEmbed(`🎉 ${boss.name} has spawned!`,
+            `It’s time to hunt!`,
+            0xb266ff);
+        } else if (type === 'manual') {
+          embed = buildEmbed(`⏰ ${boss.name} manual time set`,
+            `Next respawn: ${formatShortDateTime(timers[boss.id].endTime)}`,
+            0x3399ff);
+        }
+        await sendDiscordEmbed(embed);
+      } catch (e) {
+        console.warn("sendDiscordEmbedOnce error:", e);
+      }
+    }
     function buildEmbed(title, description, colorHex){
       return {
         title,
@@ -985,13 +1020,7 @@ function sortActiveTimersSmoothly() {
       addOrUpdateTimerElement(bossId);
       renderBossList();
       // send killed embed (red)
-      await sendDiscordEmbed(
-        buildEmbed(
-          `💀 ${boss.name} defeated!`,
-          `Next respawn: ${formatShortDateTime(timers[bossId].endTime)}`,
-          0xff3333
-        )
-      );
+      await sendDiscordEmbedOnce('killed', boss);
     }
     async function clearTimer(bossId){
       if(!timers[bossId]) return;
@@ -1253,13 +1282,7 @@ function sortActiveTimersSmoothly() {
         info.notifiedSoon = true;
         changed = true;
         await saveTimers();
-        await sendDiscordEmbed(
-          buildEmbed(
-            `⚠️ ${boss.name} will spawn in 5 minutes!`,
-            `Prepare for battle!`,
-            0xffcc00
-          )
-        );
+        await sendDiscordEmbedOnce('soon', boss);
       }
 
       // spawn reached (announce once)
@@ -1267,15 +1290,8 @@ function sortActiveTimersSmoothly() {
         info.spawnAnnounced = true;
         changed = true;
         await saveTimers();
-        await sendDiscordEmbed(
-          buildEmbed(
-            `🎉 ${boss.name} has spawned!`,
-            `It’s time to hunt!`,
-            0xb266ff,
-          )
-        );
+        await sendDiscordEmbedOnce('spawn', boss);
       }
-
       // if we passed the spawn time, advance to next cycle
       if (info.endTime <= now) {
         if (boss.weeklyRespawns) {
