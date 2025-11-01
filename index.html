@@ -1314,19 +1314,26 @@
       console.log(`🧹 Cleared timer for ${boss?.name || bossId} (no Discord ping).`);
     }
 
-    function resetAll(){
-      if(!confirm('Clear all non-weekly timers?')) return;
-      const preserved = {};
-      for(const [id, info] of Object.entries(timers)){
-        const boss = BOSSES.find(b=>b.id===id);
-        if(boss && boss.weeklyRespawns) preserved[id] = info;
-      }
-      timers = preserved;
-      saveTimers();
-      rebuildTimersPanel();
-      renderBossList();
-      console.log('🔁 resetAll: cleared non-weekly timers, preserved weekly ones.');
-    }
+		async function resetAll(){
+				if(!confirm('Clear all non-weekly timers?')) return;
+				const preserved = {};
+				for(const [id, info] of Object.entries(timers)){
+					const boss = BOSSES.find(b=>b.id===id);
+					if(boss && boss.weeklyRespawns) preserved[id] = info;
+				}
+				timers = preserved;
+
+				try {
+					await setDoc(doc(db, 'timers', 'global'), { timers }); // overwrite entire timers doc
+					rebuildTimersPanel();
+					renderBossList();
+					alert('✅ All non-weekly timers reset (Firestore updated).');
+					console.log('🔁 resetAll: fully reset timers and updated Firestore.');
+				} catch (e) {
+					console.warn('❌ resetAll Firestore update failed', e);
+					alert('⚠️ Failed to update Firestore.');
+				}
+			}
 
     // -------------------------
     // Modal for manual time
