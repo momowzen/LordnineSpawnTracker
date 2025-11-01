@@ -830,7 +830,7 @@ function sortActiveTimersSmoothly() {
     // Firestore imports & init (preserved config)
     // -------------------------
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
-    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
 
     const firebaseConfig = {
       apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
@@ -1447,14 +1447,23 @@ function sortActiveTimersSmoothly() {
       let firestoreTimers = {};
       try{
         const docRef = doc(db, 'timers', 'global');
-        const snap = await getDoc(docRef);
-        if(snap.exists()){
-          firestoreTimers = snap.data().timers || {};
-          console.log('Loaded timers from Firestore:', firestoreTimers);
-        } else {
-          console.log('No Firestore data found.');
-        }
-      }catch(e){
+
+      // 🔁 Real-time listener for Firestore changes
+      onSnapshot(docRef, (snap) => {
+          if (snap.exists()) {
+            const newTimers = snap.data().timers || {};
+            timers = newTimers;
+            rebuildTimersPanel();
+            renderBossList();
+            computeNextBoss();
+            console.log('🔄 Timers auto-updated from Firestore:', timers);
+          } 
+          else {
+            console.log('No Firestore data found.');
+          }
+        });
+      }
+      catch(e){
         console.warn('Firestore load failed', e);
       }
       timers = firestoreTimers;
