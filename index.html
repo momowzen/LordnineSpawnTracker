@@ -932,7 +932,7 @@ function sortActiveTimersSmoothly() {
         const now = Date.now();
         const last = snap.exists() ? snap.data().lastSent || 0 : 0;
     
-        // Skip if someone else already sent within 2 minutes
+        // Skip if someone else already sent
         if (now - last < 30000) return;
     
         await setDoc(ref, { lastSent: now });
@@ -988,7 +988,7 @@ function sortActiveTimersSmoothly() {
     // -------------------------
     async function saveTimersToFirestore(){
       try{
-        await setDoc(doc(db, 'timers', 'global'), { timers });
+        await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true });
       }catch(e){
         console.warn('save err', e);
       }
@@ -1028,7 +1028,7 @@ function sortActiveTimersSmoothly() {
       const endTime = timers[bossId]?.endTime; // store before deleting
     
       delete timers[bossId];
-      try { await setDoc(doc(db, 'timers', 'global'), { timers }); } catch(e){ console.warn('Firestore update failed on clear', e); }
+      try { await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true }); } catch(e){ console.warn('Firestore update failed on clear', e); }
       removeTimerElement(bossId);
       renderBossList();
     
@@ -1200,7 +1200,7 @@ function sortActiveTimersSmoothly() {
         node.innerHTML = `
           <div style="min-width:0">
             <div class="timer-name" style="font-weight:700">${boss.name}</div>
-            <div class="timer-spawn small" style="color:var(--muted);font-size:11px">Spawn: ${spawnStr}</div>
+            <div class="timer-spawn small" style="color:var(--muted);font-size:11px">Next Spawn: ${spawnStr}</div>
           </div>
           <div style="text-align:right;min-width:86px">
             <div class="timer-remaining" style="font-weight:800">${formatSec(remainingSec)}</div>
@@ -1246,7 +1246,7 @@ function sortActiveTimersSmoothly() {
         .sort((a,b) => a.endTime - b.endTime);
 
       if(upcoming.length === 0){
-        nextBossNameEl.textContent = 'Next Boss: —';
+        nextBossNameEl.textContent = '—';
         nextTimeEl.textContent = '—';
         return;
       }
@@ -1466,7 +1466,6 @@ function sortActiveTimersSmoothly() {
       catch(e){
         console.warn('Firestore load failed', e);
       }
-      timers = firestoreTimers;
       // normalize and advance expired timers so timers are always future-facing
       const now = Date.now();
       let timersChanged = false;
