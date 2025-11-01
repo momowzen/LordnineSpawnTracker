@@ -586,6 +586,28 @@
   background: linear-gradient(180deg, rgba(0, 240, 255, 0.05), rgba(0, 0, 0, 0.25));
   box-shadow: 0 0 12px rgba(0, 240, 255, 0.08);
 }
+    /* === Boss Card Shake + Red Flash Animation === */
+  @keyframes shakeFlash {
+    0%, 100% {
+      transform: translateX(0);
+      box-shadow: none;
+      border-color: rgba(0, 240, 255, 0.08);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-5px);
+      box-shadow: 0 0 10px rgba(255, 50, 50, 0.6);
+      border-color: rgba(255, 80, 80, 0.5);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(5px);
+      box-shadow: 0 0 10px rgba(255, 50, 50, 0.6);
+      border-color: rgba(255, 80, 80, 0.5);
+    }
+  }
+  
+  .boss.shake {
+    animation: shakeFlash 0.5s ease-in-out;
+  }
 </style>
 </head>
 <body>
@@ -1104,10 +1126,18 @@ function sortActiveTimersSmoothly() {
       if(!id) return;
       if(action === 'clear') {
         await clearTimer(id);
-      } else if(action === 'mark') {
-        // Mark as dead: start timer for boss
-        await startTimer(id);
-      } else if(action === 'set') {
+      } else if (action === 'mark') {
+      // Shake animation on boss card
+      const card = btn.closest('.boss');
+      if (card) {
+        card.classList.add('shake');
+        // Remove the shake class after animation ends
+        card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+      }
+    
+      // Mark as dead: start timer for boss
+      await startTimer(id);
+    } else if(action === 'set') {
         openTimeModal(id);
       }
     });
