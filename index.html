@@ -1498,19 +1498,36 @@ function sortActiveTimersSmoothly() {
 	  deadLocks = data;
 	  const now = Date.now();
 
-	  document.querySelectorAll('.mark-dead-btn').forEach(btn => {
-		const bossId = btn.getAttribute('data-boss-id');
+	  document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
+		const bossId = btn.getAttribute('data-id');
 		const lockedUntil = deadLocks[bossId] || 0;
 
 		if (now < lockedUntil) {
 		  btn.disabled = true;
-		  btn.textContent = `⏳ Locked (${Math.ceil((lockedUntil - now) / 60000)}m left)`;
+		  const remaining = Math.ceil((lockedUntil - now) / 60000);
+		  btn.textContent = `⏳ Locked (${remaining}m left)`;
 		} else {
 		  btn.disabled = false;
-		  btn.textContent = '💀 Mark Dead';
+		  btn.textContent = 'Mark Dead';
 		}
 	  });
 	});
+
+	setInterval(() => {
+	  const now = Date.now();
+	  document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
+		const bossId = btn.getAttribute('data-id');
+		const lockedUntil = deadLocks[bossId] || 0;
+		if (now < lockedUntil) {
+		  btn.disabled = true;
+		  const remaining = Math.ceil((lockedUntil - now) / 60000);
+		  btn.textContent = `⏳ Locked (${remaining}m left)`;
+		} else {
+		  btn.disabled = false;
+		  btn.textContent = 'Mark Dead';
+		}
+	  });
+	}, 60000);
 
     webhookSave.addEventListener('click', async ()=> {
       const url = webhookInput.value.trim();
