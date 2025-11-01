@@ -392,37 +392,80 @@
       overflow-y: auto;
     }
   }
-    .settings-menu {
-      position: absolute;
-      top: 48px;
-      right: 10px;
-      background: #0a141f; /* solid dark background */
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      border-radius: 10px;
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
-      display: flex;
-      flex-direction: column;
-      min-width: 160px;
-      overflow: hidden;
-      z-index: 9999;
-    }
-  .menu-item {
-    background: transparent;
-    color: var(--accent);
-    font-size: 13px;
-    font-weight: 600;
-    border: none;
-    text-align: left;
-    padding: 10px 14px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
+  
+	/* === CYBER-THEMED SETTINGS MENU === */
+	.settings-menu {
+	  position: fixed;
+	  top: 56px;
+	  right: 16px;
+	  background: linear-gradient(180deg, #07121d 0%, #0c1b29 100%);
+	  border: 1px solid rgba(0, 240, 255, 0.25);
+	  border-radius: 12px;
+	  box-shadow:
+		0 0 10px rgba(0, 240, 255, 0.15),
+		0 0 30px rgba(0, 240, 255, 0.08) inset;
+	  display: flex;
+	  flex-direction: column;
+	  min-width: 180px;
+	  overflow: hidden;
+	  z-index: 2147483647;
+	  pointer-events: auto;
+	  transition: box-shadow 0.25s ease, transform 0.25s ease;
+	}
 
-  .menu-item:hover {
-    background: rgba(0, 240, 255, 0.1);
-    color: #fff;
-    text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-  }
+	.settings-menu::before {
+	  content: "";
+	  position: absolute;
+	  inset: 0;
+	  background: radial-gradient(
+		circle at 50% -20%,
+		rgba(0, 240, 255, 0.2),
+		transparent 70%
+	  );
+	  pointer-events: none;
+	  opacity: 0.4;
+	}
+
+	.settings-menu:hover {
+	  box-shadow:
+		0 0 15px rgba(0, 240, 255, 0.25),
+		0 0 45px rgba(0, 240, 255, 0.15) inset;
+	  transform: translateY(-2px);
+	}
+
+	/* === MENU ITEMS === */
+	.menu-item {
+	  position: relative;
+	  background: transparent;
+	  color: #00e0ff;
+	  padding: 10px 16px;
+	  font-size: 13px;
+	  font-weight: 600;
+	  letter-spacing: 0.3px;
+	  cursor: pointer;
+	  border: none;
+	  text-align: left;
+	  transition: all 0.2s ease;
+	}
+
+	.menu-item::before {
+	  content: "";
+	  position: absolute;
+	  inset: 0;
+	  background: linear-gradient(90deg, transparent, rgba(0,240,255,0.05), transparent);
+	  opacity: 0;
+	  transition: opacity 0.25s ease;
+	}
+
+	.menu-item:hover {
+	  color: #ffffff;
+	  background: linear-gradient(90deg, rgba(0,240,255,0.15), rgba(0,180,255,0.05));
+	  text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+	}
+
+	.menu-item:hover::before {
+	  opacity: 1;
+	}
 
   .header-controls {
     position: relative;
@@ -622,6 +665,29 @@
   padding-left: 0px; /* balances the text visually */
   box-sizing: border-box;
 }
+	/* Ensure the settings menu is always above and clickable */
+	.settings-menu {
+	  position: fixed !important;
+	  z-index: 2147483647 !important;
+	  pointer-events: auto !important;
+	  background: #0b1320 !important;
+	  opacity: 1 !important;
+	}
+
+	/* If any overlay or panel is covering it, disable their pointer capture */
+	#timersPanel,
+	#timers,
+	#timersPanel *,
+	#timers * {
+	  pointer-events: none !important;     /* background ignores clicks */
+	}
+
+	#timersPanel .kbtn,
+	#timersPanel button,
+	#timersPanel input,
+	#timersPanel select {
+	  pointer-events: auto !important;     /* keep buttons inside timers usable */
+	}
 
 </style>
 </head>
@@ -1397,8 +1463,10 @@ function sortActiveTimersSmoothly() {
     });
 
     settingsBtn.addEventListener('click', (e)=>{ e.stopPropagation(); settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex'; });
-    document.addEventListener('click', ()=> settingsMenu.style.display = 'none');
+	settingsMenu.addEventListener('click', (e) => e.stopPropagation());
 
+    document.addEventListener('click', ()=> settingsMenu.style.display = 'none');
+	
     discordWebhookBtn.addEventListener('click', async (e)=>{ e.stopPropagation(); settingsMenu.style.display='none'; await loadWebhookFromFirestore(); webhookBackdrop.style.display='flex'; });
     webhookBackdrop.addEventListener('click', (ev)=>{ if(ev.target === webhookBackdrop) webhookBackdrop.style.display='none'; });
 
