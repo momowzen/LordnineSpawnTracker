@@ -1367,7 +1367,7 @@
       await sendDiscordEmbedOnce('killed', boss);
     }
 
-    async function clearTimer(bossId) {
+		async function clearTimer(bossId) {
 			const boss = BOSSES.find(b => b.id === bossId);
 			const ref = doc(db, 'timers', 'global');
 
@@ -1376,31 +1376,30 @@
 				return;
 			}
 
-			// Remove locally first
-			delete timers[bossId];
+			delete timers[bossId]; // remove locally
 
 			try {
-				// ✅ Attempt to delete nested field properly
-				await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
-				console.log(`✅ clearTimer: removed ${bossId} from Firestore via updateDoc.`);
-			} catch (e) {
-				console.warn(`⚠️ updateDoc failed for ${bossId}, retrying with merge setDoc...`, e);
-
-				try {
-					// ✅ Correct fallback that merges nested field deletion
-					await setDoc(ref, { timers: { [bossId]: deleteField() } }, { merge: true });
-					console.log(`✅ clearTimer: fallback setDoc merge used for ${bossId}.`);
-				} catch (err) {
-					console.error('❌ Firestore update failed on clear fallback', err);
-					alert('⚠️ Failed to clear timer in Firestore. Please retry.');
+				// Ensure the document exists first
+				const snap = await getDoc(ref);
+				if (!snap.exists()) {
+					console.warn('⚠️ timers/global did not exist. Creating it first...');
+					await setDoc(ref, { timers: {} }, { merge: true });
 				}
+
+				// ✅ Delete nested key with updateDoc and field path
+				await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
+
+				console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
+			} catch (err) {
+				console.error('❌ Firestore delete failed for', bossId, err);
+				alert('Failed to clear timer in Firestore. Please retry.');
 			}
 
-			// ✅ Update local UI
+			// Update UI
 			removeTimerElement(bossId);
 			renderBossList();
 
-			console.log(`🧹 Cleared timer for ${boss?.name || bossId} (no Discord ping).`);
+			console.log(`🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`);
 		}
 
 		async function resetAll(){
@@ -1980,73 +1979,100 @@
     // -------------------------
     // Init sequence
     // -------------------------
-    async function init(){
-      loadingOverlay.style.display = 'flex';
+    async function init() {
+			loadingOverlay.style.display = 'flex';
 
-      await new Promise(resolve => {
-        if(document.readyState === 'complete' || document.readyState === 'interactive') resolve();
-        else document.addEventListener('DOMContentLoaded', resolve, { once:true });
-      });
+			// ✅ Wait until the DOM is fully loaded
+			await new Promise(resolve => {
+				if (document.readyState === 'complete' || document.readyState === 'interactive') resolve();
+				else document.addEventListener('DOMContentLoaded', resolve, { once: true });
+			});
 
-      bossListEl.innerHTML = '';
-      timersEl.innerHTML = '';
-      nextBossNameEl.textContent = '';
-      nextTimeEl.textContent = '';
+			bossListEl.innerHTML = '';
+			timersEl.innerHTML = '';
+			nextBossNameEl.textContent = '';
+			nextTimeEl.textContent = '';
 
-      try {
+			try {
+				// ✅ Firestore real-time listener
 				const docRef = doc(db, 'timers', 'global');
-				onSnapshot(docRef, (snap) => {
+				onSnapshot(docRef, async (snap) => {
+					// ✅ Auto-create if the timers document doesn’t exist
 					if (!snap.exists()) {
 						console.log('ℹ️ No Firestore timers document found. Creating empty one...');
-						setDoc(docRef, { timers: {} }, { merge: true });
+						await setDoc(docRef, { timers: {} }, { merge: true });
 						return;
 					}
 
+					// ✅ Sync local state with Firestore data
 					const newTimers = snap.data().timers || {};
 					timers = newTimers;
+
 					rebuildTimersPanel();
 					renderBossList();
 					computeNextBoss();
+
 					console.log('🔄 Timers auto-updated from Firestore:', timers);
 				});
 			} catch (e) {
 				console.warn('Firestore load failed', e);
 			}
 
-      // normalize and advance expired timers so timers are always future-facing
-      const now = Date.now();
-      let timersChanged = false;
-      for(const [id,info] of Object.entries(timers)){
-        const boss = BOSSES.find(b => b.id === id);
-        if(!boss || !info || !info.endTime) continue;
-        if(info.endTime <= now){
-          if(boss.weeklyRespawns){
-            const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-            timers[id] = { endTime: next, startedAt: now, weekly:true, notifiedSoon:false, spawnAnnounced:false };
-            timersChanged = true;
-          } else if(boss.respawn){
-            const respMs = boss.respawn * 1000;
-            const cycles = Math.floor((now - info.endTime) / respMs) + 1;
-            const newEnd = info.endTime + cycles * respMs;
-            timers[id] = { endTime: newEnd, startedAt: now, notifiedSoon:false, spawnAnnounced:false };
-            timersChanged = true;
-          }
-        }
-      }
+			// ✅ Normalize expired timers so everything is forward-looking
+			const now = Date.now();
+			let timersChanged = false;
 
-      if(timersChanged) {
-        await saveTimers();
-        console.log('🔁 timers normalized and saved after init.');
-      }
+			for (const [id, info] of Object.entries(timers)) {
+				const boss = BOSSES.find(b => b.id === id);
+				if (!boss || !info || !info.endTime) continue;
 
-      await autoLoadWebhook();
-      firebaseLoaded = true;
-      renderBossList();
-      rebuildTimersPanel();
-      computeNextBoss();
-      loadingOverlay.style.display = 'none';
-      console.log('✅ init completed.');
-    }
+				if (info.endTime <= now) {
+					if (boss.weeklyRespawns) {
+						const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+						timers[id] = {
+							endTime: next,
+							startedAt: now,
+							weekly: true,
+							notifiedSoon: false,
+							spawnAnnounced: false,
+						};
+						timersChanged = true;
+					} else if (boss.respawn) {
+						const respMs = boss.respawn * 1000;
+						const cycles = Math.floor((now - info.endTime) / respMs) + 1;
+						const newEnd = info.endTime + cycles * respMs;
+						timers[id] = {
+							endTime: newEnd,
+							startedAt: now,
+							notifiedSoon: false,
+							spawnAnnounced: false,
+						};
+						timersChanged = true;
+					}
+				}
+			}
+
+			// ✅ Save normalized timers if any changed
+			if (timersChanged) {
+				try {
+					await saveTimers();
+					console.log('🔁 Timers normalized and saved after init.');
+				} catch (err) {
+					console.error('❌ Failed to save normalized timers:', err);
+				}
+			}
+
+			// ✅ Ensure Discord webhook is ready before any future notification
+			await autoLoadWebhook();
+
+			firebaseLoaded = true;
+			renderBossList();
+			rebuildTimersPanel();
+			computeNextBoss();
+			loadingOverlay.style.display = 'none';
+
+			console.log('✅ init completed successfully.');
+		}
 
     window.addEventListener('load', ()=> init());
   </script>
