@@ -942,7 +942,7 @@ function sortActiveTimersSmoothly() {
             `Next respawn: ${formatShortDateTime(timers[boss.id].endTime)}`,
             0xff3333);
         } else if (type === 'soon') {
-          embed = buildEmbed(`⚠️ ${boss.name} will spawn in 5 minutes!`,
+          embed = buildEmbed(`⚠️ ${boss.name} will respawn in 5 minutes!`,
             `Prepare for battle!`,
             0xffcc00);
         } else if (type === 'spawn') {
