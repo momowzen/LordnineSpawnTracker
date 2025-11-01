@@ -933,7 +933,7 @@ function sortActiveTimersSmoothly() {
         const last = snap.exists() ? snap.data().lastSent || 0 : 0;
     
         // Skip if someone else already sent within 2 minutes
-        if (now - last < 120000) return;
+        if (now - last < 30000) return;
     
         await setDoc(ref, { lastSent: now });
         let embed;
