@@ -1025,73 +1025,80 @@
       return soonest ? soonest.getTime() : now.getTime();
     }
 
-		// ✅ 1. Import Firebase core and services
+		// ✅ Import Firebase core and services
 		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-		import { 
-			getFirestore, 
-			doc, 
-			setDoc, 
-			getDoc, 
-			onSnapshot,   // 👈 Added this for real-time Firestore updates
-			collection, 
-			query 
+		import {
+			getFirestore,
+			doc,
+			setDoc,
+			getDoc,
+			updateDoc,
+			deleteDoc,
+			deleteField,
+			runTransaction,
+			onSnapshot,
 		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 		import {
-			getDatabase, 
-			ref, 
-			onDisconnect, 
-			onValue, 
-			set, 
-			push, 
-			serverTimestamp
+			getDatabase,
+			ref,
+			onDisconnect,
+			onValue,
+			set,
+			push,
+			serverTimestamp,
 		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-		// ✅ 2. Initialize Firebase app
+		// ✅ Initialize Firebase app
 		const firebaseConfig = {
 			apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
 			authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
 			projectId: "lordnine-timer-9f21e",
-			storageBucket: "lordnine-timer-9f21e.appspot.com",
+			storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
 			messagingSenderId: "644000692891",
 			appId: "1:644000692891:web:224bca1478655a43c0243e",
-			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app"
+			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
 		};
 
-		// ✅ 3. Initialize Firestore + Realtime Database
 		const app = initializeApp(firebaseConfig);
 		const db = getFirestore(app);
 		const rtdb = getDatabase(app);
-
-		// --- Online Users Tracker ---
-		const presenceRef = ref(rtdb, 'presence');
-		const myConnection = push(presenceRef);
-
-		// Mark user as connected
-		set(myConnection, {
-			connected: true,
-			timestamp: serverTimestamp()
-		});
-
-		// Remove user when disconnected
-		onDisconnect(myConnection).remove();
-
-		// Listen for and update online user count
-		onValue(presenceRef, (snapshot) => {
-			const count = snapshot.size || snapshot.numChildren();
-			const display = document.getElementById('onlineCount');
-			if (display) display.textContent = count;
-		});
 		
-		const refreshRef = doc(db, 'meta', 'refreshControl');
-    const deadLockRef = doc(db, 'meta', 'deadLocks');
+		// ✅ Online presence tracking
+		const presenceRef = ref(rtdb, "presence");
+		const myConnection = push(presenceRef);
+		set(myConnection, { connected: true, timestamp: serverTimestamp() });
+		onDisconnect(myConnection).remove();
+		onValue(presenceRef, (snap) => {
+			const count = snap.size || snap.numChildren();
+			let el = document.getElementById("onlineCount");
+			if (!el) {
+				el = document.createElement("div");
+				el.id = "onlineCount";
+				el.className = "online-users";
+				document.body.appendChild(el);
+			}
+			el.textContent = `🟢 Online: ${count}`;
+		});
+		const refreshRef = ref(rtdb, 'refresh');
+		onValue(refreshRef, (snapshot) => {
+			const val = snapshot.val();
+			if (val && val.trigger === true) {
+				console.log('🔁 Refresh trigger detected from RTDB.');
+				// Add logic if you want to reload timers, e.g.:
+				if (typeof loadAllTimers === 'function') loadAllTimers();
+			}
+		});
 
-    async function safeWrite(ref, payload) {
-      try {
-        await updateDoc(ref, payload);
-      } catch (e) {
-        await setDoc(ref, payload, { merge: true });
-      }
-    }
+		// ✅ Safe Firestore write helper — ensures reliable merges
+		async function safeWrite(ref, payload) {
+			try {
+				await updateDoc(ref, payload);
+			} catch (err) {
+				console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
+				await setDoc(ref, payload, { merge: true });
+			}
+		}
 
     // --- Load Discord webhook on startup (Firestore version) ---
     async function autoLoadWebhook() {
@@ -1361,29 +1368,40 @@
     }
 
     async function clearTimer(bossId) {
-      if (!timers[bossId]) return;
-      const boss = BOSSES.find(b => b.id === bossId);
-      const ref = doc(db, 'timers', 'global');
+			const boss = BOSSES.find(b => b.id === bossId);
+			const ref = doc(db, 'timers', 'global');
 
-      delete timers[bossId];
+			if (!timers[bossId]) {
+				console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
+				return;
+			}
 
-      try {
-        await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
-        console.log(`✅ clearTimer: removed ${bossId} from Firestore via updateDoc.`);
-      } catch (e) {
-        try {
-          await setDoc(ref, { timers }, { merge: true });
-          console.log(`✅ clearTimer: fallback setDoc used for ${bossId}.`);
-        } catch (err) {
-          console.warn('Firestore update failed on clear fallback', err);
-        }
-      }
+			// Remove locally first
+			delete timers[bossId];
 
-      removeTimerElement(bossId);
-      renderBossList();
+			try {
+				// ✅ Attempt to delete nested field properly
+				await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
+				console.log(`✅ clearTimer: removed ${bossId} from Firestore via updateDoc.`);
+			} catch (e) {
+				console.warn(`⚠️ updateDoc failed for ${bossId}, retrying with merge setDoc...`, e);
 
-      console.log(`🧹 Cleared timer for ${boss?.name || bossId} (no Discord ping).`);
-    }
+				try {
+					// ✅ Correct fallback that merges nested field deletion
+					await setDoc(ref, { timers: { [bossId]: deleteField() } }, { merge: true });
+					console.log(`✅ clearTimer: fallback setDoc merge used for ${bossId}.`);
+				} catch (err) {
+					console.error('❌ Firestore update failed on clear fallback', err);
+					alert('⚠️ Failed to clear timer in Firestore. Please retry.');
+				}
+			}
+
+			// ✅ Update local UI
+			removeTimerElement(bossId);
+			renderBossList();
+
+			console.log(`🧹 Cleared timer for ${boss?.name || bossId} (no Discord ping).`);
+		}
 
 		async function resetAll(){
 				if(!confirm('Clear all non-weekly timers?')) return;
@@ -1425,58 +1443,73 @@
 
     cancelTimeBtn.addEventListener('click', closeTimeModal);
 
-    saveTimeBtn.addEventListener('click', async ()=>{
-	  const input = killTimeInput.value;
-	  if(!input || !currentBossForTime) return;
-	
-	  const parsed = new Date(input);
-	  if (isNaN(parsed)) {
-	    alert('Invalid date');
-	    return;
-	  }
-	
-	  const killedAt = parsed.getTime();
-	  const boss = currentBossForTime;
-	  let endTime;
-	
-	  if (boss.weeklyRespawns) {
-	    endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
-	    while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
-	    timers[boss.id] = {
-	      endTime,
-	      startedAt: killedAt,
-	      weekly: true,
-	      notifiedSoon: false,
-	      spawnAnnounced: false
-	    };
-	  } else {
-	    endTime = killedAt + boss.respawn * 1000;
-	    timers[boss.id] = {
-	      endTime,
-	      startedAt: killedAt,
-	      notifiedSoon: false,
-	      spawnAnnounced: false
-	    };
-	  }
-	
-	  try {
-	    // ✅ ensure Firestore has correct nested structure
-	    const ref = doc(db, 'timers', 'global');
-	    await setDoc(ref, { [`timers.${boss.id}`]: timers[boss.id] }, { merge: true });
-	
-	    // ✅ refresh UI
-	    closeTimeModal();
-	    addOrUpdateTimerElement(boss.id);
-	    renderBossList();
-	
-	    console.log(`✍️ manual set recorded for ${boss.name} at ${parsed.toLocaleString()}`);
-	    await sendDiscordEmbedOnce('manual', boss);
-	    alert(`✅ Manual time saved for ${boss.name}`);
-	  } catch (err) {
-	    console.error('❌ Failed to record manual time:', err);
-	    alert('❌ Failed to record manual time to Firestore.');
-	  }
-	});
+		saveTimeBtn.addEventListener('click', async () => {
+			const input = killTimeInput.value;
+			if (!input || !currentBossForTime) return;
+
+			const parsed = new Date(input);
+			if (isNaN(parsed)) {
+				alert('Invalid date format.');
+				return;
+			}
+
+			const killedAt = parsed.getTime();
+			const boss = currentBossForTime;
+			let endTime;
+
+			// ✅ Calculate respawn
+			if (boss.weeklyRespawns) {
+				endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
+				while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
+				timers[boss.id] = {
+					endTime,
+					startedAt: killedAt,
+					weekly: true,
+					notifiedSoon: false,
+					spawnAnnounced: false,
+				};
+			} else {
+				endTime = killedAt + boss.respawn * 1000;
+				timers[boss.id] = {
+					endTime,
+					startedAt: killedAt,
+					notifiedSoon: false,
+					spawnAnnounced: false,
+				};
+			}
+
+			try {
+				// ✅ Ensure webhook is loaded before use
+				if (!cachedWebhookUrl) await autoLoadWebhook();
+
+				const ref = doc(db, 'timers', 'global');
+
+				// ✅ Correct Firestore structure
+				await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
+
+				console.log(`✅ Firestore updated: ${boss.name} manual time saved.`);
+
+				// ✅ Update local UI
+				closeTimeModal();
+				addOrUpdateTimerElement(boss.id);
+				renderBossList();
+
+				// ✅ Send Discord notification (manual entry always sends)
+				const formattedTime = formatShortDateTime(endTime);
+				const embed = buildEmbed(
+					`⏰ ${boss.name} manual time set`,
+					`Next respawn: ${formattedTime}`,
+					0x3399ff
+				);
+				await sendDiscordEmbed(embed);
+
+				console.log(`📡 Discord notification sent for ${boss.name}.`);
+				alert(`✅ Manual time saved and synced for ${boss.name}.`);
+			} catch (err) {
+				console.error('❌ Failed to record manual time:', err);
+				alert('❌ Failed to record manual time to Firestore. Check console for details.');
+			}
+		});
 
     // -------------------------
     // Render functions
@@ -1888,33 +1921,35 @@
 	  }
 	});
 
-    // --- Firestore listener: Auto-refresh when a sync is triggered ---
-    let hasInitialized = false;
-    onSnapshot(refreshRef, (snapshot) => {
-      const data = snapshot.data();
-      if (!data) return;
-      const lastTrigger = data.forceRefresh;
-      const lastTriggerMs = lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
-      if (!hasInitialized) { hasInitialized = true; return; }
-      if (lastTriggerMs === lastTriggeredBySelf) return;
-      console.log('🔄 refreshRef triggered by remote, reloading page.');
-      location.reload();
-    });
+		// --- Firestore listener: Auto-refresh when a sync is triggered ---
+		let hasInitialized = false;
+		const refreshDocRef = doc(db, 'meta', 'refresh');
+		onSnapshot(refreshDocRef, (snapshot) => {
+			const data = snapshot.data();
+			if (!data) return;
+			const lastTrigger = data.forceRefresh;
+			const lastTriggerMs = lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
+			if (!hasInitialized) { hasInitialized = true; return; }
+			if (lastTriggerMs === lastTriggeredBySelf) return;
+			console.log('🔄 Firestore refresh triggered, reloading page.');
+			location.reload();
+		});
 
-    // Listen for changes to cooldown locks in Firebase
-    onSnapshot(deadLockRef, (snapshot) => {
-      const data = snapshot.data() || {};
-      deadLocks = data;
-      const now = Date.now();
+		// ✅ Firestore document for lock management
+		const deadLockRef = doc(db, 'meta', 'deadLocks');
+		onSnapshot(deadLockRef, (snapshot) => {
+			const data = snapshot.data() || {};
+			deadLocks = data;
+			const now = Date.now();
 
-      document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
-        const bossId = btn.getAttribute('data-id');
-        const lockedUntil = deadLocks[bossId] || 0;
-        btn.disabled = now < lockedUntil;
-      });
+			document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
+				const bossId = btn.getAttribute('data-id');
+				const lockedUntil = deadLocks[bossId] || 0;
+				btn.disabled = now < lockedUntil;
+			});
 
-      console.log('🔔 deadLocks updated from Firestore:', deadLocks);
-    });
+			console.log('🔔 deadLocks updated from Firestore:', deadLocks);
+		});
 
     // Periodically re-check (every 10s)
     setInterval(() => {
@@ -1958,23 +1993,25 @@
       nextBossNameEl.textContent = '';
       nextTimeEl.textContent = '';
 
-      try{
-        const docRef = doc(db, 'timers', 'global');
-        onSnapshot(docRef, (snap) => {
-          if (snap.exists()) {
-            const newTimers = snap.data().timers || {};
-            timers = newTimers;
-            rebuildTimersPanel();
-            renderBossList();
-            computeNextBoss();
-            console.log('🔄 Timers auto-updated from Firestore:', timers);
-          } else {
-            console.log('ℹ️ No Firestore timers document found.');
-          }
-        });
-      } catch(e){
-        console.warn('Firestore load failed', e);
-      }
+      try {
+				const docRef = doc(db, 'timers', 'global');
+				onSnapshot(docRef, (snap) => {
+					if (!snap.exists()) {
+						console.log('ℹ️ No Firestore timers document found. Creating empty one...');
+						setDoc(docRef, { timers: {} }, { merge: true });
+						return;
+					}
+
+					const newTimers = snap.data().timers || {};
+					timers = newTimers;
+					rebuildTimersPanel();
+					renderBossList();
+					computeNextBoss();
+					console.log('🔄 Timers auto-updated from Firestore:', timers);
+				});
+			} catch (e) {
+				console.warn('Firestore load failed', e);
+			}
 
       // normalize and advance expired timers so timers are always future-facing
       const now = Date.now();
