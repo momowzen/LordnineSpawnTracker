@@ -458,34 +458,182 @@
 			inset 0 0 6px rgba(0, 240, 255, 0.05);
 	}
 
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    background: rgba(0, 0, 0, 0.6);
-  }
+	/* --- Compact Cyber Modal (Webhook window) --- */
+	.modal-backdrop {
+		position: fixed;
+		inset: 0;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		z-index: 2000;
+		background: rgba(0, 10, 20, 0.75);
+		backdrop-filter: blur(10px);
+		animation: cyberFadeIn 0.3s ease forwards;
+	}
 
-  .modal {
-    background: #0b1320;
-    padding: 16px;
-    border-radius: 10px;
-    max-width: 420px;
-    width: 92%;
-    color: #dff7ff;
-    text-align: left;
-    border: 1px solid rgba(0, 240, 255, 0.12);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(6px);
-  }
+	@keyframes cyberFadeIn {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
 
-  .modal h3 {
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    color: var(--accent);
-  }
+	.modal {
+		background: linear-gradient(180deg, rgba(5, 15, 25, 0.96), rgba(0, 10, 20, 0.9));
+		border: 1px solid rgba(0, 240, 255, 0.25);
+		border-radius: 12px;
+		box-shadow:
+			0 0 20px rgba(0, 240, 255, 0.15),
+			inset 0 0 12px rgba(0, 240, 255, 0.05);
+		padding: 22px 20px;
+		width: 340px;
+		max-width: 90%;
+		color: var(--text);
+		text-align: center;
+		transform: translateY(30px) scale(0.96);
+		opacity: 0;
+		animation: cyberModalIn 0.4s ease-out forwards;
+		backdrop-filter: blur(12px);
+	}
+
+	@keyframes cyberModalIn {
+		0% {
+			opacity: 0;
+			transform: translateY(30px) scale(0.96);
+			box-shadow: none;
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+
+	.modal h3 {
+		margin: 0 0 10px 0;
+		font-size: 16px;
+		color: var(--accent);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		text-shadow:
+			0 0 8px rgba(0, 240, 255, 0.7),
+			0 0 14px rgba(0, 240, 255, 0.4);
+	}
+	
+	/* --- Cyber-styled Webhook Input --- */
+	#webhookInput {
+		width: 100%;
+		margin: 16px 0 18px 0;
+		padding: 10px 12px;
+		background: rgba(0, 240, 255, 0.05);
+		border: 1px solid rgba(0, 240, 255, 0.25);
+		border-radius: 8px;
+		color: var(--accent);
+		font-family: Consolas, monospace;
+		font-size: 12px;
+		text-align: center;
+		outline: none;
+		transition: all 0.3s ease;
+		box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.08);
+	}
+
+	#webhookInput::placeholder {
+		color: rgba(125, 211, 252, 0.35);
+		font-style: italic;
+	}
+
+	#webhookInput:focus {
+		border-color: rgba(0, 240, 255, 0.6);
+		box-shadow:
+			0 0 14px rgba(0, 240, 255, 0.4),
+			inset 0 0 8px rgba(0, 240, 255, 0.25);
+		background: rgba(0, 240, 255, 0.08);
+		color: #fff;
+		animation: inputPulse 2.2s ease-in-out infinite;
+	}
+
+	@keyframes inputPulse {
+		0%, 100% {
+			box-shadow:
+				0 0 10px rgba(0, 240, 255, 0.4),
+				inset 0 0 6px rgba(0, 240, 255, 0.2);
+		}
+		50% {
+			box-shadow:
+				0 0 20px rgba(0, 240, 255, 0.8),
+				inset 0 0 10px rgba(0, 240, 255, 0.35);
+		}
+	}
+
+	/* --- Webhook Modal Buttons (SAVE, TEST, CLEAR) --- */
+	#webhookModalBackdrop .actions {
+		display: flex;
+		justify-content: center;
+		gap: 10px;
+		margin-top: 8px;
+	}
+
+	#webhookSave,
+	#webhookTest,
+	#webhookClear {
+		flex: 1;
+		background: rgba(0, 240, 255, 0.08);
+		border: 1px solid rgba(0, 240, 255, 0.3);
+		color: var(--accent);
+		font-weight: 700;
+		font-size: 12px;
+		padding: 8px 10px;
+		border-radius: 8px;
+		cursor: pointer;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		transition: all 0.25s ease;
+		box-shadow: 0 0 6px rgba(0, 240, 255, 0.15);
+		backdrop-filter: blur(4px);
+	}
+
+	/* --- SAVE button: bright cyan accent --- */
+	#webhookSave:hover {
+		background: linear-gradient(90deg, rgba(0, 240, 255, 0.18), rgba(125, 211, 252, 0.18));
+		color: #fff;
+		box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+		transform: translateY(-1px);
+	}
+
+	#webhookSave:active {
+		transform: scale(0.96);
+		box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+	}
+
+	/* --- TEST button: purple accent --- */
+	#webhookTest {
+		border-color: rgba(180, 100, 255, 0.3);
+		color: #bfaeff;
+		background: rgba(150, 80, 255, 0.08);
+		box-shadow: 0 0 6px rgba(180, 100, 255, 0.15);
+	}
+
+	#webhookTest:hover {
+		background: linear-gradient(90deg, rgba(150, 80, 255, 0.25), rgba(0, 240, 255, 0.2));
+		color: #fff;
+		box-shadow: 0 0 14px rgba(180, 100, 255, 0.45);
+	}
+
+	/* --- CLEAR button: danger red accent --- */
+	#webhookClear {
+		border-color: rgba(255, 80, 80, 0.4);
+		color: #ff8080;
+		background: rgba(255, 60, 60, 0.05);
+		box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
+	}
+
+	#webhookClear:hover {
+		background: rgba(255, 60, 60, 0.15);
+		box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
+		color: #fff;
+	}
+
+	#webhookClear:active {
+		transform: scale(0.96);
+		box-shadow: 0 0 8px rgba(255, 80, 80, 0.3);
+	}
 
   .small {
     font-size: 12px;
@@ -695,15 +843,26 @@
     </div>
   </div>
 
-  <!-- Webhook modal -->
-  <div id="webhookModalBackdrop" class="modal-backdrop">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="webhookTitle">
-      <h3 id="webhookTitle">Discord Webhook</h3>
-      <div style="margin-bottom:8px" class="small">Paste your Discord webhook URL below.</div>
-      <div class="row" style="margin-top:6px;"><input id="webhookInput" type="text" placeholder="Paste your Discord webhook URL..." /></div>
-      <div class="actions"><button id="webhookSave" class="kbtn">SAVE</button><button id="webhookTest" class="kbtn">TEST</button><button id="webhookClear" class="kbtn">CLEAR</button></div>
-    </div>
-  </div>
+	<!-- Webhook modal — compact cyber panel -->
+	<div id="webhookModalBackdrop" class="modal-backdrop">
+		<div class="modal cyber-modal" role="dialog" aria-modal="true" aria-labelledby="webhookTitle">
+			<h3 id="webhookTitle">💬 Discord Webhook</h3>
+			<div class="small">Paste your Discord webhook URL below.</div>
+
+			<input
+				id="webhookInput"
+				type="text"
+				placeholder="Paste your Discord Webhook URL here."
+				class="webhook-input"
+			/>
+
+			<div class="modal-actions">
+				<button id="webhookSave" class="cyber-btn">SAVE</button>
+				<button id="webhookTest" class="cyber-btn">TEST</button>
+				<button id="webhookClear" class="cyber-btn danger">CLEAR</button>
+			</div>
+		</div>
+	</div>
 
   <div id="loadingOverlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);background:radial-gradient(circle at center, rgba(0,10,20,0.95) 0%, rgba(0,0,0,0.98) 100%);"><div class="loader-text">Loading...</div></div>
 
