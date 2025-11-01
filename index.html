@@ -773,6 +773,37 @@
 		scrollbar-width: thin;
 		scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
 	}
+	
+		/* --- Online Users Indicator --- */
+	.online-users {
+		position: fixed;
+		bottom: 14px;
+		right: 16px;
+		padding: 6px 10px;
+		font-family: Consolas, monospace;
+		font-size: 12px;
+		color: var(--accent);
+		background: rgba(0, 240, 255, 0.06);
+		border: 1px solid rgba(0, 240, 255, 0.2);
+		border-radius: 8px;
+		backdrop-filter: blur(8px);
+		box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+		text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+		transition: opacity 0.3s ease, transform 0.3s ease;
+		animation: fadeInUsers 0.5s ease-out;
+		z-index: 3000;
+	}
+
+	@keyframes fadeInUsers {
+		from { opacity: 0; transform: translateY(10px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	.online-users:hover {
+		box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+		transform: translateY(-1px);
+	}
+
 </style>
 </head>
 <body>
@@ -994,24 +1025,64 @@
       return soonest ? soonest.getTime() : now.getTime();
     }
 
-    // -------------------------
-    // Firestore imports & init
-    // -------------------------
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
-    import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot, updateDoc, runTransaction, deleteField, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
+		// ✅ 1. Import Firebase core and services
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+		import { 
+			getFirestore, 
+			doc, 
+			setDoc, 
+			getDoc, 
+			onSnapshot,   // 👈 Added this for real-time Firestore updates
+			collection, 
+			query 
+		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+		import {
+			getDatabase, 
+			ref, 
+			onDisconnect, 
+			onValue, 
+			set, 
+			push, 
+			serverTimestamp
+		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-      authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-      projectId: "lordnine-timer-9f21e",
-      storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-      messagingSenderId: "644000692891",
-      appId: "1:644000692891:web:224bca1478655a43c0243e"
-    };
+		// ✅ 2. Initialize Firebase app
+		const firebaseConfig = {
+			apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
+			authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+			projectId: "lordnine-timer-9f21e",
+			storageBucket: "lordnine-timer-9f21e.appspot.com",
+			messagingSenderId: "644000692891",
+			appId: "1:644000692891:web:224bca1478655a43c0243e",
+			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app"
+		};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const refreshRef = doc(db, 'meta', 'refreshControl');
+		// ✅ 3. Initialize Firestore + Realtime Database
+		const app = initializeApp(firebaseConfig);
+		const db = getFirestore(app);
+		const rtdb = getDatabase(app);
+
+		// --- Online Users Tracker ---
+		const presenceRef = ref(rtdb, 'presence');
+		const myConnection = push(presenceRef);
+
+		// Mark user as connected
+		set(myConnection, {
+			connected: true,
+			timestamp: serverTimestamp()
+		});
+
+		// Remove user when disconnected
+		onDisconnect(myConnection).remove();
+
+		// Listen for and update online user count
+		onValue(presenceRef, (snapshot) => {
+			const count = snapshot.size || snapshot.numChildren();
+			const display = document.getElementById('onlineCount');
+			if (display) display.textContent = count;
+		});
+		
+		const refreshRef = doc(db, 'meta', 'refreshControl');
     const deadLockRef = doc(db, 'meta', 'deadLocks');
 
     async function safeWrite(ref, payload) {
@@ -1914,9 +1985,9 @@
     }
 
     window.addEventListener('load', ()=> init());
-	setInterval(() => {
-    location.reload();
-    }, 600000);
   </script>
+	<div id="onlineUsers" class="online-users">
+  👥 <span id="onlineCount">0</span> Lords online
+	</div>
 </body>
 </html>
