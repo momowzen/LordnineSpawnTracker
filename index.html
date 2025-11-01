@@ -960,16 +960,12 @@ function sortActiveTimersSmoothly() {
     }
 
     async function saveTimers(){
-      try{
+    try {
         await saveTimersToFirestore();
-      }catch(e){
+      } catch(e) {
         console.warn('save to firestore err', e);
       }
-      try{
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(timers));
-      }catch(e){}
     }
-
     // -------------------------
     // Actions: start / clear / reset
     // -------------------------
@@ -1004,7 +1000,7 @@ function sortActiveTimersSmoothly() {
     
       delete timers[bossId];
       try { await setDoc(doc(db, 'timers', 'global'), { timers }); } catch(e){ console.warn('Firestore update failed on clear', e); }
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(timers)); } catch(e){}
+      catch(e){}
       removeTimerElement(bossId);
       renderBossList();
     
@@ -1446,17 +1442,7 @@ function sortActiveTimersSmoothly() {
       }catch(e){
         console.warn('Firestore load failed', e);
       }
-
-      let localTimers = {};
-      try{
-        localTimers = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      }catch(e){
-        console.warn('localStorage load error', e);
-      }
-
-      // merge: prefer Firestore (server) values when present to avoid accidental overwrites
-      timers = { ...localTimers, ...firestoreTimers };
-
+      timers = firestoreTimers;
       // normalize and advance expired timers so timers are always future-facing
       const now = Date.now();
       let timersChanged = false;
