@@ -689,6 +689,12 @@
 	  pointer-events: auto !important;     /* keep buttons inside timers usable */
 	}
 
+	.kbtn[disabled] {
+	  opacity: 0.5;
+	  filter: grayscale(60%);
+	  cursor: not-allowed;
+	}
+	
 </style>
 </head>
 <body>
@@ -1236,9 +1242,9 @@ function sortActiveTimersSmoothly() {
 		await clearTimer(id);
 
 	  } else if (action === 'mark') {
-		// 🔒 5-minute global Firestore lock for this boss
+		// 🔒 2-minute global Firestore lock for this boss
 		const now = Date.now();
-		const lockDuration = 5 * 60 * 1000; // 5 minutes
+		const lockDuration = 2 * 60 * 1000; // 2 minutes
 		const lockUntil = now + lockDuration;
 
 		try {
@@ -1560,7 +1566,7 @@ function sortActiveTimersSmoothly() {
 	  location.reload();
 	});
 	
-	// --- Firestore listener: track "Mark Dead" button cooldowns ---
+	// Listen for changes to cooldown locks in Firebase
 	onSnapshot(deadLockRef, (snapshot) => {
 	  const data = snapshot.data() || {};
 	  deadLocks = data;
@@ -1570,32 +1576,20 @@ function sortActiveTimersSmoothly() {
 		const bossId = btn.getAttribute('data-id');
 		const lockedUntil = deadLocks[bossId] || 0;
 
-		if (now < lockedUntil) {
-		  btn.disabled = true;
-		  const remaining = Math.ceil((lockedUntil - now) / 60000);
-		  btn.textContent = `⏳ Locked (${remaining}m left)`;
-		} else {
-		  btn.disabled = false;
-		  btn.textContent = 'Mark Dead';
-		}
+		// Disable during cooldown period
+		btn.disabled = now < lockedUntil;
 	  });
 	});
 
+	// Periodically re-check (every 10s instead of 60s for smoother recovery)
 	setInterval(() => {
 	  const now = Date.now();
 	  document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
 		const bossId = btn.getAttribute('data-id');
 		const lockedUntil = deadLocks[bossId] || 0;
-		if (now < lockedUntil) {
-		  btn.disabled = true;
-		  const remaining = Math.ceil((lockedUntil - now) / 60000);
-		  btn.textContent = `⏳ Locked (${remaining}m left)`;
-		} else {
-		  btn.disabled = false;
-		  btn.textContent = 'Mark Dead';
-		}
+		btn.disabled = now < lockedUntil;
 	  });
-	}, 60000);
+	}, 10000);
 
     webhookSave.addEventListener('click', async ()=> {
       const url = webhookInput.value.trim();
