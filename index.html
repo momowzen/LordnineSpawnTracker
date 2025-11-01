@@ -1426,30 +1426,57 @@
     cancelTimeBtn.addEventListener('click', closeTimeModal);
 
     saveTimeBtn.addEventListener('click', async ()=>{
-      const input = killTimeInput.value;
-      if(!input || !currentBossForTime) return;
-      const parsed = new Date(input);
-      if(isNaN(parsed)) { alert('Invalid date'); return; }
-      const killedAt = parsed.getTime();
-      const boss = currentBossForTime;
-      let endTime;
-      if(boss.weeklyRespawns){
-        endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt+1);
-        while(endTime <= killedAt) endTime += 7*24*60*60*1000;
-        timers[boss.id] = { endTime, startedAt: killedAt, weekly:true, notifiedSoon:false, spawnAnnounced:false };
-      } else {
-        endTime = killedAt + boss.respawn*1000;
-        timers[boss.id] = { endTime, startedAt: killedAt, notifiedSoon:false, spawnAnnounced:false };
-      }
-
-      await saveTimerToFirestoreOnce(boss.id);
-      closeTimeModal();
-      addOrUpdateTimerElement(boss.id);
-      renderBossList();
-
-      console.log(`✍️ manual set: ${boss.name} -> ${new Date(timers[boss.id].endTime).toISOString()}`);
-      await sendDiscordEmbedOnce('manual', boss);
-    });
+	  const input = killTimeInput.value;
+	  if(!input || !currentBossForTime) return;
+	
+	  const parsed = new Date(input);
+	  if (isNaN(parsed)) {
+	    alert('Invalid date');
+	    return;
+	  }
+	
+	  const killedAt = parsed.getTime();
+	  const boss = currentBossForTime;
+	  let endTime;
+	
+	  if (boss.weeklyRespawns) {
+	    endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
+	    while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
+	    timers[boss.id] = {
+	      endTime,
+	      startedAt: killedAt,
+	      weekly: true,
+	      notifiedSoon: false,
+	      spawnAnnounced: false
+	    };
+	  } else {
+	    endTime = killedAt + boss.respawn * 1000;
+	    timers[boss.id] = {
+	      endTime,
+	      startedAt: killedAt,
+	      notifiedSoon: false,
+	      spawnAnnounced: false
+	    };
+	  }
+	
+	  try {
+	    // ✅ ensure Firestore has correct nested structure
+	    const ref = doc(db, 'timers', 'global');
+	    await setDoc(ref, { [`timers.${boss.id}`]: timers[boss.id] }, { merge: true });
+	
+	    // ✅ refresh UI
+	    closeTimeModal();
+	    addOrUpdateTimerElement(boss.id);
+	    renderBossList();
+	
+	    console.log(`✍️ manual set recorded for ${boss.name} at ${parsed.toLocaleString()}`);
+	    await sendDiscordEmbedOnce('manual', boss);
+	    alert(`✅ Manual time saved for ${boss.name}`);
+	  } catch (err) {
+	    console.error('❌ Failed to record manual time:', err);
+	    alert('❌ Failed to record manual time to Firestore.');
+	  }
+	});
 
     // -------------------------
     // Render functions
