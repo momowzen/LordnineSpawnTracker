@@ -1000,7 +1000,6 @@ function sortActiveTimersSmoothly() {
     
       delete timers[bossId];
       try { await setDoc(doc(db, 'timers', 'global'), { timers }); } catch(e){ console.warn('Firestore update failed on clear', e); }
-      catch(e){}
       removeTimerElement(bossId);
       renderBossList();
     
