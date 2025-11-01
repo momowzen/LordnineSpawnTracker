@@ -655,6 +655,7 @@
           <button id="exportBtn" class="menu-item">📤 Export JSON</button>
           <button id="importBtn" class="menu-item">📥 Import JSON</button>
           <button id="resetBtn" class="menu-item">🗑️ Reset All</button>
+		  <button id="syncBtn" class="menu-item">🔄 Sync</button>
           <button id="discordWebhookBtn" class="menu-item">💬 Discord Webhook</button>
         </div>
       </div>
@@ -1158,28 +1159,50 @@ function sortActiveTimersSmoothly() {
     
     // Delegated click handler for boss list (reliable and avoids duplicate listeners)
     bossListEl.addEventListener('click', async (e) => {
-      const btn = e.target.closest('.kbtn');
-      if(!btn) return;
-      const action = btn.getAttribute('data-action');
-      const id = btn.getAttribute('data-id');
-      if(!id) return;
-      if(action === 'clear') {
-        await clearTimer(id);
-      } else if (action === 'mark') {
-      // Shake animation on boss card
-      const card = btn.closest('.boss');
-      if (card) {
-        card.classList.add('shake');
-        // Remove the shake class after animation ends
-        card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
-      }
-    
-      // Mark as dead: start timer for boss
-      await startTimer(id);
-    } else if(action === 'set') {
-        openTimeModal(id);
-      }
-    });
+	  const btn = e.target.closest('.kbtn');
+	  if (!btn) return;
+
+	  const action = btn.getAttribute('data-action');
+	  const id = btn.getAttribute('data-id');
+	  if (!id) return;
+
+	  if (action === 'clear') {
+		await clearTimer(id);
+
+	  } else if (action === 'mark') {
+		// 🔒 5-minute global Firestore lock for this boss
+		const now = Date.now();
+		const lockDuration = 5 * 60 * 1000; // 5 minutes
+		const lockUntil = now + lockDuration;
+
+		try {
+		  // disable this button immediately for feedback
+		  btn.disabled = true;
+		  btn.textContent = '⏳ Locked (5m left)';
+
+		  // update Firestore so everyone sees this lock
+		  const newLocks = { ...deadLocks, [id]: lockUntil };
+		  await setDoc(deadLockRef, newLocks);
+		  console.log(`🔒 Boss ${id} locked for 5 minutes`);
+		} catch (err) {
+		  console.error('⚠️ Failed to update Firestore lock:', err);
+		}
+
+		// ✨ existing shake animation
+		const card = btn.closest('.boss');
+		if (card) {
+		  card.classList.add('shake');
+		  card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+		}
+
+		// 💀 existing Mark-Dead logic: start timer for boss
+		await startTimer(id);
+
+	  } else if (action === 'set') {
+		openTimeModal(id);
+	  }
+	});
+
     function formatShortDateTime(ms) {
       const d = new Date(ms);
       const opts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
@@ -1425,6 +1448,69 @@ function sortActiveTimersSmoothly() {
     });
 
     resetBtn.addEventListener('click', ()=> { if(confirm('Are you sure you want to reset all timers?')) resetAll(); });
+	
+	// --- Synchronize Button (Global Page Refresh) ---
+	const syncBtn = document.getElementById('syncBtn');
+	const refreshRef = doc(db, 'meta', 'refreshControl');
+	const deadLockRef = doc(db, "meta", "deadLocks");
+	let deadLocks = {}; // in-memory map of boss cooldowns
+	let lastTriggeredBySelf = null; // in-memory flag
+
+	// Trigger Firestore signal when admin clicks Synchronize
+	syncBtn.addEventListener('click', async () => {
+	  if (confirm('Synchronize all clients? This will reload every user\'s page.')) {
+		const now = Date.now();
+		lastTriggeredBySelf = now; // mark our own write
+		await setDoc(refreshRef, { forceRefresh: now });
+		alert('✅ Synchronization triggered for all connected users.');
+	  }
+	});
+
+	// --- Firestore listener: Auto-refresh when a sync is triggered ---
+	let hasInitialized = false;
+
+	onSnapshot(refreshRef, (snapshot) => {
+	  const data = snapshot.data();
+	  if (!data) return;
+
+	  const lastTrigger = data.forceRefresh;
+
+	  // ✅ Skip the first snapshot (initial page load)
+	  if (!hasInitialized) {
+		hasInitialized = true;
+		console.log('⏳ Initial sync state loaded, no refresh triggered.');
+		return;
+	  }
+
+	  // 🧩 Ignore if this exact timestamp was sent by us
+	  if (lastTrigger === lastTriggeredBySelf) {
+		console.log('⏭️ Ignoring self-triggered refresh.');
+		return;
+	  }
+
+	  console.log('🔄 Synchronization detected — refreshing page...');
+	  location.reload();
+	});
+	
+	// --- Firestore listener: track "Mark Dead" button cooldowns ---
+	onSnapshot(deadLockRef, (snapshot) => {
+	  const data = snapshot.data() || {};
+	  deadLocks = data;
+	  const now = Date.now();
+
+	  document.querySelectorAll('.mark-dead-btn').forEach(btn => {
+		const bossId = btn.getAttribute('data-boss-id');
+		const lockedUntil = deadLocks[bossId] || 0;
+
+		if (now < lockedUntil) {
+		  btn.disabled = true;
+		  btn.textContent = `⏳ Locked (${Math.ceil((lockedUntil - now) / 60000)}m left)`;
+		} else {
+		  btn.disabled = false;
+		  btn.textContent = '💀 Mark Dead';
+		}
+	  });
+	});
 
     webhookSave.addEventListener('click', async ()=> {
       const url = webhookInput.value.trim();
