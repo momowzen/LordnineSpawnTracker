@@ -1070,11 +1070,14 @@
 		const db = getFirestore(app);
 		const rtdb = getDatabase(app);
 		
-		// ✅ Online presence tracking
+		// === Presence & Global Sync Management ===
+
+		// ✅ Online presence tracking (Realtime Database)
 		const presenceRef = ref(rtdb, "presence");
 		const myConnection = push(presenceRef);
 		set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
 		onDisconnect(myConnection).remove();
+
 		onValue(presenceRef, (snap) => {
 			const count = snap.size || snap.numChildren();
 			let el = document.getElementById("onlineCount");
@@ -1086,16 +1089,39 @@
 			}
 			el.textContent = `🟢 Online: ${count}`;
 		});
-		const refreshRef = ref(rtdb, 'refresh');
-		onValue(refreshRef, (snapshot) => {
-			const val = snapshot.val();
-			if (val && val.trigger === true) {
-				console.log('🔁 Refresh trigger detected from RTDB.');
-				// Add logic if you want to reload timers, e.g.:
-				if (typeof loadAllTimers === 'function') loadAllTimers();
+
+		// ✅ Firestore-based Global Synchronization
+		let lastTriggeredBySelf = null;
+		const syncBtn = document.getElementById('syncBtn');
+		const refreshDocRef = doc(db, 'meta', 'refresh'); // Firestore doc for sync trigger
+
+		// --- Trigger Sync ---
+		syncBtn.addEventListener('click', async () => {
+			if (confirm("Synchronize all clients? This will reload every user's page.")) {
+				const now = Date.now();
+				lastTriggeredBySelf = now;
+				await setDoc(refreshDocRef, { forceRefresh: now });
+				alert('✅ Synchronization triggered for all connected users.');
+				console.log('🔁 sync triggered at', new Date(now).toISOString());
 			}
 		});
 
+		// --- Auto-refresh on Firestore update ---
+		let hasInitialized = false;
+		onSnapshot(refreshDocRef, (snapshot) => {
+			const data = snapshot.data();
+			if (!data) return;
+			const lastTrigger = data.forceRefresh;
+			const lastTriggerMs =
+				lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
+
+			if (!hasInitialized) { hasInitialized = true; return; }
+			if (lastTriggerMs === lastTriggeredBySelf) return;
+
+			console.log('🔄 Firestore refresh triggered, reloading page.');
+			location.reload();
+		});
+		
 		// ✅ Safe Firestore write helper — ensures reliable merges
 		async function safeWrite(ref, payload) {
 			try {
@@ -1921,34 +1947,6 @@
     });
 
     resetBtn.addEventListener('click', ()=> { if(confirm('Are you sure you want to reset all timers?')) resetAll(); });
-
-    // --- Synchronize Button (Global Page Refresh) ---
-    let lastTriggeredBySelf = null;
-
-    const syncBtn = document.getElementById('syncBtn');
-    syncBtn.addEventListener('click', async () => {
-	  if (confirm("Synchronize all clients? This will reload every user's page.")) {
-		const now = Date.now();
-		lastTriggeredBySelf = now;
-		await setDoc(refreshRef, { forceRefresh: now });
-		alert('✅ Synchronization triggered for all connected users.');
-		console.log('🔁 sync triggered at', new Date(now).toISOString());
-	  }
-	});
-
-		// --- Firestore listener: Auto-refresh when a sync is triggered ---
-		let hasInitialized = false;
-		const refreshDocRef = doc(db, 'meta', 'refresh');
-		onSnapshot(refreshDocRef, (snapshot) => {
-			const data = snapshot.data();
-			if (!data) return;
-			const lastTrigger = data.forceRefresh;
-			const lastTriggerMs = lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
-			if (!hasInitialized) { hasInitialized = true; return; }
-			if (lastTriggerMs === lastTriggeredBySelf) return;
-			console.log('🔄 Firestore refresh triggered, reloading page.');
-			location.reload();
-		});
 
 		// ✅ Firestore document for lock management
 		const deadLockRef = doc(db, 'meta', 'deadLocks');
