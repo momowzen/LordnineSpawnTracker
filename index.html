@@ -1921,9 +1921,6 @@
 
     resetBtn.addEventListener('click', ()=> { if(confirm('Are you sure you want to reset all timers?')) resetAll(); });
 
-    // --- Synchronize Button (Global Page Refresh) ---
-    let lastTriggeredBySelf = null;
-
 		// --- Firestore Global Sync System ---
 		const syncBtn = document.getElementById('syncBtn');
 		let lastTriggeredBySelf = 0;
