@@ -1915,32 +1915,54 @@
 
     resetBtn.addEventListener('click', ()=> { if(confirm('Are you sure you want to reset all timers?')) resetAll(); });
 
-    // --- Synchronize Button (Global Page Refresh) ---
-    let lastTriggeredBySelf = null;
-
-    const syncBtn = document.getElementById('syncBtn');
-    syncBtn.addEventListener('click', async () => {
-	  if (confirm("Synchronize all clients? This will reload every user's page.")) {
-		const now = Date.now();
-		lastTriggeredBySelf = now;
-		await setDoc(refreshRef, { forceRefresh: now });
-		alert('✅ Synchronization triggered for all connected users.');
-		console.log('🔁 sync triggered at', new Date(now).toISOString());
-	  }
-	});
-
+		// --- Sync button (Firestore trigger) ---
+		const syncBtn = document.getElementById("syncBtn");
+		let lastTriggeredBySelf = null;
+		
+		syncBtn.addEventListener("click", async () => {
+		  if (confirm("Synchronize all clients? This will reload every user's page.")) {
+		    try {
+		      const now = Date.now();
+		      lastTriggeredBySelf = now;
+		
+		      // Write trigger to Firestore meta/refresh document
+		      const refreshDocRef = doc(db, "meta", "refresh");
+		      await setDoc(refreshDocRef, {
+		        forceRefresh: now,
+		        triggeredBy: myConnection.key || "unknown",
+		        ts: new Date()
+		      });
+		
+		      alert("✅ Synchronization triggered for all connected users.");
+		      console.log("🔁 Sync triggered at", new Date(now).toISOString());
+		    } catch (err) {
+		      console.error("❌ Failed to trigger sync:", err);
+		      alert("❌ Failed to trigger sync. Check console for details.");
+		    }
+		  }
+		});
+		
 		// --- Firestore listener: Auto-refresh when a sync is triggered ---
 		let hasInitialized = false;
-		const refreshDocRef = doc(db, 'meta', 'refresh');
+		const refreshDocRef = doc(db, "meta", "refresh");
+		
 		onSnapshot(refreshDocRef, (snapshot) => {
-			const data = snapshot.data();
-			if (!data) return;
-			const lastTrigger = data.forceRefresh;
-			const lastTriggerMs = lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
-			if (!hasInitialized) { hasInitialized = true; return; }
-			if (lastTriggerMs === lastTriggeredBySelf) return;
-			console.log('🔄 Firestore refresh triggered, reloading page.');
-			location.reload();
+		  const data = snapshot.data();
+		  if (!data) return;
+		
+		  const lastTrigger = data.forceRefresh;
+		  const lastTriggerMs =
+		    lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
+		
+		  if (!hasInitialized) {
+		    hasInitialized = true;
+		    return; // skip first snapshot (initial load)
+		  }
+		
+		  if (lastTriggerMs === lastTriggeredBySelf) return; // don't refresh the triggering client
+		
+		  console.log("🔄 Firestore refresh triggered, reloading page.");
+		  window.location.reload();
 		});
 
 		// ✅ Firestore document for lock management
