@@ -1027,7 +1027,10 @@
       return soonest ? soonest.getTime() : now.getTime();
     }
 
-		// Firestore imports — include serverTimestamp (alias to avoid name collision)
+		// ✅ Import Firebase App initializer FIRST
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+		
+		// ✅ Firestore imports — include serverTimestamp (aliased to avoid collision)
 		import {
 		  getFirestore,
 		  doc,
@@ -1041,7 +1044,7 @@
 		  serverTimestamp as firestoreServerTimestamp
 		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 		
-		// RTDB imports — alias if you still need RTDB's serverTimestamp
+		// ✅ RTDB imports — alias serverTimestamp if you still need it for presence
 		import {
 		  getDatabase,
 		  ref,
@@ -1051,20 +1054,22 @@
 		  push,
 		  serverTimestamp as rtdbServerTimestamp,
 		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-
+		
 		// ✅ Initialize Firebase app
 		const firebaseConfig = {
-			apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-			authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
-			projectId: "lordnine-timer-9f21e",
-			storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-			messagingSenderId: "644000692891",
-			appId: "1:644000692891:web:224bca1478655a43c0243e",
-			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
+		  apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
+		  authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+		  databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
+		  projectId: "lordnine-timer-9f21e",
+		  storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
+		  messagingSenderId: "644000692891",
+		  appId: "1:644000692891:web:224bca1478655a43c0243e"
 		};
-
+		
+		// 🔥 Create the main Firebase app instance
 		const app = initializeApp(firebaseConfig);
+		
+		// 🔥 Initialize Firestore & Realtime Database
 		const db = getFirestore(app);
 		const rtdb = getDatabase(app);
 		
