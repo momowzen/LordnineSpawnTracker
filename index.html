@@ -2077,6 +2077,12 @@
 		}
 
     window.addEventListener('load', ()=> init());
+
+	  // Auto-refresh the page every 5 minutes
+  setTimeout(() => {
+    location.reload();
+  }, 300000); // 300,000 ms = 5 minutes
+	  
   </script>
 	<div id="onlineUsers" class="online-users">
   		<span id="onlineCount">0</span> online
