@@ -1924,56 +1924,56 @@
     // --- Synchronize Button (Global Page Refresh) ---
     let lastTriggeredBySelf = null;
 
-	// --- Realtime Database Sync (final stable version) ---
-	const syncBtn = document.getElementById('syncBtn');
-	let lastSyncSeen = 0;
-	let hasInitialized = false; // <--- new guard to ignore first snapshot
-	
-	onValue(refreshRef, (snapshot) => {
-	  const data = snapshot.val();
-	
-	  // Ignore if there's no valid data
-	  if (!data || typeof data.forceRefresh !== 'number') return;
-	
-	  // Ignore the very first snapshot when the page loads
-	  if (!hasInitialized) {
-	    hasInitialized = true;
-	    console.log('🟢 RTDB listener initialized, current state ignored.');
-	    return;
-	  }
-	
-	  // Ignore if we've already handled this trigger
-	  if (data.forceRefresh === lastSyncSeen) return;
-	
-	  // Ignore if trigger is not true
-	  if (data.trigger !== true) return;
-	
-	  // Record that we’ve handled this timestamp
-	  lastSyncSeen = data.forceRefresh;
-	
-	  console.log('🔁 Valid RTDB sync trigger detected → reloading page.');
-	  location.reload();
-	});
-	
-	syncBtn.addEventListener('click', async () => {
-	  if (!confirm("Synchronize all clients? This will reload every user's page.")) return;
-	  try {
-	    const now = Date.now();
-	    lastSyncSeen = now; // so this client won't reload itself
-	
-	    // ✅ Fire trigger
-	    await set(refreshRef, { forceRefresh: now, trigger: true });
-	
-	    alert('✅ Synchronization triggered for all connected users.');
-	    console.log('🔁 RTDB sync triggered at', new Date(now).toISOString());
-	
-	    // ✅ Immediately clear trigger to prevent lingering state
-	    await set(refreshRef, { forceRefresh: now, trigger: false });
-	  } catch (err) {
-	    console.error('❌ Sync failed:', err);
-	    alert('❌ Sync failed. Check console for details.');
-	  }
-	});
+		// --- Firestore Global Sync System ---
+		const syncBtn = document.getElementById('syncBtn');
+		let lastTriggeredBySelf = 0;
+		let hasInitialized = false;
+		
+		// Firestore reference (use any consistent doc path)
+		const refreshDocRef = doc(db, 'meta', 'refresh');
+		
+		// 🔁 Listen for Firestore updates
+		onSnapshot(refreshDocRef, (snapshot) => {
+		  const data = snapshot.data();
+		  if (!data || !data.forceRefresh) return;
+		
+		  const lastTrigger = data.forceRefresh;
+		  const lastTriggerMs = typeof lastTrigger.toMillis === 'function'
+		    ? lastTrigger.toMillis()
+		    : lastTrigger;
+		
+		  // Ignore the very first snapshot on page load
+		  if (!hasInitialized) {
+		    hasInitialized = true;
+		    console.log('🟢 Firestore sync listener initialized.');
+		    return;
+		  }
+		
+		  // Ignore self-triggered updates
+		  if (lastTriggerMs === lastTriggeredBySelf) return;
+		
+		  console.log('🔁 Firestore sync update detected → reloading page.');
+		  location.reload();
+		});
+		
+		// 🔘 Admin / Sync button
+		syncBtn.addEventListener('click', async () => {
+		  if (!confirm('Synchronize all clients? This will reload every user\'s page.')) return;
+		
+		  try {
+		    const now = Date.now();
+		    lastTriggeredBySelf = now;
+		
+		    // ✅ Update Firestore with a new timestamp
+		    await setDoc(refreshDocRef, { forceRefresh: now }, { merge: true });
+		
+		    alert('✅ Synchronization triggered for all connected users.');
+		    console.log('🔁 Firestore sync triggered at', new Date(now).toISOString());
+		  } catch (err) {
+		    console.error('❌ Sync failed:', err);
+		    alert('❌ Sync failed. Check console for details.');
+		  }
+		});
 
 		// ✅ Firestore document for lock management
 		const deadLockRef = doc(db, 'meta', 'deadLocks');
