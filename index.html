@@ -1924,30 +1924,46 @@
     // --- Synchronize Button (Global Page Refresh) ---
     let lastTriggeredBySelf = null;
 
-	// --- Synchronize Button (RTDB version) ---
-	const syncBtn = document.getElementById('syncBtn');
-	syncBtn.addEventListener('click', async () => {
-	  if (confirm("Synchronize all clients? This will reload every user's page.")) {
-	    try {
-	      const now = Date.now();
-	      lastTriggeredBySelf = now;
-	
-	      // ✅ Write to Realtime Database instead of Firestore
-	      await set(refreshRef, { forceRefresh: now, trigger: true });
-	
-	      alert('✅ Synchronization triggered for all connected users.');
-	      console.log('🔁 RTDB sync triggered at', new Date(now).toISOString());
-	
-	      // 🔄 Optional: reset the trigger after 2 seconds
-	      setTimeout(async () => {
-	        await set(refreshRef, { forceRefresh: now, trigger: false });
-	      }, 2000);
-	    } catch (err) {
-	      console.error('❌ Sync failed:', err);
-	      alert('❌ Sync failed. Check console for details.');
-	    }
-	  }
-	});
+		// --- Synchronize Button (RTDB fixed version, prevents infinite refresh) ---
+		const syncBtn = document.getElementById('syncBtn');
+		let lastSyncSeen = 0; // locally track last trigger timestamp
+		
+		// RTDB listener to detect global refresh triggers
+		onValue(refreshRef, (snapshot) => {
+		  const data = snapshot.val();
+		  if (!data || !data.forceRefresh) return;
+		
+		  // Ignore if we've already handled this trigger
+		  if (data.forceRefresh === lastSyncSeen) return;
+		
+		  lastSyncSeen = data.forceRefresh;
+		
+		  if (data.trigger === true) {
+		    console.log('🔁 Global RTDB sync trigger detected. Reloading page...');
+		    location.reload();
+		  }
+		});
+		
+		syncBtn.addEventListener('click', async () => {
+		  if (confirm("Synchronize all clients? This will reload every user's page.")) {
+		    try {
+		      const now = Date.now();
+		      lastSyncSeen = now; // mark self so this client won't reload itself
+		
+		      // ✅ Write to RTDB (fire trigger)
+		      await set(refreshRef, { forceRefresh: now, trigger: true });
+		
+		      alert('✅ Synchronization triggered for all connected users.');
+		      console.log('🔁 RTDB sync triggered at', new Date(now).toISOString());
+		
+		      // ✅ Immediately reset to false to prevent reload loop
+		      await set(refreshRef, { forceRefresh: now, trigger: false });
+		    } catch (err) {
+		      console.error('❌ Sync failed:', err);
+		      alert('❌ Sync failed. Check console for details.');
+		    }
+		  }
+		});
 
 		// --- Firestore listener: Auto-refresh when a sync is triggered ---
 		let hasInitialized = false;
