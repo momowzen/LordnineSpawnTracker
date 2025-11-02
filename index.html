@@ -935,7 +935,7 @@
       { id: 'Asta', name: 'Asta', respawn: 60*60*62 },
       { id: 'Supore', name: 'Supore', respawn: 60*60*62 },
       { id: 'Chaiflock', name: 'Chaiflock', weeklyRespawns: [{ day:6, hour:23, minute:0 }] },
-      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day:0, hour:22, minute:0 }] }
+      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day:0, hour:22, minute:0 }] },
 	  //{ id: 'Test Boss', name: 'Test Boss', respawn: 60 * 5 + 10 }
     ];
 
@@ -1922,48 +1922,48 @@
 
     resetBtn.addEventListener('click', ()=> { if(confirm('Are you sure you want to reset all timers?')) resetAll(); });
 
-		// --- Firestore Global Sync System (Fixed) ---
-		const refreshDocRef = doc(db, 'meta', 'refresh');
-		let hasInitialized = false;
-		let lastTriggeredBySelf = 0;
-		let lastHandled = 0;
+    // --- Synchronize Button (Global Page Refresh) ---
+    let lastTriggeredBySelf = null;
 
+    const syncBtn = document.getElementById('syncBtn');
+    syncBtn.addEventListener('click', async () => {
+	  if (confirm("Synchronize all clients? This will reload every user's page.")) {
+		const now = Date.now();
+		lastTriggeredBySelf = now;
+		await setDoc(refreshRef, { forceRefresh: now });
+		alert('✅ Synchronization triggered for all connected users.');
+		console.log('🔁 sync triggered at', new Date(now).toISOString());
+	  }
+	});
+
+		// --- Firestore listener: Auto-refresh when a sync is triggered ---
+		let hasInitialized = false;
+		const refreshDocRef = doc(db, 'meta', 'refresh');
 		onSnapshot(refreshDocRef, (snapshot) => {
 			const data = snapshot.data();
-			if (!data || typeof data.forceRefresh === 'undefined') return;
-			const raw = data.forceRefresh;
-			const triggerMs = typeof raw?.toMillis === 'function' ? raw.toMillis() : Number(raw);
-
-			// 🟢 Ignore first snapshot (initial load)
-			if (!hasInitialized) {
-				hasInitialized = true;
-				console.log('🟢 Firestore sync listener initialized.');
-				return;
-			}
-
-			// 🧱 Ignore self-triggered or duplicate updates
-			if (triggerMs === lastTriggeredBySelf || triggerMs === lastHandled) return;
-			lastHandled = triggerMs;
-
-			console.log('🔁 Firestore sync update detected → reloading page.');
+			if (!data) return;
+			const lastTrigger = data.forceRefresh;
+			const lastTriggerMs = lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
+			if (!hasInitialized) { hasInitialized = true; return; }
+			if (lastTriggerMs === lastTriggeredBySelf) return;
+			console.log('🔄 Firestore refresh triggered, reloading page.');
 			location.reload();
 		});
 
-		syncBtn.addEventListener('click', async () => {
-			if (!confirm("Synchronize all clients? This will reload every user's page.")) return;
-			try {
-				const now = Date.now();
-				lastTriggeredBySelf = now;
+		// ✅ Firestore document for lock management
+		const deadLockRef = doc(db, 'meta', 'deadLocks');
+		onSnapshot(deadLockRef, (snapshot) => {
+			const data = snapshot.data() || {};
+			deadLocks = data;
+			const now = Date.now();
 
-				// ✅ Use Firestore doc, not RTDB ref
-				await setDoc(refreshDocRef, { forceRefresh: now }, { merge: true });
+			document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
+				const bossId = btn.getAttribute('data-id');
+				const lockedUntil = deadLocks[bossId] || 0;
+				btn.disabled = now < lockedUntil;
+			});
 
-				alert('✅ Synchronization triggered for all connected users.');
-				console.log('🔁 Firestore sync triggered at', new Date(now).toISOString());
-			} catch (err) {
-				console.error('❌ Sync failed:', err);
-				alert('❌ Sync failed. Check console for details.');
-			}
+			console.log('🔔 deadLocks updated from Firestore:', deadLocks);
 		});
 
     // Periodically re-check (every 10s)
