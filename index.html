@@ -1076,7 +1076,7 @@
 		// ✅ Online presence tracking
 		const presenceRef = ref(rtdb, "presence");
 		const myConnection = push(presenceRef);
-		set(myConnection, { connected: true, timestamp: serverTimestamp() });
+		set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
 		onDisconnect(myConnection).remove();
 		onValue(presenceRef, (snap) => {
 			const count = snap.size || snap.numChildren();
