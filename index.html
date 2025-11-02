@@ -1088,12 +1088,11 @@
 		});
 		const refreshRef = ref(rtdb, 'refresh');
 		onValue(refreshRef, (snapshot) => {
-			const val = snapshot.val();
-			if (val && val.trigger === true) {
-				console.log('🔁 Refresh trigger detected from RTDB.');
-				// Add logic if you want to reload timers, e.g.:
-				if (typeof loadAllTimers === 'function') loadAllTimers();
-			}
+		  const data = snapshot.val();
+		  if (data && data.trigger === true) {
+		    console.log('🔁 RTDB refresh trigger detected');
+		    location.reload(); // or call loadAllTimers() if you prefer soft refresh
+		  }
 		});
 
 		// ✅ Safe Firestore write helper — ensures reliable merges
@@ -1925,14 +1924,28 @@
     // --- Synchronize Button (Global Page Refresh) ---
     let lastTriggeredBySelf = null;
 
-    const syncBtn = document.getElementById('syncBtn');
-    syncBtn.addEventListener('click', async () => {
+	// --- Synchronize Button (RTDB version) ---
+	const syncBtn = document.getElementById('syncBtn');
+	syncBtn.addEventListener('click', async () => {
 	  if (confirm("Synchronize all clients? This will reload every user's page.")) {
-		const now = Date.now();
-		lastTriggeredBySelf = now;
-		await setDoc(refreshRef, { forceRefresh: now });
-		alert('✅ Synchronization triggered for all connected users.');
-		console.log('🔁 sync triggered at', new Date(now).toISOString());
+	    try {
+	      const now = Date.now();
+	      lastTriggeredBySelf = now;
+	
+	      // ✅ Write to Realtime Database instead of Firestore
+	      await set(refreshRef, { forceRefresh: now, trigger: true });
+	
+	      alert('✅ Synchronization triggered for all connected users.');
+	      console.log('🔁 RTDB sync triggered at', new Date(now).toISOString());
+	
+	      // 🔄 Optional: reset the trigger after 2 seconds
+	      setTimeout(async () => {
+	        await set(refreshRef, { forceRefresh: now, trigger: false });
+	      }, 2000);
+	    } catch (err) {
+	      console.error('❌ Sync failed:', err);
+	      alert('❌ Sync failed. Check console for details.');
+	    }
 	  }
 	});
 
