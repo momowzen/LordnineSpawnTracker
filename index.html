@@ -1027,27 +1027,29 @@
       return soonest ? soonest.getTime() : now.getTime();
     }
 
-		// ✅ Import Firebase core and services
-		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+		// Firestore imports — include serverTimestamp (alias to avoid name collision)
 		import {
-			getFirestore,
-			doc,
-			setDoc,
-			getDoc,
-			updateDoc,
-			deleteDoc,
-			deleteField,
-			runTransaction,
-			onSnapshot,
+		  getFirestore,
+		  doc,
+		  setDoc,
+		  getDoc,
+		  updateDoc,
+		  deleteDoc,
+		  deleteField,
+		  runTransaction,
+		  onSnapshot,
+		  serverTimestamp as firestoreServerTimestamp
 		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+		
+		// RTDB imports — alias if you still need RTDB's serverTimestamp
 		import {
-			getDatabase,
-			ref,
-			onDisconnect,
-			onValue,
-			set,
-			push,
-			serverTimestamp,
+		  getDatabase,
+		  ref,
+		  onDisconnect,
+		  onValue,
+		  set,
+		  push,
+		  serverTimestamp as rtdbServerTimestamp,
 		} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
 		// ✅ Initialize Firebase app
@@ -1242,7 +1244,7 @@
             return false;
           }
 
-          tx.set(ref, { lastSent: serverTimestamp() }, { merge: true });
+          tx.set(ref, { lastSent: firestoreServerTimestamp(), sentBy: myClientId }, { merge: true });
           // pass back server-intended endTime: use client best-effort
           const endTimeMs = timers[boss.id]?.endTime || Date.now();
           return { endTimeMs };
