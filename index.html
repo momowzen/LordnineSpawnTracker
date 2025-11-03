@@ -210,6 +210,7 @@
   .boss .name {
     font-weight: 700;
   }
+	
 
   .boss .sub {
     font-size: 11px;
@@ -669,15 +670,6 @@
     }
   }
 
-  .boss .name.dead {
-    color: #ff5555;
-    font-weight: 800;
-  }
-
-  .boss .name.dead::after {
-    content: " 💀";
-  }
-
   @keyframes shakeFlash {
     0%, 100% {
       transform: translateX(0);
@@ -703,17 +695,45 @@
     transition: none !important;
   }
   
-  .boss .name.dead {
-    color: #ff5555;
-    font-weight: 800;
-    text-shadow: 0 0 6px rgba(255, 80, 80, 0.8);
-    transition: color 0.4s ease, text-shadow 0.4s ease;
-  }
+	/* === DEAD BOSS STYLE — aligned baseline for name + SPAWNING tag === */
+	.boss .name.dead {
+		color: #8b8b8b;
+		font-weight: 800;
+		text-shadow:
+			0 0 6px rgba(255, 40, 40, 0.5),
+			0 0 12px rgba(255, 0, 0, 0.3);
+		transition: color 0.4s ease, text-shadow 0.4s ease;
+		display: inline-flex;
+		align-items: baseline; /* <-- align text baselines */
+		gap: 8px;
+		font-size: 1rem; /* explicit base size for alignment */
+	}
 
-  .boss .name.dead::after {
-    content: " 💀";
-    font-weight: 700;
-  }
+	/* SPAWNING tag sits to the right and aligns on the same baseline */
+	.boss .name.dead::after {
+		content: "SPAWNING";
+		font-weight: 400;
+		font-size: 0.5rem;      /* smaller than the name */
+		line-height: 1;          /* ensure baseline alignment */
+		display: inline-block;
+		vertical-align: baseline;
+		color: rgba(255,85,85,0.9);
+		letter-spacing: 1px;
+		text-shadow:
+			0 0 3px rgba(255,60,60,0.5),
+			0 0 6px rgba(255,0,0,0.3);
+		animation: spawningDots 2s infinite;
+		opacity: 0.9;
+	}
+
+	/* Animate dots only — brackets/word remain fixed in place visually */
+	@keyframes spawningDots {
+		0%   { content: "SPAWNING"; }
+		25%  { content: "SPAWNING."; }
+		50%  { content: "SPAWNING.."; }
+		75%  { content: "SPAWNING..."; }
+		100% { content: "SPAWNING"; }
+	}
 
 	/* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (NO ANIMATION) === */
 	.card-header {
