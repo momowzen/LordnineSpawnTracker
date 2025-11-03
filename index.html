@@ -253,17 +253,20 @@
     letter-spacing: 1px;
   }
 
-  #nextBoss .boss-name {
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: var(--accent);
-    text-shadow:
-      0 0 8px rgba(0, 240, 255, 0.8),
-      0 0 16px rgba(0, 240, 255, 0.6),
-      0 0 24px rgba(0, 240, 255, 0.3);
-    margin-bottom: 0px;
-    animation: bossGlow 2.8s ease-in-out infinite;
-  }
+	/* === NEXT BOSS NAME: NEON RED GLOW (NO EFFECTS) === */
+	#nextBoss .boss-name {
+		font-size: 1.6rem;
+		font-weight: 900;
+		color: #ff4d4d; /* bright neon red */
+		text-transform: uppercase;
+		letter-spacing: 1.5px;
+		display: inline-block;
+		position: relative;
+		text-shadow:
+			0 0 8px rgba(255, 80, 80, 0.8),   /* bright soft halo */
+			0 0 16px rgba(255, 0, 0, 0.5),
+			0 0 24px rgba(255, 0, 0, 0.3);
+	}
 
   #nextBoss .time-remaining {
     font-size: .9rem;
@@ -383,10 +386,9 @@
     }
   }
 
-	/* === CYBER-THEMED SETTINGS MENU (MATCHING THEME) === */
 	.settings-menu {
 		position: absolute;
-		top: calc(100% + 4px); /* move slightly below the button */
+		top: calc(100% + 4px);
 		right: 0;
 		background: linear-gradient(180deg, rgba(10, 20, 30, 0.98), rgba(0, 10, 20, 0.95));
 		border: 1px solid rgba(0, 240, 255, 0.3);
@@ -395,18 +397,21 @@
 			0 0 10px rgba(0, 240, 255, 0.2),
 			0 0 25px rgba(0, 240, 255, 0.1),
 			inset 0 0 6px rgba(0, 240, 255, 0.05);
-		display: flex;
+		display: inline-flex;
 		flex-direction: column;
-		min-width: 150px;
+		width: auto;
+		min-width: fit-content;
+		max-width: max-content;
 		max-height: 260px;
 		overflow-y: auto;
-		font-size: 12px;
+		font-size: 8px;
 		opacity: 0;
 		transform: translateY(-8px) scale(0.98);
 		pointer-events: none;
 		transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
 		z-index: 10000;
 		backdrop-filter: blur(8px);
+		white-space: nowrap;
 	}
 
 	.settings-menu.active {
@@ -421,17 +426,17 @@
 	/* === MENU ITEM STYLING === */
 	.menu-item {
 		position: relative;
-		background: transparent;
+		background: black;
 		color: var(--accent);
 		padding: 8px 14px;
-		font-size: 10px;
+		font-size: 8px;
 		font-weight: 600;
 		letter-spacing: 0.3px;
 		cursor: pointer;
 		border: none;
-		text-align: left;
+		text-align: right;
 		transition: all 0.25s ease;
-		line-height: .9;
+		line-height: .5;
 	}
 
 	.menu-item:hover {
@@ -710,19 +715,31 @@
     font-weight: 700;
   }
 
-  .card-header {
-    font-size: 13px;
-    color: var(--muted);
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    margin: 0;
-    padding: 0 0 8px 0;
-    margin-left: -10px;
-    width: calc(100% + 20px);
-    border-bottom: 1px solid rgba(0, 240, 255, 0.08);
-    text-align: center;
-    box-sizing: border-box;
-  }
+	/* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (NO ANIMATION) === */
+	.card-header {
+		font-family: 'Orbitron', sans-serif;
+		font-size: 15px;
+		color: var(--accent);
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 48px;
+		position: relative;
+		overflow: hidden;
+		border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+		padding-bottom: 6px;
+		text-shadow:
+			0 0 5px rgba(0, 240, 255, 0.4),
+			0 0 10px rgba(0, 240, 255, 0.2);
+		box-sizing: border-box;
+		margin: 0;
+		width: calc(100% + 20px);
+		margin-left: -10px;
+		margin-right: -10px;
+	}
+
   .clear-icon {
     position: absolute;
     right: 8px;
@@ -835,11 +852,11 @@
         </button>
 
         <div id="settingsMenu" class="settings-menu">
-          <button id="exportBtn" class="menu-item">📤 EXPORT JSON</button>
-          <button id="importBtn" class="menu-item">📥 IMPORT JSON</button>
-          <button id="resetBtn" class="menu-item">🗑️ RESET ALL</button>
-          <button id="syncBtn" class="menu-item">🔄 SYNC</button>
-          <button id="discordWebhookBtn" class="menu-item">💬 DISCORD WEBHOOK</button>
+          <button id="exportBtn" class="menu-item">EXPORT 📤</button>
+          <button id="importBtn" class="menu-item">IMPORT 📥</button>
+          <button id="resetBtn" class="menu-item">RESET 🗑️</button>
+          <button id="syncBtn" class="menu-item">SYNC 🔄</button>
+          <button id="discordWebhookBtn" class="menu-item">WEBHOOK 💬</button>
         </div>
       </div>
     </header>
