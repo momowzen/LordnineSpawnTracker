@@ -687,6 +687,126 @@
       border-color: rgba(255, 100, 100, 0.6);
     }
   }
+	
+		/* === CYBER POPUP: Set Time Modal === */
+	#timeModal {
+		position: fixed;
+		inset: 0;
+		display: none; /* JS toggles this */
+		align-items: center;
+		justify-content: center;
+		z-index: 5000;
+		background: rgba(0, 10, 20, 0.8);
+		backdrop-filter: blur(10px);
+	}
+
+	#timeModal .modal-content {
+		background: linear-gradient(180deg, rgba(5, 15, 25, 0.96), rgba(0, 10, 20, 0.9));
+		border: 1px solid rgba(0, 240, 255, 0.25);
+		border-radius: 12px;
+		box-shadow:
+			0 0 20px rgba(0, 240, 255, 0.2),
+			inset 0 0 12px rgba(0, 240, 255, 0.05);
+		padding: 20px 18px;
+		width: 340px;
+		max-width: 90%;
+		color: var(--text);
+		text-align: center;
+		animation: popupRise 0.28s ease-out;
+		transform: translateY(0);
+		font-family: 'Orbitron', sans-serif;
+	}
+
+	@keyframes popupRise {
+		0% { opacity: 0; transform: translateY(18px) scale(0.98); }
+		100% { opacity: 1; transform: translateY(0) scale(1); }
+	}
+
+	#timeModal h3 {
+		font-size: 16px;
+		color: var(--accent);
+		margin: 0 0 10px 0;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		text-shadow:
+			0 0 8px rgba(0, 240, 255, 0.7),
+			0 0 14px rgba(0, 240, 255, 0.4);
+	}
+	
+		#timeModal .modal-subtitle {
+		font-size: 12px;
+		color: var(--muted);
+		margin-bottom: 14px;
+		letter-spacing: 0.5px;
+		text-transform: none;
+		font-family: 'Inter', sans-serif;
+	}
+
+	#killTimeInput {
+		width: 100%;
+		margin-bottom: 14px;
+		padding: 10px 12px;
+		background: rgba(0, 240, 255, 0.04);
+		border: 1px solid rgba(0, 240, 255, 0.20);
+		border-radius: 8px;
+		color: var(--accent);
+		font-family: Consolas, monospace;
+		font-size: 13px;
+		text-align: center;
+		outline: none;
+		box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.06);
+		transition: all 0.22s ease;
+	}
+
+	#killTimeInput:focus {
+		border-color: rgba(0, 240, 255, 0.6);
+		box-shadow:
+			0 0 14px rgba(0, 240, 255, 0.32),
+			inset 0 0 8px rgba(0, 240, 255, 0.18);
+		background: rgba(0, 240, 255, 0.08);
+		color: #fff;
+	}
+
+	#timeModal .actions {
+		display: flex;
+		justify-content: center;
+		gap: 12px;
+		margin-top: 12px;
+	}
+
+	#timeModal .kbtn {
+		flex: 1;
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.6px;
+		background: rgba(0, 240, 255, 0.08);
+		border: 1px solid rgba(0, 240, 255, 0.25);
+		border-radius: 8px;
+		color: var(--accent);
+		padding: 8px 10px;
+		cursor: pointer;
+		transition: all 0.25s ease;
+		box-shadow: 0 0 6px rgba(0, 240, 255, 0.12);
+	}
+
+	#timeModal .kbtn:hover {
+		background: linear-gradient(90deg, rgba(0, 240, 255, 0.18), rgba(125, 211, 252, 0.18));
+		box-shadow: 0 0 14px rgba(0, 240, 255, 0.38);
+		color: #fff;
+		transform: translateY(-1px);
+	}
+
+	#timeModal .kbtn:active {
+		transform: scale(0.98);
+		box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
+	}
+
+	/* Mobile tweak */
+	@media (max-width: 420px) {
+		#timeModal .modal-content { width: 92%; padding: 14px; }
+		#killTimeInput { font-size: 14px; padding: 10px; }
+	}
 
   .boss.shake {
     animation: shakeFlash 1.2s ease-in-out;
@@ -735,29 +855,38 @@
 		100% { content: "SPAWNING"; }
 	}
 
-	/* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (NO ANIMATION) === */
+	/* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
 	.card-header {
 		font-family: 'Orbitron', sans-serif;
-		font-size: 15px;
+		font-size: clamp(13px, 2vw, 16px); /* auto-scales for screen size */
 		color: var(--accent);
 		text-transform: uppercase;
 		letter-spacing: 1px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: 48px;
+		min-height: 48px;
 		position: relative;
 		overflow: hidden;
 		border-bottom: 1px solid rgba(0, 240, 255, 0.12);
-		padding-bottom: 6px;
+		padding: 8px 0;
 		text-shadow:
 			0 0 5px rgba(0, 240, 255, 0.4),
 			0 0 10px rgba(0, 240, 255, 0.2);
 		box-sizing: border-box;
 		margin: 0;
-		width: calc(100% + 20px);
-		margin-left: -10px;
-		margin-right: -10px;
+		width: 100%; /* no overflow */
+	}
+
+	/* --- Mobile refinement --- */
+	@media (max-width: 720px) {
+		.card-header {
+			font-size: 13px;
+			letter-spacing: 0.8px;
+			padding: 8px 4px;
+			min-height: 44px;
+			text-align: center;
+		}
 	}
 
   .clear-icon {
@@ -901,17 +1030,18 @@
     </main>
   </div>
 
-  <!-- Time modal -->
-  <div id="timeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:1000;">
-    <div style="background:#0b1320;padding:16px;border-radius:10px;max-width:320px;width:92%;color:#dff7ff;text-align:center;">
-      <h3 id="modalBossName" style="margin-bottom:8px;"></h3>
-      <input type="datetime-local" id="killTimeInput" style="width:100%;margin-bottom:10px;background:transparent;border:1px solid var(--accent);color:#fff;padding:6px;border-radius:6px;">
-      <div style="display:flex;gap:10px;justify-content:center;">
-        <button id="cancelTimeBtn" class="kbtn">Cancel</button>
-        <button id="saveTimeBtn" class="kbtn">Save</button>
-      </div>
-    </div>
-  </div>
+	<!-- Time modal (cyber-styled) -->
+	<div id="timeModal" aria-hidden="true">
+		<div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalBossName">
+			<h3 id="modalBossName"></h3>
+				<div class="modal-subtitle">Set date and time of death</div>
+			<input type="datetime-local" id="killTimeInput" />
+			<div class="actions">
+				<button id="cancelTimeBtn" class="kbtn">Cancel</button>
+				<button id="saveTimeBtn" class="kbtn">Save</button>
+			</div>
+		</div>
+	</div>
 
 	<!-- Webhook modal — compact cyber panel -->
 	<div id="webhookModalBackdrop" class="modal-backdrop">
@@ -1619,7 +1749,7 @@
           </div>
           <div class="actions">
             <button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
-            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Set Time</button>` : ''}
+            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>` : ''}
           </div>
         `;
         bossListEl.appendChild(node);
