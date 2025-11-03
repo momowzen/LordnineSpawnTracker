@@ -1214,7 +1214,7 @@
         return;
       }
 
-      const mentionTarget = ''; // no @everyone by default
+      const mentionTarget = '@everyone'; // no @everyone by default
 
       try {
         const payload = {
@@ -1302,7 +1302,7 @@
 						embed = buildEmbed(`💀 ${boss.name} defeated!`, `Next respawn: ${formattedTime}`, 0xff3333);
 						break;
 					case 'soon':
-						embed = buildEmbed(`⚠️ ${boss.name} will respawn in ~5 minutes!`, `Next respawn: ${formattedTime}`, 0xffcc00);
+						embed = buildEmbed(`⚠️ ${boss.name} will respawn within 5 minutes!`, `Next respawn: ${formattedTime}`, 0xffcc00);
 						break;
 					case 'spawn':
 						embed = buildEmbed(`🎉 ${boss.name} has spawned!`, `It’s time to hunt!`, 0xb266ff);
