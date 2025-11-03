@@ -817,7 +817,7 @@
         </div>
         <div>
           <div style="font-size:13px">FIELD BOSS SPAWN TIME TRACKER</div>
-          <div style="font-size:11px;color:var(--muted)">[RICARDO - 01]</div>
+          <div style="font-size:11px;color:var(--muted)">[ FOR RICARDO - 01 ONLY ]</div>
         </div>
       </div>
 
@@ -935,7 +935,7 @@
       { id: 'Asta', name: 'Asta', respawn: 60*60*62 },
       { id: 'Supore', name: 'Supore', respawn: 60*60*62 },
       { id: 'Chaiflock', name: 'Chaiflock', weeklyRespawns: [{ day:6, hour:23, minute:0 }] },
-      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day:0, hour:22, minute:0 }] },
+      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day:0, hour:22, minute:0 }] }
 	  //{ id: 'Test Boss', name: 'Test Boss', respawn: 60 * 5 + 10 }
     ];
 
@@ -1582,7 +1582,7 @@
           </div>
           <div class="actions">
             <button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
-            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Set</button>` : ''}
+            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Set Time</button>` : ''}
           </div>
         `;
         bossListEl.appendChild(node);
