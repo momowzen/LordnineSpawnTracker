@@ -1,15 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet">
-  <title>L9 Time Tracker</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo.png">
-  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/logo.png">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
+  <title>
+   L9 Time Tracker
+  </title>
+  <link href="assets/images/logo.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="assets/images/logo.png" rel="icon" sizes="64x64" type="image/png"/>
   <style>
-    :root {
+   :root {
       --bg: #07101a;
       --muted: #9aa6b2;
       --accent: #00f0ff;
@@ -1043,103 +1044,133 @@
       transform: translateY(-1px);
     }
   </style>
-</head>
-
-<body>
+ </head>
+ <body>
   <div class="container">
-    <header class="app-header">
-      <div class="app-title">
-        <div class="logo">
-          <img src="assets/images/logo.png" alt="logo" class="logo-img" style="height:30px" />
-        </div>
-        <div>
-          <div style="font-size:13px">FIELD BOSS TIME TRACKER</div>
-          <div style="font-size:11px;color:var(--muted)">FOR RICARDO01</div>
-        </div>
+   <header class="app-header">
+    <div class="app-title">
+     <div class="logo">
+      <img alt="logo" class="logo-img" src="assets/images/logo.png" style="height:30px"/>
+     </div>
+     <div>
+      <div style="font-size:13px">
+       FIELD BOSS TIME TRACKER
       </div>
-
-      <div class="header-controls">
-        <div class="search-wrapper" style="position:relative">
-          <input id="bossSearch" class="search" placeholder="Search boss..." />
-          <span id="clearSearch" class="clear-icon"
-            style="position:absolute;right:12px;top:10px;cursor:pointer;display:none">&times;</span>
-        </div>
-
-        <button id="settingsBtn" class="settings" aria-label="Settings">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"
-            stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)">
-            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
-            <path
-              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z" />
-          </svg>
-        </button>
-
-        <div id="settingsMenu" class="settings-menu">
-          <button id="exportBtn" class="menu-item">EXPORT 📤</button>
-          <button id="importBtn" class="menu-item">IMPORT 📥</button>
-          <button id="resetBtn" class="menu-item">RESET 🗑️</button>
-          <button id="syncBtn" class="menu-item">SYNC 🔄</button>
-          <button id="discordWebhookBtn" class="menu-item">WEBHOOK 💬</button>
-        </div>
+      <div style="font-size:11px;color:var(--muted)">
+       FOR RICARDO01
       </div>
-    </header>
-
-    <main class="main">
-      <section id="bossListPanel" class="card">
-        <h4 class="card-header">BOSS LIST</h4>
-        <div id="bossList" class="scrollable"></div>
-      </section>
-
-      <aside class="right-column">
-        <div id="nextBoss" class="card">
-          <div class="boss-name">Next Boss</div>
-          <div class="time-remaining" id="nextTime">— —</div>
-        </div>
-
-        <section id="timersPanel" class="card">
-          <h4 class="card-header">ACTIVE TIMERS</h4>
-          <div id="timers" class="scrollable"></div>
-        </section>
-      </aside>
-    </main>
+     </div>
+    </div>
+    <div class="header-controls">
+     <div class="search-wrapper" style="position:relative">
+      <input class="search" id="bossSearch" placeholder="Search boss..."/>
+      <span class="clear-icon" id="clearSearch" style="position:absolute;right:12px;top:10px;cursor:pointer;display:none">
+       ×
+      </span>
+     </div>
+     <button aria-label="Settings" class="settings" id="settingsBtn">
+      <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--accent)" viewbox="0 0 24 24" width="18">
+       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z">
+       </path>
+       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z">
+       </path>
+      </svg>
+     </button>
+     <div class="settings-menu" id="settingsMenu">
+      <button class="menu-item" id="exportBtn">
+       EXPORT 📤
+      </button>
+      <button class="menu-item" id="importBtn">
+       IMPORT 📥
+      </button>
+      <button class="menu-item" id="resetBtn">
+       RESET 🗑️
+      </button>
+      <button class="menu-item" id="syncBtn">
+       SYNC 🔄
+      </button>
+      <button class="menu-item" id="discordWebhookBtn">
+       WEBHOOK 💬
+      </button>
+     </div>
+    </div>
+   </header>
+   <main class="main">
+    <section class="card" id="bossListPanel">
+     <h4 class="card-header">
+      BOSS LIST
+     </h4>
+     <div class="scrollable" id="bossList">
+     </div>
+    </section>
+    <aside class="right-column">
+     <div class="card" id="nextBoss">
+      <div class="boss-name">
+       Next Boss
+      </div>
+      <div class="time-remaining" id="nextTime">
+       — —
+      </div>
+     </div>
+     <section class="card" id="timersPanel">
+      <h4 class="card-header">
+       ACTIVE TIMERS
+      </h4>
+      <div class="scrollable" id="timers">
+      </div>
+     </section>
+    </aside>
+   </main>
   </div>
-
   <!-- Time modal (cyber-styled) -->
-  <div id="timeModal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalBossName">
-      <h3 id="modalBossName"></h3>
-      <div class="modal-subtitle">Set date and time of death</div>
-      <input type="datetime-local" id="killTimeInput" />
-      <div class="actions">
-        <button id="cancelTimeBtn" class="kbtn">Cancel</button>
-        <button id="saveTimeBtn" class="kbtn">Save</button>
-      </div>
+  <div aria-hidden="true" id="timeModal">
+   <div aria-labelledby="modalBossName" aria-modal="true" class="modal-content" role="dialog">
+    <h3 id="modalBossName">
+    </h3>
+    <div class="modal-subtitle">
+     Set date and time of death
     </div>
+    <input id="killTimeInput" type="datetime-local"/>
+    <div class="actions">
+     <button class="kbtn" id="cancelTimeBtn">
+      Cancel
+     </button>
+     <button class="kbtn" id="saveTimeBtn">
+      Save
+     </button>
+    </div>
+   </div>
   </div>
-
   <!-- Webhook modal — compact cyber panel -->
-  <div id="webhookModalBackdrop" class="modal-backdrop">
-    <div class="modal cyber-modal" role="dialog" aria-modal="true" aria-labelledby="webhookTitle">
-      <h3 id="webhookTitle">💬 Discord Webhook</h3>
-      <div class="small">Paste your Discord webhook URL below.</div>
-
-      <input id="webhookInput" type="text" placeholder="Paste your Discord Webhook URL here." class="webhook-input" />
-
-      <div class="modal-actions">
-        <button id="webhookSave" class="cyber-btn">SAVE</button>
-        <button id="webhookTest" class="cyber-btn">TEST</button>
-        <button id="webhookClear" class="cyber-btn danger">CLEAR</button>
-      </div>
+  <div class="modal-backdrop" id="webhookModalBackdrop">
+   <div aria-labelledby="webhookTitle" aria-modal="true" class="modal cyber-modal" role="dialog">
+    <h3 id="webhookTitle">
+     💬 Discord Webhook
+    </h3>
+    <div class="small">
+     Paste your Discord webhook URL below.
     </div>
+    <input class="webhook-input" id="webhookInput" placeholder="Paste your Discord Webhook URL here." type="text"/>
+    <div class="modal-actions">
+     <button class="cyber-btn" id="webhookSave">
+      SAVE
+     </button>
+     <button class="cyber-btn" id="webhookTest">
+      TEST
+     </button>
+     <button class="cyber-btn danger" id="webhookClear">
+      CLEAR
+     </button>
+    </div>
+   </div>
   </div>
-
-  <div id="loadingOverlay"
-    style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);background:radial-gradient(circle at center, rgba(0,10,20,0.95) 0%, rgba(0,0,0,0.98) 100%);">
-    <div class="loader-text">Loading...</div>
+  <div id="loadingOverlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);background:radial-gradient(circle at center, rgba(0,10,20,0.95) 0%, rgba(0,0,0,0.98) 100%);">
+   <div class="loader-text">
+    Loading...
+   </div>
   </div>
-
   <script type="module">
-    // -------------------------
+   // -------------------------
     // Data + constants (FULL BOSSES)
     // -------------------------
     const BOSSES = [
@@ -1576,7 +1607,7 @@
           case 'soon':
             title = `⚠️ ${boss.name} will respawn soon!`;
             color = 0xffcc00;
-            desc = `Spawn expected within 30 min:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
+            desc = `Spawn expected within 5 min:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
             break;
           case 'spawn':
             title = `⚔️ ${boss.name} has spawned!`;
@@ -2409,10 +2440,121 @@
     setTimeout(() => {
       location.reload();
     }, 300000); // 300,000 ms = 5 minutes
-
   </script>
-  <div id="onlineUsers" class="online-users">
-    <span id="onlineCount">0</span> online
+  <div class="online-users" id="onlineUsers">
+   <span id="onlineCount">
+    0
+   </span>
+   online
   </div>
-</body>
+  <!-- === PATCHES APPLIED: JST timezone enforcement, dedupe-safe Discord notifications, weekly respawn === -->
+  <script>
+   // --- JST ENFORCED PATCHES ---
+// getNextWeeklyRespawn with Asia/Tokyo timezone enforcement
+function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+  const nowJST = new Date(new Date(fromTime).toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+  let soonest = null;
+  for (const { day, hour, minute } of respawns) {
+    const t = new Date(nowJST);
+    const delta = (day + 7 - nowJST.getDay()) % 7;
+    t.setDate(nowJST.getDate() + delta);
+    t.setHours(hour, minute, 0, 0);
+    if (t <= nowJST) t.setDate(t.getDate() + 7);
+    const tJST = new Date(t.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+    if (!soonest || tJST < soonest) soonest = tJST;
+  }
+  return soonest ? soonest.getTime() : nowJST.getTime();
+}
+
+// --- Manual killTimeInput patch ---
+document.getElementById('saveTimeBtn')?.addEventListener('click', async () => {
+  const input = killTimeInput.value;
+  if (!input || !currentBossForTime) return;
+  const manualLocal = new Date(input);
+  if (isNaN(manualLocal)) {
+    alert('Invalid date format.');
+    return;
+  }
+  const manualTime = new Date(manualLocal.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+  const killedAt = manualTime.getTime();
+  const boss = currentBossForTime;
+  let endTime;
+
+  if (boss.weeklyRespawns) {
+    endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
+    while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
+    timers[boss.id] = { endTime, startedAt: killedAt, weekly: true, notifiedSoon: false, spawnAnnounced: false };
+  } else {
+    endTime = killedAt + boss.respawn * 1000;
+    timers[boss.id] = { endTime, startedAt: killedAt, notifiedSoon: false, spawnAnnounced: false };
+  }
+
+  try {
+    if (!cachedWebhookUrl) await autoLoadWebhook();
+    const ref = doc(db, 'timers', 'global');
+    await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
+    closeTimeModal();
+    addOrUpdateTimerElement(boss.id);
+    renderBossList();
+    await sendDiscordEmbedOnce('manual', boss);
+    alert(`✅ Manual time saved and synced for ${boss.name}.`);
+  } catch (err) {
+    console.error('❌ Failed to record manual time:', err);
+    alert('❌ Failed to record manual time to Firestore. Check console for details.');
+  }
+});
+
+// --- Patched sendDiscordEmbedOnce ---
+async function sendDiscordEmbedOnce(type, boss) {
+  try {
+    if (!boss || !type) return;
+    const key = `${boss.id}_${type}`;
+    const now = Date.now();
+    const localWindow = 2 * 60 * 1000;
+    if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
+      console.log(`🛑 Skipped duplicate ${type} notification for ${boss.name}`);
+      return;
+    }
+    localNotifCache[key] = now;
+    const ref = doc(db, 'notifications', key);
+    const thresholdMs = 2 * 60 * 1000;
+    const txResult = await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      const data = snap.exists() ? snap.data() : {};
+      let lastSentMs = 0;
+      if (data.lastSent && typeof data.lastSent.toMillis === 'function') lastSentMs = data.lastSent.toMillis();
+      else if (typeof data.lastSent === 'number') lastSentMs = data.lastSent;
+      else if (typeof data.lastSent === 'string') {
+        const parsed = Date.parse(data.lastSent);
+        if (!isNaN(parsed)) lastSentMs = parsed;
+      }
+      const nowMs = Date.now();
+      if (nowMs - lastSentMs < thresholdMs) {
+        console.log(`⏸️ Firestore indicates recent send for ${key}, skipping.`);
+        return false;
+      }
+      tx.set(ref, { lastSent: serverTimestamp() }, { merge: true });
+      const endTimeMs = timers[boss.id]?.endTime || Date.now();
+      return { endTimeMs };
+    });
+
+    if (!txResult) return;
+
+    const formattedTime = new Date(txResult.endTimeMs).toLocaleString('en-US', { timeZone: 'Asia/Tokyo', hour12: false });
+    let embed;
+    switch (type) {
+      case 'killed': embed = buildEmbed(`💀 ${boss.name} defeated!`, `Next respawn: ${formattedTime} JST`, 0xff3333); break;
+      case 'soon': embed = buildEmbed(`⚠️ ${boss.name} will respawn soon!`, `Next respawn: ${formattedTime} JST`, 0xffcc00); break;
+      case 'spawn': embed = buildEmbed(`⚔️ ${boss.name} has spawned!`, `Time to hunt!`, 0xb266ff); break;
+      case 'manual': embed = buildEmbed(`⏰ ${boss.name} manual time set`, `Next respawn: ${formattedTime} JST`, 0x3399ff); break;
+      default: return;
+    }
+    await sendDiscordEmbed(embed, '@everyone');
+    console.log(`✅ Sent ${type} notification for ${boss.name}`);
+  } catch (e) {
+    console.warn('⚠️ sendDiscordEmbedOnce error:', e);
+  }
+}
+  </script>
+ </body>
 </html>
