@@ -5,7 +5,7 @@
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
   <title>
-   L9 Time Tracker
+   FIELD BOSS TIME TRACKER
   </title>
   <link href="assets/images/logo.png" rel="icon" sizes="32x32" type="image/png"/>
   <link href="assets/images/logo.png" rel="icon" sizes="64x64" type="image/png"/>
@@ -953,21 +953,22 @@
       }
     }
 
-    .clear-icon {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      display: none;
-      color: var(--muted);
-      font-size: 14px;
-      transition: color 0.2s ease;
-    }
+		.clear-icon {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			cursor: pointer;
+			display: none;
+			color: var(--muted);
+			font-size: 14px;
+			line-height: 1;
+			transition: color 0.2s ease;
+		}
 
-    .clear-icon:hover {
-      color: var(--accent);
-    }
+		.clear-icon:hover {
+			color: var(--accent);
+		}
 
     /* === Custom Scrollbars for Boss List & Timers === */
     #bossList::-webkit-scrollbar,
@@ -1064,8 +1065,8 @@
     <div class="header-controls">
      <div class="search-wrapper" style="position:relative">
       <input class="search" id="bossSearch" placeholder="Search boss..."/>
-      <span class="clear-icon" id="clearSearch" style="position:absolute;right:12px;top:10px;cursor:pointer;display:none">
-       ×
+      <span class="clear-icon" id="clearSearch">
+       ✖
       </span>
      </div>
      <button aria-label="Settings" class="settings" id="settingsBtn">
