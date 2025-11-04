@@ -1253,19 +1253,38 @@
       return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
     }
 
-    function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-      const now = new Date(fromTime);
-      let soonest = null;
-      for (const { day, hour, minute } of respawns) {
-        const t = new Date(now);
-        t.setHours(hour, minute, 0, 0);
-        const delta = (day + 7 - now.getDay()) % 7;
-        t.setDate(now.getDate() + delta);
-        if (t.getTime() <= now.getTime()) t.setDate(t.getDate() + 7);
-        if (!soonest || t.getTime() < soonest.getTime()) soonest = t;
+  /* === FIXED TIMEZONE WEEKLY RESPAWN (ASIA/TOKYO) === */
+  function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+    const tz = 'Asia/Tokyo';
+
+    // Convert current time to Japan Standard Time regardless of client timezone
+    const nowJST = new Date(new Date(fromTime).toLocaleString('en-US', { timeZone: tz }));
+
+    let soonest = null;
+
+    for (const { day, hour, minute } of respawns) {
+      // Create a base JST date
+      const target = new Date(nowJST);
+
+      // Calculate days until next respawn (0 = Sunday)
+      const delta = (day + 7 - nowJST.getDay()) % 7;
+      target.setDate(nowJST.getDate() + delta);
+      target.setHours(hour, minute, 0, 0);
+
+      // If the calculated time already passed this week, move to next week
+      if (target <= nowJST) {
+        target.setDate(target.getDate() + 7);
       }
-      return soonest ? soonest.getTime() : now.getTime();
+
+      // Normalize to actual JST timestamp (important for consistent epoch)
+      const targetJST = new Date(target.toLocaleString('en-US', { timeZone: tz }));
+
+      if (!soonest || targetJST < soonest) soonest = targetJST;
     }
+
+    // Fallback to now (rare)
+    return soonest ? soonest.getTime() : nowJST.getTime();
+  }
 
     // ✅ Import Firebase core and services
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
@@ -1477,7 +1496,7 @@
       }
     }
 
-    // === patched sendDiscordEmbedOnce: safe-handling when transaction returns false ===
+    // === PATCHED sendDiscordEmbedOnce (step 4): includes type + UTC + JST display ===
     async function sendDiscordEmbedOnce(type, boss) {
       try {
         if (!boss || !type) return;
@@ -1503,7 +1522,6 @@
         const txResult = await runTransaction(db, async (tx) => {
           const snap = await tx.get(ref);
           const data = snap.exists() ? snap.data() : {};
-          // support Firestore Timestamp (.toMillis), numeric ms, or ISO string
           let lastSentMs = 0;
           if (data.lastSent && typeof data.lastSent.toMillis === 'function') {
             lastSentMs = data.lastSent.toMillis();
@@ -1521,7 +1539,7 @@
           }
 
           // write Firestore server timestamp
-          tx.set(ref, { lastSent: serverTimestamp() }, { merge: true });
+          tx.set(ref, { lastSent: serverTimestamp(), type }, { merge: true });
           const endTimeMs = timers[boss.id]?.endTime || Date.now();
           return { endTimeMs };
         });
@@ -1532,33 +1550,58 @@
           return;
         }
 
-        const formattedTime = formatShortDateTime(txResult.endTimeMs || (timers[boss.id]?.endTime || Date.now()));
+        const tz = 'Asia/Tokyo';
+        const endTimeMs = txResult.endTimeMs || (timers[boss.id]?.endTime || Date.now());
 
-        // Build embed by type
-        let embed;
+        // Format both UTC and JST timestamps
+        const utcStr = new Date(endTimeMs).toISOString().replace('T', ' ').replace('Z', ' UTC');
+        const jstStr = new Date(endTimeMs).toLocaleString('en-US', {
+          timeZone: tz,
+          hour12: false,
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }) + ' JST';
+
+        // Build embed by type with both timezones displayed
+        let title, color, desc;
         switch (type) {
           case 'killed':
-            embed = buildEmbed(`💀 ${boss.name} defeated!`, `Next respawn: ${formattedTime}`, 0xff3333);
+            title = `💀 ${boss.name} defeated!`;
+            color = 0xff3333;
+            desc = `Next respawn:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
             break;
           case 'soon':
-            embed = buildEmbed(`⚠️ ${boss.name} will respawn within 5 minutes!`, `Next respawn: ${formattedTime}`, 0xffcc00);
+            title = `⚠️ ${boss.name} will respawn soon!`;
+            color = 0xffcc00;
+            desc = `Spawn expected within 30 min:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
             break;
           case 'spawn':
-            embed = buildEmbed(`⚔️ ${boss.name} has spawned!`, `It’s time to hunt!`, 0xb266ff);
+            title = `⚔️ ${boss.name} has spawned!`;
+            color = 0xb266ff;
+            desc = `It’s time to hunt!\n🕒 ${jstStr}\n🌐 ${utcStr}`;
             break;
           case 'manual':
-            embed = buildEmbed(`⏰ ${boss.name} manual time set`, `Next respawn: ${formattedTime}`, 0x3399ff);
+            title = `⏰ ${boss.name} manual time set`;
+            color = 0x3399ff;
+            desc = `Next respawn:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
             break;
           default:
             console.warn(`⚠️ Unknown notification type: ${type}`);
             return;
         }
 
-        // Final send
+        const embed = buildEmbed(title, desc, color);
         await sendDiscordEmbed(embed);
-        console.log(`✅ Sent ${type} notification for ${boss.name}`);
+
+        console.log(`✅ Sent ${type} notification for ${boss.name} at ${utcStr} (${jstStr})`);
       } catch (e) {
-        if (e?.code === 'ABORTED') { console.warn('ℹ️ Transaction aborted (expected):', e); return; }
+        if (e?.code === 'ABORTED') {
+          console.warn('ℹ️ Transaction aborted (expected):', e);
+          return;
+        }
         console.warn('⚠️ sendDiscordEmbedOnce error:', e);
       }
     }
@@ -1621,30 +1664,53 @@
       }
     }
 
-    // -------------------------
-    // Actions: start / clear / reset
-    // -------------------------
+
+    /* === FIXED TIMEZONE START TIMER (ASIA/TOKYO) === */
     async function startTimer(bossId) {
+      const tz = 'Asia/Tokyo';
       const boss = BOSSES.find(b => b.id === bossId);
       if (!boss) return;
-      const now = Date.now();
+
+      // Convert the client's current time to JST, ensuring all players share same reference
+      const nowJST = new Date(new Date().toLocaleString('en-US', { timeZone: tz }));
+      const now = nowJST.getTime();
+
       let endTime;
+
       if (boss.weeklyRespawns) {
-        endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-        timers[bossId] = { endTime, startedAt: now, weekly: true, notifiedSoon: false, spawnAnnounced: false };
+        // Use JST-based weekly respawn calculation
+        endTime = getNextWeeklyRespawn(boss.weeklyRespawns, now);
+        timers[bossId] = {
+          endTime,
+          startedAt: now,
+          weekly: true,
+          notifiedSoon: false,
+          spawnAnnounced: false
+        };
       } else {
+        // Fixed respawn timer (seconds → ms)
         endTime = now + boss.respawn * 1000;
-        timers[bossId] = { endTime, startedAt: now, notifiedSoon: false, spawnAnnounced: false };
+        timers[bossId] = {
+          endTime,
+          startedAt: now,
+          notifiedSoon: false,
+          spawnAnnounced: false
+        };
       }
 
-      // deduped write
+      // === Save to Firestore ===
       await saveTimerToFirestoreOnce(bossId);
+
+      // === Update UI ===
       addOrUpdateTimerElement(bossId);
       renderBossList();
 
-      console.log(`🕹️ startTimer: started ${bossId} -> ${new Date(timers[bossId].endTime).toISOString()}`);
+      // === Debug log (ISO + JST readable) ===
+      console.log(
+        `🕹️ startTimer: started ${bossId} -> ${new Date(timers[bossId].endTime).toISOString()} (JST: ${new Date(timers[bossId].endTime).toLocaleString('en-US', { timeZone: tz })})`
+      );
 
-      // send killed embed (deduped)
+      // === Send "killed" embed (deduped) ===
       await sendDiscordEmbedOnce('killed', boss);
     }
 
@@ -1723,21 +1789,26 @@
 
     cancelTimeBtn.addEventListener('click', closeTimeModal);
 
-    saveTimeBtn.addEventListener('click', async () => {
+    saveTimeBtn.addEventListener('click', async () => { 
       const input = killTimeInput.value;
       if (!input || !currentBossForTime) return;
 
-      const parsed = new Date(input);
-      if (isNaN(parsed)) {
+      /* === Parse manual input as Asia/Tokyo time === */
+      const tz = 'Asia/Tokyo';
+      const manualLocal = new Date(input);
+      if (isNaN(manualLocal)) {
         alert('Invalid date format.');
         return;
       }
 
-      const killedAt = parsed.getTime();
+      // Convert input to Japan Standard Time
+      const manualTime = new Date(manualLocal.toLocaleString('en-US', { timeZone: tz }));
+      const killedAt = manualTime.getTime();
+
       const boss = currentBossForTime;
       let endTime;
 
-      // ✅ Calculate respawn
+      // ✅ Calculate respawn using JST reference
       if (boss.weeklyRespawns) {
         endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
         while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
@@ -1767,7 +1838,7 @@
         // ✅ Correct Firestore structure
         await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
 
-        console.log(`✅ Firestore updated: ${boss.name} manual time saved.`);
+        console.log(`✅ Firestore updated: ${boss.name} manual time saved (JST).`);
 
         // ✅ Update local UI
         closeTimeModal();
@@ -1777,7 +1848,7 @@
         // ✅ Send Discord notification (manual entry always sends)
         const formattedTime = formatShortDateTime(endTime);
         const embed = buildEmbed(
-          `⏰ ${boss.name} manual time set`,
+          `⏰ ${boss.name} manual time set (JST)`,
           `Next respawn: ${formattedTime}`,
           0x3399ff
         );
@@ -1902,12 +1973,17 @@
       }
     });
 
-    // Safer, locale-aware short datetime formatter
+    /* === TIMEZONE-CONSISTENT DATETIME FORMAT (ASIA/TOKYO) === */
     function formatShortDateTime(ms) {
-      const d = new Date(ms);
-      const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
-      const formatted = d.toLocaleString('en-US', options);
-      return formatted.replace(/\s{2,}/g, ' ').replace(/\s*,\s*/g, ', ').trim();
+      return new Date(ms).toLocaleString('en-US', {
+        timeZone: 'Asia/Tokyo',
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }) + ' JST';
     }
 
     function addOrUpdateTimerElement(bossId) {
@@ -2339,5 +2415,4 @@
     <span id="onlineCount">0</span> online
   </div>
 </body>
-
 </html>
