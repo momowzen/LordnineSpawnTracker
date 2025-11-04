@@ -1602,22 +1602,22 @@
           case 'killed':
             title = `💀 ${boss.name} defeated!`;
             color = 0xff3333;
-            desc = `Next respawn:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
+            desc = `Next respawn: ${jstStr}`;
             break;
           case 'soon':
             title = `⚠️ ${boss.name} will respawn soon!`;
             color = 0xffcc00;
-            desc = `Spawn expected within 5 min:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
+            desc = `Spawn expected in 5 minutes.\nSpawn Time: ${jstStr}`;
             break;
           case 'spawn':
             title = `⚔️ ${boss.name} has spawned!`;
             color = 0xb266ff;
-            desc = `It’s time to hunt!\n🕒 ${jstStr}\n🌐 ${utcStr}`;
+            desc = `It’s time to hunt!`;
             break;
           case 'manual':
             title = `⏰ ${boss.name} manual time set`;
             color = 0x3399ff;
-            desc = `Next respawn:\n🕒 ${jstStr}\n🌐 ${utcStr}`;
+            desc = `Next respawn: ${jstStr}`;
             break;
           default:
             console.warn(`⚠️ Unknown notification type: ${type}`);
