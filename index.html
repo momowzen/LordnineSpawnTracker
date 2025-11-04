@@ -2143,30 +2143,58 @@
         }
 
         // Advance timer to next cycle when expired (after spawn handling)
-					if (remainingMs <= 0) {
-						let nextTime;
+				if (remainingMs <= 0) {
+					// Trigger spawn notification once
+					if (!info.spawnAnnounced) {
+						console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+						info.spawnAnnounced = true;
+						await sendDiscordEmbedOnce('spawn', boss);
+					}
 
+					// Temporarily hide boss visuals
+					const bossCard = document.querySelector(`[data-id="${id}"]`);
+					if (bossCard) {
+						bossCard.classList.remove('dead'); // remove SPAWNING effect
+						bossCard.style.opacity = '0.3';
+					}
+
+					console.log(`⏳ ${boss.name} entering 5-minute spawn window...`);
+
+					// Wait 5 minutes (300000 ms) before registering new timer
+					setTimeout(async () => {
+						const nowLater = Date.now();
+
+						let nextTime;
 						if (boss.weeklyRespawns) {
-							// Weekly bosses follow fixed schedule — no delay
-							nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-							while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
+							// Weekly: schedule next weekly without delay
+							nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, nowLater + 1);
+							while (nextTime <= nowLater) nextTime += 7 * 24 * 60 * 60 * 1000;
 						} else {
-							// Regular bosses: auto-add 5 minutes only when timer naturally hits 0
-							nextTime = now + boss.respawn * 1000 + 5 * 60 * 1000;
+							// Non-weekly: full respawn cycle after the 5-minute delay
+							nextTime = nowLater + boss.respawn * 1000;
 						}
 
 						timers[id] = {
 							endTime: nextTime,
-							startedAt: now,
+							startedAt: nowLater,
 							weekly: !!boss.weeklyRespawns,
 							notifiedSoon: false,
 							spawnAnnounced: false
 						};
 
-						savePromises.push(saveTimerToFirestoreOnce(id));
+						saveTimerToFirestoreOnce(id);
 						addOrUpdateTimerElement(id);
-						continue;
-					}
+
+						// Restore visuals
+						if (bossCard) {
+							bossCard.style.opacity = '1';
+						}
+
+						console.log(`✅ ${boss.name} respawn timer restarted after 5-minute delay.`);
+					}, 5 * 60 * 1000);
+
+					continue;
+				}
 
       }
 
