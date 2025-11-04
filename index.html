@@ -2143,27 +2143,31 @@
         }
 
         // Advance timer to next cycle when expired (after spawn handling)
-        if (remainingMs <= 0) {
-          let nextTime;
-          if (boss.weeklyRespawns) {
-            nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-            while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
-          } else {
-            nextTime = now + boss.respawn * 1000;
-          }
+					if (remainingMs <= 0) {
+						let nextTime;
 
-          timers[id] = {
-            endTime: nextTime,
-            startedAt: now,
-            weekly: !!boss.weeklyRespawns,
-            notifiedSoon: false,
-            spawnAnnounced: false
-          };
+						if (boss.weeklyRespawns) {
+							// Weekly bosses follow fixed schedule — no delay
+							nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+							while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
+						} else {
+							// Regular bosses: auto-add 5 minutes only when timer naturally hits 0
+							nextTime = now + boss.respawn * 1000 + 5 * 60 * 1000;
+						}
 
-          savePromises.push(saveTimerToFirestoreOnce(id));
-          addOrUpdateTimerElement(id);
-          continue;
-        }
+						timers[id] = {
+							endTime: nextTime,
+							startedAt: now,
+							weekly: !!boss.weeklyRespawns,
+							notifiedSoon: false,
+							spawnAnnounced: false
+						};
+
+						savePromises.push(saveTimerToFirestoreOnce(id));
+						addOrUpdateTimerElement(id);
+						continue;
+					}
+
       }
 
       if (savePromises.length) {
