@@ -48,37 +48,49 @@
       gap: 12px;
     }
 
-    header.app-header {
-      flex: 0 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
-      border: 1px solid var(--glass-border);
-      padding: 8px 12px;
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(6px);
-    }
-
-    .app-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-		/* === LOGO STYLE (no glow) === */
-		.logo-img {
-			height: 35px;
-			width: auto;
-			border-radius: 25%; /* rounded corners only */
-			transition: transform 0.3s ease;
-			display: inline-block;
+		/* === HEADER CONTAINER === */
+		header.app-header {
+			flex: 0 0 auto;
+			display: flex;
+			align-items: center; /* centers everything vertically */
+			justify-content: space-between;
+			background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
+			border: 1px solid var(--glass-border);
+			padding: 10px 16px; /* slightly increased for balanced top/bottom margin */
+			border-radius: 8px;
+			box-shadow: var(--shadow);
+			backdrop-filter: blur(6px);
+			box-sizing: border-box;
 		}
 
-		/* Simple hover scale (no glow) */
+		/* === APP TITLE GROUP (logo + text) === */
+		.app-title {
+			display: flex;
+			align-items: center; /* centers logo + text vertically */
+			gap: 10px;
+			font-weight: 700;
+			color: var(--accent);
+		}
+
+		/* === LOGO WRAPPER === */
+		.logo {
+			display: flex;
+			align-items: center; /* centers the logo vertically inside wrapper */
+			justify-content: center;
+		}
+
+		/* === LOGO IMAGE === */
+		.logo-img {
+			height: 40px;
+			width: auto;
+			border-radius: 25%; /* rounded corners only */
+			display: block;
+			object-fit: contain;
+			transition: transform 0.3s ease;
+			margin: 0;
+		}
+
+		/* === Hover effect (simple scale-up) === */
 		.logo-img:hover {
 			transform: scale(1.05);
 		}
