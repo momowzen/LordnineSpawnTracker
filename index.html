@@ -1302,8 +1302,8 @@
       { id: 'Asta', name: 'Asta', respawn: 60 * 60 * 62 },
       { id: 'Supore', name: 'Supore', respawn: 60 * 60 * 62 },
       { id: 'Chaiflock', name: 'Chaiflock', weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }] },
-      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }] },
-      { id: 'Test Boss', name: 'Test Boss', respawn: 60 * 5 + 10 }
+      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }] }
+      //{ id: 'Test Boss', name: 'Test Boss', respawn: 60 * 5 + 10 }
     ];
 
     // -------------------------
@@ -1381,38 +1381,42 @@
       return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
     }
 
-  /* === FIXED TIMEZONE WEEKLY RESPAWN (ASIA/TOKYO) === */
-  function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-    const tz = 'Asia/Tokyo';
+		function toJSTDate(timestamp) {
+			return new Date(new Date(timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+		}
 
-    // Convert current time to Japan Standard Time regardless of client timezone
-    const nowJST = new Date(new Date(fromTime).toLocaleString('en-US', { timeZone: tz }));
+		/* === FIXED TIMEZONE WEEKLY RESPAWN (ASIA/TOKYO) === */
+		function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+			const tz = 'Asia/Tokyo';
 
-    let soonest = null;
+			// Convert current time to Japan Standard Time regardless of client timezone
+			const nowJST = new Date(new Date(fromTime).toLocaleString('en-US', { timeZone: tz }));
 
-    for (const { day, hour, minute } of respawns) {
-      // Create a base JST date
-      const target = new Date(nowJST);
+			let soonest = null;
 
-      // Calculate days until next respawn (0 = Sunday)
-      const delta = (day + 7 - nowJST.getDay()) % 7;
-      target.setDate(nowJST.getDate() + delta);
-      target.setHours(hour, minute, 0, 0);
+			for (const { day, hour, minute } of respawns) {
+				// Create a base JST date
+				const target = new Date(nowJST);
 
-      // If the calculated time already passed this week, move to next week
-      if (target <= nowJST) {
-        target.setDate(target.getDate() + 7);
-      }
+				// Calculate days until next respawn (0 = Sunday)
+				const delta = (day + 7 - nowJST.getDay()) % 7;
+				target.setDate(nowJST.getDate() + delta);
+				target.setHours(hour, minute, 0, 0);
 
-      // Normalize to actual JST timestamp (important for consistent epoch)
-      const targetJST = new Date(target.toLocaleString('en-US', { timeZone: tz }));
+				// If the calculated time already passed this week, move to next week
+				if (target <= nowJST) {
+					target.setDate(target.getDate() + 7);
+				}
 
-      if (!soonest || targetJST < soonest) soonest = targetJST;
-    }
+				// Normalize to actual JST timestamp (important for consistent epoch)
+				const targetJST = new Date(target.toLocaleString('en-US', { timeZone: tz }));
 
-    // Fallback to now (rare)
-    return soonest ? soonest.getTime() : nowJST.getTime();
-  }
+				if (!soonest || targetJST < soonest) soonest = targetJST;
+			}
+
+			// Fallback to now (rare)
+			return soonest ? soonest.getTime() : nowJST.getTime();
+		}
 
     // ✅ Import Firebase core and services
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
@@ -1456,539 +1460,549 @@
     const db = getFirestore(app);
     const rtdb = getDatabase(app);
 
-    // === Presence & Global Sync Management ===
-
-    // ✅ Online presence tracking (Realtime Database)
-    const presenceRef = ref(rtdb, "presence");
-    const myConnection = push(presenceRef);
-    set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
-    onDisconnect(myConnection).remove();
-
-    onValue(presenceRef, (snap) => {
-      const count = snap.size || snap.numChildren();
-      let el = document.getElementById("onlineCount");
-      if (!el) {
-        el = document.createElement("div");
-        el.id = "onlineCount";
-        el.className = "online-users";
-        document.body.appendChild(el);
-      }
-      el.textContent = `🟢 Online: ${count}`;
-    });
-
-    // ✅ Firestore-based Global Synchronization
-    let lastTriggeredBySelf = null;
-    const syncBtn = document.getElementById('syncBtn');
-    const refreshDocRef = doc(db, 'meta', 'refresh'); // Firestore doc for sync trigger
-
-    // --- Trigger Sync ---
-    syncBtn.addEventListener('click', async () => {
-      if (confirm("Synchronize all clients? This will reload every user's page.")) {
-        const now = Date.now();
-        lastTriggeredBySelf = now;
-        await setDoc(refreshDocRef, { forceRefresh: now });
-        alert('✅ Synchronization triggered for all connected users.');
-        console.log('🔁 sync triggered at', new Date(now).toISOString());
-      }
-    });
-
-    // --- Auto-refresh on Firestore update ---
-    let hasInitialized = false;
-    onSnapshot(refreshDocRef, (snapshot) => {
-      const data = snapshot.data();
-      if (!data) return;
-      const lastTrigger = data.forceRefresh;
-      const lastTriggerMs =
-        lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
-
-      if (!hasInitialized) { hasInitialized = true; return; }
-      if (lastTriggerMs === lastTriggeredBySelf) return;
-
-      console.log('🔄 Firestore refresh triggered, reloading page.');
-      location.reload();
-    });
-
-    // ✅ Safe Firestore write helper — ensures reliable merges
-    async function safeWrite(ref, payload) {
-      try {
-        await updateDoc(ref, payload);
-      } catch (err) {
-        console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
-        await setDoc(ref, payload, { merge: true });
-      }
-    }
-
-    // --- Load Discord webhook on startup (Firestore version) ---
-    async function autoLoadWebhook() {
-      try {
-        const docRef = doc(db, 'config', 'discordWebhook');
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          cachedWebhookUrl = data.url || null;
-          console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
-        } else {
-          console.warn("⚠️ No webhook found in Firestore config.");
-        }
-      } catch (e) {
-        console.error("❌ Failed to auto-load webhook:", e);
-      }
-    }
-
-    // -------------------------
-    // Webhook load/save/clear
-    // -------------------------
-    async function loadWebhookFromFirestore() {
-      try {
-        const docRef = doc(db, 'config', 'discordWebhook');
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          cachedWebhookUrl = data.url || null;
-          webhookInput.value = cachedWebhookUrl || '';
-          console.log('✅ Loaded webhook from Firestore.');
-          return cachedWebhookUrl;
-        } else {
-          cachedWebhookUrl = null;
-          webhookInput.value = '';
-          console.log('ℹ️ No webhook stored in Firestore.');
-          return null;
-        }
-      } catch (e) {
-        console.warn('load webhook err', e);
-        return null;
-      }
-    }
-
-    async function saveWebhookToFirestore(url) {
-      try {
-        await setDoc(doc(db, 'config', 'discordWebhook'), { url });
-        cachedWebhookUrl = url;
-        webhookInput.value = url;
-        alert('✅ Webhook saved.');
-        console.log('✅ Webhook saved to Firestore.');
-      } catch (e) {
-        console.warn('save webhook err', e);
-        alert('❌ Failed to save webhook.');
-      }
-    }
-
-    async function clearWebhookInFirestore() {
-      try {
-        await deleteDoc(doc(db, 'config', 'discordWebhook'));
-        cachedWebhookUrl = null;
-        webhookInput.value = '';
-        alert('✅ Webhook cleared.');
-        console.log('✅ Webhook cleared from Firestore.');
-      } catch (e) {
-        console.warn('clear webhook err', e);
-        alert('❌ Failed to clear webhook.');
-      }
-    }
-
-    // -------------------------
-    // Discord send helpers
-    // -------------------------
-    async function sendDiscordEmbed(embed) {
-      const webhook =
-        cachedWebhookUrl ||
-        (webhookInput && webhookInput.value.trim()) ||
-        null;
-
-      if (!webhook) {
-        console.warn("⚠️ No Discord webhook configured.");
-        return;
-      }
-
-      const mentionTarget = '@everyone'; // no @everyone by default
-
-      try {
-        const payload = {
-          content: mentionTarget,
-          embeds: [embed],
-        };
-
-        const res = await fetch(webhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (!res.ok) {
-          console.error("❌ Discord webhook failed:", res.status, await res.text());
-        } else {
-          console.log("✅ Discord embed sent successfully.");
-        }
-      } catch (err) {
-        console.error("⚠️ Discord webhook error:", err);
-      }
-    }
-
-    // === PATCHED sendDiscordEmbedOnce (step 4): includes type + UTC + JST display ===
-    async function sendDiscordEmbedOnce(type, boss) {
-      try {
-        if (!boss || !type) return;
-
-        const key = `${boss.id}_${type}`;
-        const now = Date.now();
-
-        // Local dedupe guard first (fast path)
-        const localWindow = 2 * 60 * 1000; // 2 minutes
-        if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
-          console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
-          return;
-        }
-
-        // Reserve locally right away to prevent double local sends
-        localNotifCache[key] = now;
-        console.log(`🔒 Local reserve set for ${key}`);
-
-        const ref = doc(db, 'notifications', key);
-        const thresholdMs = 2 * 60 * 1000; // 2-minute dedupe window (server side)
-
-        // Firestore transaction ensures only one client writes lastSent
-        const txResult = await runTransaction(db, async (tx) => {
-          const snap = await tx.get(ref);
-          const data = snap.exists() ? snap.data() : {};
-          let lastSentMs = 0;
-          if (data.lastSent && typeof data.lastSent.toMillis === 'function') {
-            lastSentMs = data.lastSent.toMillis();
-          } else if (typeof data.lastSent === 'number') {
-            lastSentMs = data.lastSent;
-          } else if (typeof data.lastSent === 'string') {
-            const parsed = Date.parse(data.lastSent);
-            if (!isNaN(parsed)) lastSentMs = parsed;
-          }
-
-          const nowMs = Date.now();
-          if (nowMs - lastSentMs < thresholdMs) {
-            console.log(`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${new Date(lastSentMs).toISOString()})`);
-            return false; // signal: skip send
-          }
-
-          // write Firestore server timestamp
-          tx.set(ref, { lastSent: serverTimestamp(), type }, { merge: true });
-          const endTimeMs = timers[boss.id]?.endTime || Date.now();
-          return { endTimeMs };
-        });
-
-        // If transaction returned false => recent send, so skip gracefully
-        if (!txResult) {
-          console.log(`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`);
-          return;
-        }
-
-        const tz = 'Asia/Tokyo';
-        const endTimeMs = txResult.endTimeMs || (timers[boss.id]?.endTime || Date.now());
-
-        // Format both UTC and JST timestamps
-        const utcStr = new Date(endTimeMs).toISOString().replace('T', ' ').replace('Z', ' UTC');
-        const jstStr = new Date(endTimeMs).toLocaleString('en-US', {
-          timeZone: tz,
-          hour12: false,
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        }) + ' JST';
-
-        // Build embed by type with both timezones displayed
-        let title, color, desc;
-        switch (type) {
-          case 'killed':
-            title = `💀 ${boss.name} has been defeated!`;
-            color = 0xff3333;
-            desc = `Next respawn: ${jstStr}`;
-            break;
-          case 'soon':
-            title = `⚠️ ${boss.name} will respawn soon!`;
-            color = 0xffcc00;
-            desc = `Spawn expected in 5 minutes.\nSpawn Time: ${jstStr}`;
-            break;
-          case 'spawn':
-            title = `⚔️ ${boss.name} has spawned!`;
-            color = 0xb266ff;
-            desc = `It’s time to hunt!`;
-            break;
-          case 'manual':
-            title = `⏰ ${boss.name} manual time set.`;
-            color = 0x3399ff;
-            desc = `Next respawn: ${jstStr}`;
-            break;
-          default:
-            console.warn(`⚠️ Unknown notification type: ${type}`);
-            return;
-        }
-
-        const embed = buildEmbed(title, desc, color);
-        await sendDiscordEmbed(embed);
-
-        console.log(`✅ Sent ${type} notification for ${boss.name} at ${utcStr} (${jstStr})`);
-      } catch (e) {
-        if (e?.code === 'ABORTED') {
-          console.warn('ℹ️ Transaction aborted (expected):', e);
-          return;
-        }
-        console.warn('⚠️ sendDiscordEmbedOnce error:', e);
-      }
-    }
-
-    function buildEmbed(title, description, colorHex) {
-      return {
-        title,
-        description,
-        color: colorHex,
-        footer: { text: 'Lordnine Tracker' },
-        timestamp: new Date().toISOString()
-      };
-    }
-
-    async function testWebhook() {
-      if (!cachedWebhookUrl && !webhookInput.value.trim()) {
-        alert('No webhook URL configured.');
-        return;
-      }
-      if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
-      await sendDiscordEmbed(buildEmbed('🧪 Webhook test successful!', 'This is a test message from Lord Nine Tracker.', 0x00ff99));
-      alert('Test sent (check your Discord).');
-    }
-
-    // -------------------------
-    // Firestore save dedupe helpers
-    // -------------------------
-    async function saveTimersToFirestore() {
-      try {
-        await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true });
-        console.log('✅ saveTimersToFirestore: saved timers document.');
-      } catch (e) {
-        console.warn('saveTimersToFirestore err', e);
-      }
-    }
-
-    // Save or update a single boss timer in Firestore safely, with dedupe
-    async function saveTimerToFirestoreOnce(bossId) {
-      try {
-        const ref = doc(db, 'timers', 'global');
-        const data = timers[bossId];
-        const json = JSON.stringify(data || {});
-        if (lastWriteCache[bossId] === json) {
-          console.log(`ℹ️ Skipping redundant write for ${bossId}`);
-          return;
-        }
-        lastWriteCache[bossId] = json;
-        await safeWrite(ref, { [`timers.${bossId}`]: data });
-        console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
-      } catch (e) {
-        console.warn('saveTimerToFirestoreOnce err', e);
-      }
-    }
-
-    async function saveTimers() {
-      try {
-        await saveTimersToFirestore();
-      } catch (e) {
-        console.warn('saveTimers err', e);
-      }
-    }
-
-
-    /* === FIXED TIMEZONE START TIMER (ASIA/TOKYO) === */
-    async function startTimer(bossId) {
-      const tz = 'Asia/Tokyo';
-      const boss = BOSSES.find(b => b.id === bossId);
-      if (!boss) return;
-
-      // Convert the client's current time to JST, ensuring all players share same reference
-      const nowJST = new Date(new Date().toLocaleString('en-US', { timeZone: tz }));
-      const now = nowJST.getTime();
-
-      let endTime;
-
-      if (boss.weeklyRespawns) {
-        // Use JST-based weekly respawn calculation
-        endTime = getNextWeeklyRespawn(boss.weeklyRespawns, now);
-        timers[bossId] = {
-          endTime,
-          startedAt: now,
-          weekly: true,
-          notifiedSoon: false,
-          spawnAnnounced: false
-        };
-      } else {
-        // Fixed respawn timer (seconds → ms)
-        endTime = now + boss.respawn * 1000;
-        timers[bossId] = {
-          endTime,
-          startedAt: now,
-          notifiedSoon: false,
-          spawnAnnounced: false
-        };
-      }
-
-      // === Save to Firestore ===
-      await saveTimerToFirestoreOnce(bossId);
-
-      // === Update UI ===
-      addOrUpdateTimerElement(bossId);
-      renderBossList();
-
-      // === Debug log (ISO + JST readable) ===
-      console.log(
-        `🕹️ startTimer: started ${bossId} -> ${new Date(timers[bossId].endTime).toISOString()} (JST: ${new Date(timers[bossId].endTime).toLocaleString('en-US', { timeZone: tz })})`
-      );
-
-      // === Send "killed" embed (deduped) ===
-      await sendDiscordEmbedOnce('killed', boss);
-    }
-
-    async function clearTimer(bossId) {
-      const boss = BOSSES.find(b => b.id === bossId);
-      const ref = doc(db, 'timers', 'global');
-
-      if (!timers[bossId]) {
-        console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
-        return;
-      }
-
-      delete timers[bossId]; // remove locally
-
-      try {
-        // Ensure the document exists first
-        const snap = await getDoc(ref);
-        if (!snap.exists()) {
-          console.warn('⚠️ timers/global did not exist. Creating it first...');
-          await setDoc(ref, { timers: {} }, { merge: true });
-        }
-
-        // ✅ Delete nested key with updateDoc and field path
-        await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
-
-        console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
-      } catch (err) {
-        console.error('❌ Firestore delete failed for', bossId, err);
-        alert('Failed to clear timer in Firestore. Please retry.');
-      }
-
-      // Update UI
-      removeTimerElement(bossId);
-      renderBossList();
-
-      console.log(`🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`);
-    }
-
-    async function resetAll() {
-      if (!confirm('Clear all non-weekly timers?')) return;
-      const preserved = {};
-      for (const [id, info] of Object.entries(timers)) {
-        const boss = BOSSES.find(b => b.id === id);
-        if (boss && boss.weeklyRespawns) preserved[id] = info;
-      }
-      timers = preserved;
-
-      try {
-        await setDoc(doc(db, 'timers', 'global'), { timers }); // overwrite entire timers doc
-        rebuildTimersPanel();
-        renderBossList();
-        alert('✅ All non-weekly timers reset (Firestore updated).');
-        console.log('🔁 resetAll: fully reset timers and updated Firestore.');
-      } catch (e) {
-        console.warn('❌ resetAll Firestore update failed', e);
-        alert('⚠️ Failed to update Firestore.');
-      }
-    }
-
-    // -------------------------
-    // Modal for manual time
-    // -------------------------
-    function openTimeModal(bossId) {
-      const boss = BOSSES.find(b => b.id === bossId);
-      if (!boss) return;
-      currentBossForTime = boss;
-      modalName.textContent = boss.name;
-      killTimeInput.value = '';
-      modal.style.display = 'flex';
-    }
-
-    function closeTimeModal() {
-      modal.style.display = 'none';
-      currentBossForTime = null;
-    }
-
-    cancelTimeBtn.addEventListener('click', closeTimeModal);
-
-    saveTimeBtn.addEventListener('click', async () => { 
-      const input = killTimeInput.value;
-      if (!input || !currentBossForTime) return;
-
-      /* === Parse manual input as Asia/Tokyo time === */
-      const tz = 'Asia/Tokyo';
-      const manualLocal = new Date(input);
-      if (isNaN(manualLocal)) {
-        alert('Invalid date format.');
-        return;
-      }
-
-      // Convert input to Japan Standard Time
-      const manualTime = new Date(manualLocal.toLocaleString('en-US', { timeZone: tz }));
-      const killedAt = manualTime.getTime();
-
-      const boss = currentBossForTime;
-      let endTime;
-
-      // ✅ Calculate respawn using JST reference
-      if (boss.weeklyRespawns) {
-        endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
-        while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
-        timers[boss.id] = {
-          endTime,
-          startedAt: killedAt,
-          weekly: true,
-          notifiedSoon: false,
-          spawnAnnounced: false,
-        };
-      } else {
-        endTime = killedAt + boss.respawn * 1000;
-        timers[boss.id] = {
-          endTime,
-          startedAt: killedAt,
-          notifiedSoon: false,
-          spawnAnnounced: false,
-        };
-      }
-
-      try {
-        // ✅ Ensure webhook is loaded before use
-        if (!cachedWebhookUrl) await autoLoadWebhook();
-
-        const ref = doc(db, 'timers', 'global');
-
-        // ✅ Correct Firestore structure
-        await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
-
-        console.log(`✅ Firestore updated: ${boss.name} manual time saved (JST).`);
-
-        // ✅ Update local UI
-        closeTimeModal();
-        addOrUpdateTimerElement(boss.id);
-        renderBossList();
-
-        // ✅ Send Discord notification (manual entry always sends)
-        const formattedTime = formatShortDateTime(endTime);
-        const embed = buildEmbed(
-          `⏰ ${boss.name} manual time set (JST)`,
-          `Next respawn: ${formattedTime}`,
-          0x3399ff
-        );
-        await sendDiscordEmbedOnce('manual', boss);
-
-        console.log(`📡 Discord notification sent for ${boss.name}.`);
-        alert(`✅ Manual time saved and synced for ${boss.name}.`);
-      } catch (err) {
-        console.error('❌ Failed to record manual time:', err);
-        alert('❌ Failed to record manual time to Firestore. Check console for details.');
-      }
-    });
+			// === Presence & Global Sync Management ===
+
+			// ✅ Online presence tracking (Realtime Database)
+			const presenceRef = ref(rtdb, "presence");
+			const myConnection = push(presenceRef);
+			set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
+			onDisconnect(myConnection).remove();
+
+			onValue(presenceRef, (snap) => {
+				const count = snap.size || snap.numChildren();
+				let el = document.getElementById("onlineCount");
+				if (!el) {
+					el = document.createElement("div");
+					el.id = "onlineCount";
+					el.className = "online-users";
+					document.body.appendChild(el);
+				}
+				el.textContent = `🟢 Online: ${count}`;
+			});
+
+			// ✅ Firestore-based Global Synchronization
+			let lastTriggeredBySelf = null;
+			const syncBtn = document.getElementById('syncBtn');
+			const refreshDocRef = doc(db, 'meta', 'refresh'); // Firestore doc for sync trigger
+
+			// --- Trigger Sync ---
+			syncBtn.addEventListener('click', async () => {
+				if (confirm("Synchronize all clients? This will reload every user's page.")) {
+					const now = Date.now();
+					lastTriggeredBySelf = now;
+					await setDoc(refreshDocRef, { forceRefresh: now });
+					alert('✅ Synchronization triggered for all connected users.');
+					console.log('🔁 sync triggered at', new Date(now).toISOString());
+				}
+			});
+
+			// --- Auto-refresh on Firestore update ---
+			let hasInitialized = false;
+			onSnapshot(refreshDocRef, (snapshot) => {
+				const data = snapshot.data();
+				if (!data) return;
+				const lastTrigger = data.forceRefresh;
+				const lastTriggerMs =
+					lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
+
+				if (!hasInitialized) { hasInitialized = true; return; }
+				if (lastTriggerMs === lastTriggeredBySelf) return;
+
+				console.log('🔄 Firestore refresh triggered, reloading page.');
+				location.reload();
+			});
+
+			// ✅ Safe Firestore write helper — ensures reliable merges
+			async function safeWrite(ref, payload) {
+				try {
+					await updateDoc(ref, payload);
+				} catch (err) {
+					console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
+					await setDoc(ref, payload, { merge: true });
+				}
+			}
+
+			// --- Load Discord webhook on startup (Firestore version) ---
+			async function autoLoadWebhook() {
+				try {
+					const docRef = doc(db, 'config', 'discordWebhook');
+					const snap = await getDoc(docRef);
+					if (snap.exists()) {
+						const data = snap.data();
+						cachedWebhookUrl = data.url || null;
+						console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
+					} else {
+						console.warn("⚠️ No webhook found in Firestore config.");
+					}
+				} catch (e) {
+					console.error("❌ Failed to auto-load webhook:", e);
+				}
+			}
+
+			// -------------------------
+			// Webhook load/save/clear
+			// -------------------------
+			async function loadWebhookFromFirestore() {
+				try {
+					const docRef = doc(db, 'config', 'discordWebhook');
+					const snap = await getDoc(docRef);
+					if (snap.exists()) {
+						const data = snap.data();
+						cachedWebhookUrl = data.url || null;
+						webhookInput.value = cachedWebhookUrl || '';
+						console.log('✅ Loaded webhook from Firestore.');
+						return cachedWebhookUrl;
+					} else {
+						cachedWebhookUrl = null;
+						webhookInput.value = '';
+						console.log('ℹ️ No webhook stored in Firestore.');
+						return null;
+					}
+				} catch (e) {
+					console.warn('load webhook err', e);
+					return null;
+				}
+			}
+
+			async function saveWebhookToFirestore(url) {
+				try {
+					await setDoc(doc(db, 'config', 'discordWebhook'), { url });
+					cachedWebhookUrl = url;
+					webhookInput.value = url;
+					alert('✅ Webhook saved.');
+					console.log('✅ Webhook saved to Firestore.');
+				} catch (e) {
+					console.warn('save webhook err', e);
+					alert('❌ Failed to save webhook.');
+				}
+			}
+
+			async function clearWebhookInFirestore() {
+				try {
+					await deleteDoc(doc(db, 'config', 'discordWebhook'));
+					cachedWebhookUrl = null;
+					webhookInput.value = '';
+					alert('✅ Webhook cleared.');
+					console.log('✅ Webhook cleared from Firestore.');
+				} catch (e) {
+					console.warn('clear webhook err', e);
+					alert('❌ Failed to clear webhook.');
+				}
+			}
+
+			// -------------------------
+			// Discord send helpers
+			// -------------------------
+			async function sendDiscordEmbed(embed) {
+				const webhook =
+					cachedWebhookUrl ||
+					(webhookInput && webhookInput.value.trim()) ||
+					null;
+
+				if (!webhook) {
+					console.warn("⚠️ No Discord webhook configured.");
+					return;
+				}
+
+				const mentionTarget = '@everyone'; // no @everyone by default
+
+				try {
+					const payload = {
+						content: mentionTarget,
+						embeds: [embed],
+					};
+
+					const res = await fetch(webhook, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(payload),
+					});
+
+					if (!res.ok) {
+						console.error("❌ Discord webhook failed:", res.status, await res.text());
+					} else {
+						console.log("✅ Discord embed sent successfully.");
+					}
+				} catch (err) {
+					console.error("⚠️ Discord webhook error:", err);
+				}
+			}
+
+			// === PATCHED sendDiscordEmbedOnce (step 4): includes type + UTC + JST display ===
+			async function sendDiscordEmbedOnce(type, boss) {
+				try {
+					if (!boss || !type) return;
+
+					const key = `${boss.id}_${type}`;
+					const now = Date.now();
+
+					// Local dedupe guard first (fast path)
+					const localWindow = 2 * 60 * 1000; // 2 minutes
+					if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
+						console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
+						return;
+					}
+
+					// Reserve locally right away to prevent double local sends
+					localNotifCache[key] = now;
+					console.log(`🔒 Local reserve set for ${key}`);
+
+					const ref = doc(db, 'notifications', key);
+					const thresholdMs = 2 * 60 * 1000; // 2-minute dedupe window (server side)
+
+					// Firestore transaction ensures only one client writes lastSent
+					const txResult = await runTransaction(db, async (tx) => {
+						const snap = await tx.get(ref);
+						const data = snap.exists() ? snap.data() : {};
+						let lastSentMs = 0;
+
+						if (data.lastSent && typeof data.lastSent.toMillis === 'function') {
+							lastSentMs = data.lastSent.toMillis();
+						} else if (typeof data.lastSent === 'number') {
+							lastSentMs = data.lastSent;
+						} else if (typeof data.lastSent === 'string') {
+							const parsed = Date.parse(data.lastSent);
+							if (!isNaN(parsed)) lastSentMs = parsed;
+						}
+
+						const nowMs = Date.now();
+						if (nowMs - lastSentMs < thresholdMs) {
+							console.log(
+								`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${toJSTDate(
+									lastSentMs
+								).toISOString()})`
+							);
+							return false; // signal: skip send
+						}
+
+						// Write Firestore server timestamp
+						tx.set(ref, { lastSent: serverTimestamp(), type }, { merge: true });
+
+						const endTimeMs = timers[boss.id]?.endTime || Date.now();
+						return { endTimeMs };
+					});
+
+					// If transaction returned false => recent send, so skip gracefully
+					if (!txResult) {
+						console.log(
+							`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
+						);
+						return;
+					}
+
+					const tz = 'Asia/Tokyo';
+					const endTimeMs = txResult.endTimeMs || timers[boss.id]?.endTime || Date.now();
+
+					// ✅ Use toJSTDate() to ensure consistent time zone conversion
+					const utcStr = toJSTDate(endTimeMs)
+						.toISOString()
+						.replace('T', ' ')
+						.replace('Z', ' UTC');
+
+					const jstStr =
+						toJSTDate(endTimeMs).toLocaleString('en-US', {
+							timeZone: tz,
+							hour12: false,
+							weekday: 'short',
+							month: 'short',
+							day: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+						}) + ' JST';
+
+					// Build embed by type with both timezones displayed
+					let title, color, desc;
+					switch (type) {
+						case 'killed':
+							title = `💀 ${boss.name} has been defeated!`;
+							color = 0xff3333;
+							desc = `Next respawn: ${jstStr}`;
+							break;
+						case 'soon':
+							title = `⚠️ ${boss.name} will respawn soon!`;
+							color = 0xffcc00;
+							desc = `Spawn expected in 5 minutes.\nSpawn Time: ${jstStr}`;
+							break;
+						case 'spawn':
+							title = `⚔️ ${boss.name} has spawned!`;
+							color = 0xb266ff;
+							desc = `It’s time to hunt!`;
+							break;
+						case 'manual':
+							title = `⏰ ${boss.name} manual time set.`;
+							color = 0x3399ff;
+							desc = `Next respawn: ${jstStr}`;
+							break;
+						default:
+							console.warn(`⚠️ Unknown notification type: ${type}`);
+							return;
+					}
+
+					const embed = buildEmbed(title, desc, color);
+					await sendDiscordEmbed(embed);
+
+					console.log(`✅ Sent ${type} notification for ${boss.name} at ${utcStr} (${jstStr})`);
+				} catch (e) {
+					if (e?.code === 'ABORTED') {
+						console.warn('ℹ️ Transaction aborted (expected):', e);
+						return;
+					}
+					console.warn('⚠️ sendDiscordEmbedOnce error:', e);
+				}
+			}
+
+			function buildEmbed(title, description, colorHex) {
+				return {
+					title,
+					description,
+					color: colorHex,
+					footer: { text: 'Lordnine Tracker' },
+					timestamp: new Date().toISOString()
+				};
+			}
+
+			async function testWebhook() {
+				if (!cachedWebhookUrl && !webhookInput.value.trim()) {
+					alert('No webhook URL configured.');
+					return;
+				}
+				if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
+				await sendDiscordEmbed(buildEmbed('🧪 Webhook test successful!', 'This is a test message from Lord Nine Tracker.', 0x00ff99));
+				alert('Test sent (check your Discord).');
+			}
+
+			// -------------------------
+			// Firestore save dedupe helpers
+			// -------------------------
+			async function saveTimersToFirestore() {
+				try {
+					await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true });
+					console.log('✅ saveTimersToFirestore: saved timers document.');
+				} catch (e) {
+					console.warn('saveTimersToFirestore err', e);
+				}
+			}
+
+			// Save or update a single boss timer in Firestore safely, with dedupe
+			async function saveTimerToFirestoreOnce(bossId) {
+				try {
+					const ref = doc(db, 'timers', 'global');
+					const data = timers[bossId];
+					const json = JSON.stringify(data || {});
+					if (lastWriteCache[bossId] === json) {
+						console.log(`ℹ️ Skipping redundant write for ${bossId}`);
+						return;
+					}
+					lastWriteCache[bossId] = json;
+					await safeWrite(ref, { [`timers.${bossId}`]: data });
+					console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
+				} catch (e) {
+					console.warn('saveTimerToFirestoreOnce err', e);
+				}
+			}
+
+			async function saveTimers() {
+				try {
+					await saveTimersToFirestore();
+				} catch (e) {
+					console.warn('saveTimers err', e);
+				}
+			}
+
+
+			/* === FIXED TIMEZONE START TIMER (ASIA/TOKYO) === */
+			async function startTimer(bossId) {
+				const tz = 'Asia/Tokyo';
+				const boss = BOSSES.find(b => b.id === bossId);
+				if (!boss) return;
+
+				// Convert the client's current time to JST, ensuring all players share same reference
+				const nowJST = toJSTDate(Date.now());
+				const now = nowJST.getTime();
+
+				let endTime;
+
+				if (boss.weeklyRespawns) {
+					// Use JST-based weekly respawn calculation
+					endTime = getNextWeeklyRespawn(boss.weeklyRespawns, now);
+					timers[bossId] = {
+						endTime,
+						startedAt: now,
+						weekly: true,
+						notifiedSoon: false,
+						spawnAnnounced: false
+					};
+				} else {
+					// Fixed respawn timer (seconds → ms)
+					endTime = now + boss.respawn * 1000;
+					timers[bossId] = {
+						endTime,
+						startedAt: now,
+						notifiedSoon: false,
+						spawnAnnounced: false
+					};
+				}
+
+				// === Save to Firestore ===
+				await saveTimerToFirestoreOnce(bossId);
+
+				// === Update UI ===
+				addOrUpdateTimerElement(bossId);
+				renderBossList();
+
+				console.log(`🕹️ startTimer: started ${bossId} -> ${toJSTDate(timers[bossId].endTime).toISOString()} (JST: ${toJSTDate(timers[bossId].endTime).toLocaleString('en-US', { timeZone: tz })})`);
+
+				// === Send "killed" embed (deduped) ===
+				await sendDiscordEmbedOnce('killed', boss);
+			}
+
+			async function clearTimer(bossId) {
+				const boss = BOSSES.find(b => b.id === bossId);
+				const ref = doc(db, 'timers', 'global');
+
+				if (!timers[bossId]) {
+					console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
+					return;
+				}
+
+				delete timers[bossId]; // remove locally
+
+				try {
+					// Ensure the document exists first
+					const snap = await getDoc(ref);
+					if (!snap.exists()) {
+						console.warn('⚠️ timers/global did not exist. Creating it first...');
+						await setDoc(ref, { timers: {} }, { merge: true });
+					}
+
+					// ✅ Delete nested key with updateDoc and field path
+					await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
+
+					console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
+				} catch (err) {
+					console.error('❌ Firestore delete failed for', bossId, err);
+					alert('Failed to clear timer in Firestore. Please retry.');
+				}
+
+				// Update UI
+				removeTimerElement(bossId);
+				renderBossList();
+
+				console.log(`🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`);
+			}
+
+			async function resetAll() {
+				if (!confirm('Clear all non-weekly timers?')) return;
+				const preserved = {};
+				for (const [id, info] of Object.entries(timers)) {
+					const boss = BOSSES.find(b => b.id === id);
+					if (boss && boss.weeklyRespawns) preserved[id] = info;
+				}
+				timers = preserved;
+
+				try {
+					await setDoc(doc(db, 'timers', 'global'), { timers }); // overwrite entire timers doc
+					rebuildTimersPanel();
+					renderBossList();
+					alert('✅ All non-weekly timers reset (Firestore updated).');
+					console.log('🔁 resetAll: fully reset timers and updated Firestore.');
+				} catch (e) {
+					console.warn('❌ resetAll Firestore update failed', e);
+					alert('⚠️ Failed to update Firestore.');
+				}
+			}
+
+			// -------------------------
+			// Modal for manual time
+			// -------------------------
+			function openTimeModal(bossId) {
+				const boss = BOSSES.find(b => b.id === bossId);
+				if (!boss) return;
+				currentBossForTime = boss;
+				modalName.textContent = boss.name;
+				killTimeInput.value = '';
+				modal.style.display = 'flex';
+			}
+
+			function closeTimeModal() {
+				modal.style.display = 'none';
+				currentBossForTime = null;
+			}
+
+			cancelTimeBtn.addEventListener('click', closeTimeModal);
+
+				saveTimeBtn.addEventListener('click', async () => { 
+					const input = killTimeInput.value;
+					if (!input || !currentBossForTime) return;
+
+					/* === Parse manual input as Asia/Tokyo time === */
+					const tz = 'Asia/Tokyo';
+					const manualLocal = new Date(input);
+					if (isNaN(manualLocal)) {
+						alert('Invalid date format.');
+						return;
+					}
+
+					// Convert input to Japan Standard Time
+					const manualTime = new Date(manualLocal.toLocaleString('en-US', { timeZone: tz }));
+					const killedAt = manualTime.getTime();
+
+					const boss = currentBossForTime;
+					let endTime;
+
+					// ✅ Calculate respawn using JST reference
+					if (boss.weeklyRespawns) {
+						endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
+						while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
+						timers[boss.id] = {
+							endTime,
+							startedAt: killedAt,
+							weekly: true,
+							notifiedSoon: false,
+							spawnAnnounced: false,
+						};
+					} else {
+						endTime = killedAt + boss.respawn * 1000;
+						timers[boss.id] = {
+							endTime,
+							startedAt: killedAt,
+							notifiedSoon: false,
+							spawnAnnounced: false,
+						};
+					}
+
+					try {
+						// ✅ Ensure webhook is loaded before use
+						if (!cachedWebhookUrl) await autoLoadWebhook();
+
+						const ref = doc(db, 'timers', 'global');
+
+						// ✅ Correct Firestore structure
+						await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
+
+						console.log(`✅ Firestore updated: ${boss.name} manual time saved (JST).`);
+
+						// ✅ Update local UI
+						closeTimeModal();
+						addOrUpdateTimerElement(boss.id);
+						renderBossList();
+
+						// ✅ Send Discord notification (manual entry always sends)
+						const formattedTime = formatShortDateTime(endTime);
+						const embed = buildEmbed(
+							`⏰ ${boss.name} manual time set (JST)`,
+							`Next respawn: ${formattedTime}`,
+							0x3399ff
+						);
+						await sendDiscordEmbedOnce('manual', boss);
+
+						console.log(`📡 Discord notification sent for ${boss.name}.`);
+						alert(`✅ Manual time saved and synced for ${boss.name}.`);
+					} catch (err) {
+						console.error('❌ Failed to record manual time:', err);
+						alert('❌ Failed to record manual time to Firestore. Check console for details.');
+					}
+				});
 
 		function renderBossList() {
 			bossListEl.innerHTML = '';
@@ -2105,7 +2119,7 @@
           // We acquired lock: update local memory immediately and disable all mark buttons for this boss
           deadLocks[id] = lockUntil;
           document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(b => (b.disabled = true));
-          console.log(`🔒 Acquired lock for ${id} until ${new Date(lockUntil).toISOString()}`);
+          console.log(`🔒 Acquired lock for ${id} until ${toJSTDate(lockUntil).toISOString()}`);
 
           // Animate the boss card
           const card = btn.closest('.boss');
@@ -2128,18 +2142,19 @@
       }
     });
 
-    /* === TIMEZONE-CONSISTENT DATETIME FORMAT (ASIA/TOKYO) === */
-    function formatShortDateTime(ms) {
-      return new Date(ms).toLocaleString('en-US', {
-        timeZone: 'Asia/Tokyo',
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      }) + ' JST';
-    }
+		/* === TIMEZONE-CONSISTENT DATETIME FORMAT (ASIA/TOKYO) === */
+		function formatShortDateTime(ms) {
+			const jstDate = toJSTDate(ms);
+			return jstDate.toLocaleString('en-US', {
+				timeZone: 'Asia/Tokyo',
+				weekday: 'short',
+				month: 'short',
+				day: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}) + ' JST';
+		}
 
     function addOrUpdateTimerElement(bossId) {
       const boss = BOSSES.find(b => b.id === bossId);
@@ -2607,21 +2622,29 @@
   <!-- === PATCHES APPLIED: JST timezone enforcement, dedupe-safe Discord notifications, weekly respawn === -->
   <script>
    // --- JST ENFORCED PATCHES ---
-// getNextWeeklyRespawn with Asia/Tokyo timezone enforcement
-function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-  const nowJST = new Date(new Date(fromTime).toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-  let soonest = null;
-  for (const { day, hour, minute } of respawns) {
-    const t = new Date(nowJST);
-    const delta = (day + 7 - nowJST.getDay()) % 7;
-    t.setDate(nowJST.getDate() + delta);
-    t.setHours(hour, minute, 0, 0);
-    if (t <= nowJST) t.setDate(t.getDate() + 7);
-    const tJST = new Date(t.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-    if (!soonest || tJST < soonest) soonest = tJST;
-  }
-  return soonest ? soonest.getTime() : nowJST.getTime();
-}
+	// getNextWeeklyRespawn with Asia/Tokyo timezone enforcement
+	function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+		// Always start in Japan Standard Time
+		const nowJST = toJSTDate(fromTime);
+		let soonest = null;
+
+		for (const { day, hour, minute } of respawns) {
+			const t = toJSTDate(nowJST);
+			const delta = (day + 7 - nowJST.getDay()) % 7;
+
+			// Calculate target date/time purely in JST
+			t.setDate(nowJST.getDate() + delta);
+			t.setHours(hour, minute, 0, 0);
+
+			if (t <= nowJST) t.setDate(t.getDate() + 7);
+
+			const tJST = toJSTDate(t);
+			if (!soonest || tJST < soonest) soonest = tJST;
+		}
+
+		return soonest ? soonest.getTime() : nowJST.getTime();
+	}
+
 
 // --- Manual killTimeInput patch ---
 document.getElementById('saveTimeBtn')?.addEventListener('click', async () => {
@@ -2660,58 +2683,6 @@ document.getElementById('saveTimeBtn')?.addEventListener('click', async () => {
     alert('❌ Failed to record manual time to Firestore. Check console for details.');
   }
 });
-
-// --- Patched sendDiscordEmbedOnce ---
-async function sendDiscordEmbedOnce(type, boss) {
-  try {
-    if (!boss || !type) return;
-    const key = `${boss.id}_${type}`;
-    const now = Date.now();
-    const localWindow = 2 * 60 * 1000;
-    if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
-      console.log(`🛑 Skipped duplicate ${type} notification for ${boss.name}`);
-      return;
-    }
-    localNotifCache[key] = now;
-    const ref = doc(db, 'notifications', key);
-    const thresholdMs = 2 * 60 * 1000;
-    const txResult = await runTransaction(db, async (tx) => {
-      const snap = await tx.get(ref);
-      const data = snap.exists() ? snap.data() : {};
-      let lastSentMs = 0;
-      if (data.lastSent && typeof data.lastSent.toMillis === 'function') lastSentMs = data.lastSent.toMillis();
-      else if (typeof data.lastSent === 'number') lastSentMs = data.lastSent;
-      else if (typeof data.lastSent === 'string') {
-        const parsed = Date.parse(data.lastSent);
-        if (!isNaN(parsed)) lastSentMs = parsed;
-      }
-      const nowMs = Date.now();
-      if (nowMs - lastSentMs < thresholdMs) {
-        console.log(`⏸️ Firestore indicates recent send for ${key}, skipping.`);
-        return false;
-      }
-      tx.set(ref, { lastSent: serverTimestamp() }, { merge: true });
-      const endTimeMs = timers[boss.id]?.endTime || Date.now();
-      return { endTimeMs };
-    });
-
-    if (!txResult) return;
-
-    const formattedTime = new Date(txResult.endTimeMs).toLocaleString('en-US', { timeZone: 'Asia/Tokyo', hour12: false });
-    let embed;
-    switch (type) {
-      case 'killed': embed = buildEmbed(`💀 ${boss.name} has been defeated!`, `Next respawn: ${formattedTime} JST`, 0xff3333); break;
-      case 'soon': embed = buildEmbed(`⚠️ ${boss.name} will respawn soon!`, `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime} JST`, 0xffcc00); break;
-      case 'spawn': embed = buildEmbed(`⚔️ ${boss.name} has spawned!`, `Time to hunt!`, 0xb266ff); break;
-      case 'manual': embed = buildEmbed(`⏰ ${boss.name} manual time set`, `Next respawn: ${formattedTime} JST`, 0x3399ff); break;
-      default: return;
-    }
-    await sendDiscordEmbed(embed, '@everyone');
-    console.log(`✅ Sent ${type} notification for ${boss.name}`);
-  } catch (e) {
-    console.warn('⚠️ sendDiscordEmbedOnce error:', e);
-  }
-}
   </script>
  </body>
 </html>
