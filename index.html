@@ -217,10 +217,13 @@
       gap: 2px;
     }
 
+		/* Normal (alive / cooldown) */
 		.boss .name {
-			color: var(--accent);
+			color: #ffffff; /* pure white text */
 			font-weight: 800;
-			text-shadow: 0 0 4px var(--accentGlow);
+			text-shadow:
+				0 0 6px rgba(255, 255, 255, 0.7),
+				0 0 12px rgba(255, 255, 255, 0.4); /* subtle glowing white effect */
 		}
 
     .boss .sub {
