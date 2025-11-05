@@ -1,2515 +1,2829 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width,initial-scale=1" name="viewport"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
-  <title>
-   LORDNINE TIME TRACKER
-  </title>
-  <link href="assets/images/logo5.png" rel="icon" sizes="32x32" type="image/png"/>
-  <link href="assets/images/logo5.png" rel="icon" sizes="64x64" type="image/png"/>
-  <style>
-   :root {
-      --bg: #07101a;
-      --muted: #9aa6b2;
-      --accent: #00f0ff;
-      --accent-2: #7dd3fc;
-      --glass: rgba(255, 255, 255, 0.03);
-      --radius: 10px;
-      --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
-      --glass-border: rgba(0, 240, 255, 0.08);
-      --text: #dff7ff;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      height: 100%;
-      overflow: hidden;
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 12px;
-      max-width: 1200px;
-      margin: 0 auto;
-      gap: 12px;
-    }
-
-		/* === HEADER CONTAINER === */
-		header.app-header {
-			flex: 0 0 auto;
-			display: flex;
-			align-items: center; /* centers everything vertically */
-			justify-content: space-between;
-			background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
-			border: 1px solid var(--glass-border);
-			padding: 10px 16px; /* slightly increased for balanced top/bottom margin */
-			border-radius: 8px;
-			box-shadow: var(--shadow);
-			backdrop-filter: blur(6px);
-			box-sizing: border-box;
-		}
-
-		/* === APP TITLE GROUP (logo + text) === */
-		.app-title {
-			display: flex;
-			align-items: center; /* centers logo + text vertically */
-			gap: 10px;
-			font-weight: 700;
-			color: var(--accent);
-		}
-
-		/* === LOGO WRAPPER === */
-		.logo {
-			display: flex;
-			align-items: center; /* centers the logo vertically inside wrapper */
-			justify-content: center;
-		}
-
-		/* === LOGO IMAGE === */
-		.logo-img {
-			height: 40px;
-			width: auto;
-			border-radius: 25%; /* rounded corners only */
-			display: block;
-			object-fit: contain;
-			transition: transform 0.3s ease;
-			margin: 0;
-		}
-
-		/* === Hover effect (simple scale-up) === */
-		.logo-img:hover {
-			transform: scale(1.05);
-		}
-
-		/* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
-		.main-title {
-			font-size: 16px;
-			font-family: 'Orbitron', sans-serif;
-			font-weight: 900;
-			text-transform: uppercase;
-			letter-spacing: 1.3px;
-			color: #00f6ff;
-			background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
-			background-size: 200% auto;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			text-shadow:
-				0 0 4px rgba(0, 255, 255, 0.3),
-				0 0 8px rgba(0, 255, 255, 0.15);
-			animation:
-				titleScan 6s linear infinite,
-				flicker 8s ease-in-out infinite;
-			position: relative;
-			display: block;          /* aligns perfectly with warning text */
-			margin-left: 1px;        /* matches left start with warning-text */
-			line-height: 1.1;
-			overflow: hidden;        /* prevents bleed outside */
-			z-index: 1;
-		}
-
-		/* Smooth moving gradient shimmer */
-		@keyframes titleScan {
-			0% { background-position: 0% center; }
-			100% { background-position: 200% center; }
-		}
-
-		/* Softer flicker for digital realism */
-		@keyframes flicker {
-			0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-			20%, 24%, 55% { opacity: 0.9; }
-		}
-
-		/* Continuous underline scan line (non-looping bounce) */
-		.main-title::after {
-			content: "";
-			position: absolute;
-			bottom: -1px;
-			left: 0;
-			height: 2px;
-			width: 100%;
-			background: linear-gradient(90deg, rgba(0,255,255,0.6), transparent);
-			background-size: 200% auto;
-			animation: scanLineContinuous 5s linear infinite;
-			border-radius: 1px;
-			opacity: 0.4;
-		}
-
-		@keyframes scanLineContinuous {
-			0% { background-position-x: 0%; }
-			100% { background-position-x: 200%; }
-		}
-
-		/* === WARNING TEXT (aligned, modern subtle glow gradient) === */
-		.warning-text {
-			font-size: 11px;
-			font-weight: 700;
-			background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
-			background-size: 200%;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			animation: gradientMove 4s linear infinite;
-			text-shadow: 0 0 3px rgba(255, 120, 0, 0.35);
-			margin-left: 1px;      /* aligns with title */
-			margin-top: 2px;
-			line-height: 1.1;
-			vertical-align: middle;
-		}
-
-		@keyframes gradientMove {
-			0% { background-position: 0%; }
-			100% { background-position: 200%; }
-		}
-
-    .header-controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      position: relative;
-    }
-
-    .search {
-      width: 200px;
-      background: transparent;
-      border: 1px solid var(--glass-border);
-      padding: 6px 10px;
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .settings {
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      border-radius: 8px;
-      background: linear-gradient(180deg, rgba(10, 20, 30, 0.98), rgba(0, 10, 20, 0.96));
-      color: var(--accent);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: all 0.3s ease;
-      box-shadow:
-        0 0 6px rgba(0, 240, 255, 0.15),
-        inset 0 0 4px rgba(0, 240, 255, 0.05);
-      backdrop-filter: blur(6px);
-      position: relative;
-      z-index: 10001;
-    }
-
-    .settings:hover {
-      transform: translateY(-1px);
-      background: linear-gradient(180deg, rgba(0, 240, 255, 0.1), rgba(10, 20, 30, 0.95));
-      box-shadow:
-        0 0 12px rgba(0, 240, 255, 0.3),
-        inset 0 0 8px rgba(0, 240, 255, 0.15);
-      filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
-      color: #fff;
-    }
-
-    .settings.active {
-      background: linear-gradient(180deg, rgba(0, 240, 255, 0.2), rgba(10, 20, 30, 0.9));
-      box-shadow:
-        0 2px 0 rgba(0, 240, 255, 0.25),
-        0 0 18px rgba(0, 240, 255, 0.4),
-        0 0 30px rgba(0, 240, 255, 0.2);
-      transform: scale(1.05);
-      color: #fff;
-    }
-
-    .main {
-      flex: 1 1 auto;
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 12px;
-      min-height: 0;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(0, 0, 0, 0.05));
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      padding: 10px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 0;
-    }
-
-    #bossList,
-    #timers {
-      flex: 1 1 auto;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      min-height: 0;
-    }
-
-    #bossList {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 4px;
-      max-height: 100%;
-      scroll-behavior: smooth;
-    }
-
-    .boss {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 95%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0.04));
-      border: 1px solid rgba(255, 255, 255, 0.02);
-      font-size: 13px;
-      transition: transform 0.2s ease, box-shadow 0.25s ease;
-      box-sizing: border-box;
-    }
-
-    .boss:hover {
-      transform: translateY(-2px) scale(1.02);
-      border-color: rgba(0, 240, 255, 0.3);
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.05), rgba(125, 211, 252, 0.05));
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-      transition: all 0.25s ease;
-    }
-
-    .boss .meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-		/* Normal (alive / cooldown) */
-		.boss .name {
-			color: #ffffff; /* pure white text */
-			font-weight: 800;
-			text-shadow:
-				0 0 6px rgba(255, 255, 255, 0.7),
-				0 0 12px rgba(255, 255, 255, 0.4); /* subtle glowing white effect */
-		}
-
-    .boss .sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .kbtn {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid rgba(0, 240, 255, 0.14);
-      background: var(--glass);
-      color: var(--accent);
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 700;
-      transition: all 0.2s ease;
-    }
-
-    .kbtn:hover {
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), rgba(125, 211, 252, 0.15));
-      border-color: rgba(0, 240, 255, 0.4);
-      color: #fff;
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-      transform: translateY(-1px);
-    }
-
-    /* === NEXT BOSS - GAMER CYBER THEME === */
-    #nextBoss {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 16px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(0, 240, 255, 0.15);
-      background: linear-gradient(180deg, rgba(0, 240, 255, 0.05), rgba(0, 0, 0, 0.25));
-      box-shadow: 0 0 12px rgba(0, 240, 255, 0.08);
-      font-family: 'Orbitron', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* === NEXT BOSS NAME: NEON RED GLOW (NO EFFECTS) === */
-    #nextBoss .boss-name {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: #ff4d4d;
-      /* bright neon red */
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      display: inline-block;
-      position: relative;
-      text-shadow:
-        0 0 8px rgba(255, 80, 80, 0.8),
-        /* bright soft halo */
-        0 0 16px rgba(255, 0, 0, 0.5),
-        0 0 24px rgba(255, 0, 0, 0.3);
-    }
-
-    #nextBoss .time-remaining {
-      font-size: .9rem;
-      font-weight: 700;
-      color: var(--accent-2);
-      text-shadow:
-        0 0 6px rgba(125, 211, 252, 0.7),
-        0 0 12px rgba(125, 211, 252, 0.5);
-    }
-
-    @keyframes bossGlow {
-
-      0%,
-      100% {
-        text-shadow:
-          0 0 8px rgba(0, 240, 255, 0.8),
-          0 0 16px rgba(0, 240, 255, 0.6);
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <title>LORDNINE TIME TRACKER</title>
+    <link
+      href="assets/images/logo5.png"
+      rel="icon"
+      sizes="32x32"
+      type="image/png"
+    />
+    <link
+      href="assets/images/logo5.png"
+      rel="icon"
+      sizes="64x64"
+      type="image/png"
+    />
+    <style>
+      :root {
+        --bg: #07101a;
+        --muted: #9aa6b2;
+        --accent: #00f0ff;
+        --accent-2: #7dd3fc;
+        --glass: rgba(255, 255, 255, 0.03);
+        --radius: 10px;
+        --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
+        --glass-border: rgba(0, 240, 255, 0.08);
+        --text: #dff7ff;
       }
 
-      50% {
-        text-shadow:
-          0 0 14px rgba(0, 240, 255, 1),
-          0 0 28px rgba(0, 240, 255, 0.8);
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-    }
 
-    #timers {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      overflow-y: auto;
-      padding: 6px 4px;
-      max-height: 100%;
-      scroll-behavior: smooth;
-    }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
 
-    .timer {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 95%;
-      min-height: 60px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
-      border: 1px solid rgba(0, 240, 255, 0.08);
-      font-size: 13px;
-      box-shadow: 0 2px 10px rgba(0, 240, 255, 0.05);
-      transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      overflow: hidden;
-    }
-
-    .timer.ready {
-      border-color: rgba(0, 240, 255, 0.25);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.08), rgba(125, 211, 252, 0.08));
-    }
-
-    .timer .timer-name {
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-
-    .timer .timer-spawn {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .timer .timer-remaining {
-      font-weight: 800;
-      font-size: 13px;
-      color: var(--accent);
-    }
-
-    .timer:hover {
-      transform: translateY(-2px) scale(1.02);
-      border-color: rgba(0, 240, 255, 0.25);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.05), rgba(125, 211, 252, 0.05));
-    }
-
-    .timer .kbtn {
-      margin-top: 4px;
-      font-size: 12px;
-      padding: 5px 8px;
-    }
-
-    @media (max-width: 720px) {
-      .main {
+      .container {
         display: flex;
         flex-direction: column;
+        height: 100%;
+        padding: 12px;
+        max-width: 1200px;
+        margin: 0 auto;
+        gap: 12px;
       }
 
-      #nextBoss {
-        order: 1;
+      /* === HEADER CONTAINER === */
+      header.app-header {
         flex: 0 0 auto;
+        display: flex;
+        align-items: center; /* centers everything vertically */
+        justify-content: space-between;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(0, 0, 0, 0.06)
+        );
+        border: 1px solid var(--glass-border);
+        padding: 10px 16px; /* slightly increased for balanced top/bottom margin */
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(6px);
+        box-sizing: border-box;
       }
 
-      #timersPanel {
-        order: 2;
-        flex: 1 1 auto;
-        min-height: 0;
+      /* === APP TITLE GROUP (logo + text) === */
+      .app-title {
+        display: flex;
+        align-items: center; /* centers logo + text vertically */
+        gap: 10px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* === LOGO WRAPPER === */
+      .logo {
+        display: flex;
+        align-items: center; /* centers the logo vertically inside wrapper */
+        justify-content: center;
+      }
+
+      /* === LOGO IMAGE === */
+      .logo-img {
+        height: 40px;
+        width: auto;
+        border-radius: 25%; /* rounded corners only */
+        display: block;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+        margin: 0;
+      }
+
+      /* === Hover effect (simple scale-up) === */
+      .logo-img:hover {
+        transform: scale(1.05);
+      }
+
+      /* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
+      .main-title {
+        font-size: 16px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1.3px;
+        color: #00f6ff;
+        background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 4px rgba(0, 255, 255, 0.3),
+          0 0 8px rgba(0, 255, 255, 0.15);
+        animation: titleScan 6s linear infinite, flicker 8s ease-in-out infinite;
         position: relative;
+        display: block; /* aligns perfectly with warning text */
+        margin-left: 1px; /* matches left start with warning-text */
+        line-height: 1.1;
+        overflow: hidden; /* prevents bleed outside */
         z-index: 1;
       }
 
-      #bossListPanel {
-        order: 3;
+      /* Smooth moving gradient shimmer */
+      @keyframes titleScan {
+        0% {
+          background-position: 0% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+
+      /* Softer flicker for digital realism */
+      @keyframes flicker {
+        0%,
+        19%,
+        21%,
+        23%,
+        25%,
+        54%,
+        56%,
+        100% {
+          opacity: 1;
+        }
+        20%,
+        24%,
+        55% {
+          opacity: 0.9;
+        }
+      }
+
+      /* Continuous underline scan line (non-looping bounce) */
+      .main-title::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background: linear-gradient(90deg, rgba(0, 255, 255, 0.6), transparent);
+        background-size: 200% auto;
+        animation: scanLineContinuous 5s linear infinite;
+        border-radius: 1px;
+        opacity: 0.4;
+      }
+
+      @keyframes scanLineContinuous {
+        0% {
+          background-position-x: 0%;
+        }
+        100% {
+          background-position-x: 200%;
+        }
+      }
+
+      /* === WARNING TEXT (aligned, modern subtle glow gradient) === */
+      .warning-text {
+        font-size: 11px;
+        font-weight: 700;
+        background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
+        background-size: 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientMove 4s linear infinite;
+        text-shadow: 0 0 3px rgba(255, 120, 0, 0.35);
+        margin-left: 1px; /* aligns with title */
+        margin-top: 2px;
+        line-height: 1.1;
+        vertical-align: middle;
+      }
+
+      @keyframes gradientMove {
+        0% {
+          background-position: 0%;
+        }
+        100% {
+          background-position: 200%;
+        }
+      }
+
+      .header-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        position: relative;
+      }
+
+      .search {
+        width: 200px;
+        background: transparent;
+        border: 1px solid var(--glass-border);
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      .settings {
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        border-radius: 8px;
+        background: linear-gradient(
+          180deg,
+          rgba(10, 20, 30, 0.98),
+          rgba(0, 10, 20, 0.96)
+        );
+        color: var(--accent);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 6px rgba(0, 240, 255, 0.15),
+          inset 0 0 4px rgba(0, 240, 255, 0.05);
+        backdrop-filter: blur(6px);
+        position: relative;
+        z-index: 10001;
+      }
+
+      .settings:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(
+          180deg,
+          rgba(0, 240, 255, 0.1),
+          rgba(10, 20, 30, 0.95)
+        );
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.3),
+          inset 0 0 8px rgba(0, 240, 255, 0.15);
+        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+        color: #fff;
+      }
+
+      .settings.active {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 240, 255, 0.2),
+          rgba(10, 20, 30, 0.9)
+        );
+        box-shadow: 0 2px 0 rgba(0, 240, 255, 0.25),
+          0 0 18px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2);
+        transform: scale(1.05);
+        color: #fff;
+      }
+
+      .main {
         flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 12px;
+        min-height: 0;
+      }
+
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.015),
+          rgba(0, 0, 0, 0.05)
+        );
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius);
+        padding: 10px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
+      .right-column {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
         min-height: 0;
       }
 
       #bossList,
       #timers {
+        flex: 1 1 auto;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        min-height: 0;
       }
-    }
 
-    .settings-menu {
-      position: absolute;
-      top: calc(100% + 4px);
-      right: 0;
-      background: linear-gradient(180deg, rgba(10, 20, 30, 0.98), rgba(0, 10, 20, 0.95));
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      border-radius: 10px;
-      box-shadow:
-        0 0 10px rgba(0, 240, 255, 0.2),
-        0 0 25px rgba(0, 240, 255, 0.1),
-        inset 0 0 6px rgba(0, 240, 255, 0.05);
-      display: inline-flex;
-      flex-direction: column;
-      width: auto;
-      min-width: fit-content;
-      max-width: max-content;
-      max-height: 260px;
-      overflow-y: auto;
-      font-size: 8px;
-      opacity: 0;
-      transform: translateY(-8px) scale(0.98);
-      pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-      z-index: 10000;
-      backdrop-filter: blur(8px);
-      white-space: nowrap;
-    }
+      #bossList {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 4px;
+        max-height: 100%;
+        scroll-behavior: smooth;
+      }
 
-    .settings-menu.active {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-      box-shadow:
-        0 0 12px rgba(0, 240, 255, 0.3),
-        0 0 30px rgba(0, 240, 255, 0.15);
-    }
+      .boss {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 95%;
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.01),
+          rgba(0, 0, 0, 0.04)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.02);
+        font-size: 13px;
+        transition: transform 0.2s ease, box-shadow 0.25s ease;
+        box-sizing: border-box;
+      }
 
-    /* === MENU ITEM STYLING === */
-    .menu-item {
-      position: relative;
-      background: black;
-      color: var(--accent);
-      padding: 8px 14px;
-      font-size: 8px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      cursor: pointer;
-      border: none;
-      text-align: right;
-      transition: all 0.25s ease;
-      line-height: .5;
-    }
+      .boss:hover {
+        transform: translateY(-2px) scale(1.02);
+        border-color: rgba(0, 240, 255, 0.3);
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.05),
+          rgba(125, 211, 252, 0.05)
+        );
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+        transition: all 0.25s ease;
+      }
 
-    .menu-item:hover {
-      color: #fff;
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.18), rgba(125, 211, 252, 0.08));
-      text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
-      box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.25);
-    }
+      .boss .meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
 
-    /* Optional: active menu item highlight */
-    .menu-item.active {
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.25), rgba(125, 211, 252, 0.15));
-      box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.25);
-      color: #fff;
-      text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
-    }
+      /* Normal (alive / cooldown) */
+      .boss .name {
+        color: #ffffff; /* pure white text */
+        font-weight: 800;
+        text-shadow: 0 0 6px rgba(255, 255, 255, 0.7),
+          0 0 12px rgba(255, 255, 255, 0.4); /* subtle glowing white effect */
+      }
 
-    .settings.active+.settings-menu {
-      top: calc(100% + 1px);
-      margin-top: 0;
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-      box-shadow:
-        0 -2px 10px rgba(0, 240, 255, 0.25),
-        0 0 18px rgba(0, 240, 255, 0.15),
-        inset 0 0 6px rgba(0, 240, 255, 0.05);
-    }
+      .boss .sub {
+        font-size: 11px;
+        color: var(--muted);
+      }
 
-    /* --- Compact Cyber Modal (Webhook window) --- */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      background: rgba(0, 10, 20, 0.75);
-      backdrop-filter: blur(10px);
-      animation: cyberFadeIn 0.3s ease forwards;
-    }
+      .kbtn {
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid rgba(0, 240, 255, 0.14);
+        background: var(--glass);
+        color: var(--accent);
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+      }
 
-    @keyframes cyberFadeIn {
-      from {
+      .kbtn:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.15),
+          rgba(125, 211, 252, 0.15)
+        );
+        border-color: rgba(0, 240, 255, 0.4);
+        color: #fff;
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+        transform: translateY(-1px);
+      }
+
+      /* === NEXT BOSS - GAMER CYBER THEME === */
+      #nextBoss {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 16px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 240, 255, 0.15);
+        background: linear-gradient(
+          180deg,
+          rgba(0, 240, 255, 0.05),
+          rgba(0, 0, 0, 0.25)
+        );
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.08);
+        font-family: "Orbitron", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* === NEXT BOSS NAME: NEON RED GLOW (NO EFFECTS) === */
+      #nextBoss .boss-name {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: #ff4d4d;
+        /* bright neon red */
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        display: inline-block;
+        position: relative;
+        text-shadow: 0 0 8px rgba(255, 80, 80, 0.8),
+          /* bright soft halo */ 0 0 16px rgba(255, 0, 0, 0.5),
+          0 0 24px rgba(255, 0, 0, 0.3);
+      }
+
+      #nextBoss .time-remaining {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--accent-2);
+        text-shadow: 0 0 6px rgba(125, 211, 252, 0.7),
+          0 0 12px rgba(125, 211, 252, 0.5);
+      }
+
+      @keyframes bossGlow {
+        0%,
+        100% {
+          text-shadow: 0 0 8px rgba(0, 240, 255, 0.8),
+            0 0 16px rgba(0, 240, 255, 0.6);
+        }
+
+        50% {
+          text-shadow: 0 0 14px rgba(0, 240, 255, 1),
+            0 0 28px rgba(0, 240, 255, 0.8);
+        }
+      }
+
+      #timers {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        overflow-y: auto;
+        padding: 6px 4px;
+        max-height: 100%;
+        scroll-behavior: smooth;
+      }
+
+      .timer {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 95%;
+        min-height: 60px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.02),
+          rgba(0, 0, 0, 0.06)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.08);
+        font-size: 13px;
+        box-shadow: 0 2px 10px rgba(0, 240, 255, 0.05);
+        transition: transform 0.25s ease, box-shadow 0.3s ease,
+          border-color 0.3s ease;
+        overflow: hidden;
+      }
+
+      .timer.ready {
+        border-color: rgba(0, 240, 255, 0.25);
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.08),
+          rgba(125, 211, 252, 0.08)
+        );
+      }
+
+      .timer .timer-name {
+        font-weight: 700;
+        font-size: 14px;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+
+      .timer .timer-spawn {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .timer .timer-remaining {
+        font-weight: 800;
+        font-size: 13px;
+        color: var(--accent);
+      }
+
+      .timer:hover {
+        transform: translateY(-2px) scale(1.02);
+        border-color: rgba(0, 240, 255, 0.25);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.05),
+          rgba(125, 211, 252, 0.05)
+        );
+      }
+
+      .timer .kbtn {
+        margin-top: 4px;
+        font-size: 12px;
+        padding: 5px 8px;
+      }
+
+      @media (max-width: 720px) {
+        .main {
+          display: flex;
+          flex-direction: column;
+        }
+
+        #nextBoss {
+          order: 1;
+          flex: 0 0 auto;
+        }
+
+        #timersPanel {
+          order: 2;
+          flex: 1 1 auto;
+          min-height: 0;
+          position: relative;
+          z-index: 1;
+        }
+
+        #bossListPanel {
+          order: 3;
+          flex: 1 1 auto;
+          min-height: 0;
+        }
+
+        #bossList,
+        #timers {
+          overflow-y: auto;
+        }
+      }
+
+      .settings-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        right: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(10, 20, 30, 0.98),
+          rgba(0, 10, 20, 0.95)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.2),
+          0 0 25px rgba(0, 240, 255, 0.1), inset 0 0 6px rgba(0, 240, 255, 0.05);
+        display: inline-flex;
+        flex-direction: column;
+        width: auto;
+        min-width: fit-content;
+        max-width: max-content;
+        max-height: 260px;
+        overflow-y: auto;
+        font-size: 8px;
         opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+        pointer-events: none;
+        transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+        z-index: 10000;
+        backdrop-filter: blur(8px);
+        white-space: nowrap;
       }
 
-      to {
+      .settings-menu.active {
         opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.3),
+          0 0 30px rgba(0, 240, 255, 0.15);
       }
-    }
 
-    .modal {
-      background: linear-gradient(180deg, rgba(5, 15, 25, 0.96), rgba(0, 10, 20, 0.9));
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-radius: 12px;
-      box-shadow:
-        0 0 20px rgba(0, 240, 255, 0.15),
-        inset 0 0 12px rgba(0, 240, 255, 0.05);
-      padding: 22px 20px;
-      width: 340px;
-      max-width: 90%;
-      color: var(--text);
-      text-align: center;
-      transform: translateY(30px) scale(0.96);
-      opacity: 0;
-      animation: cyberModalIn 0.4s ease-out forwards;
-      backdrop-filter: blur(12px);
-    }
+      /* === MENU ITEM STYLING === */
+      .menu-item {
+        position: relative;
+        background: black;
+        color: var(--accent);
+        padding: 8px 14px;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        cursor: pointer;
+        border: none;
+        text-align: right;
+        transition: all 0.25s ease;
+        line-height: 0.5;
+      }
 
-    @keyframes cyberModalIn {
-      0% {
-        opacity: 0;
+      .menu-item:hover {
+        color: #fff;
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.18),
+          rgba(125, 211, 252, 0.08)
+        );
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
+        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.25);
+      }
+
+      /* Optional: active menu item highlight */
+      .menu-item.active {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.25),
+          rgba(125, 211, 252, 0.15)
+        );
+        box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.25);
+        color: #fff;
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+      }
+
+      .settings.active + .settings-menu {
+        top: calc(100% + 1px);
+        margin-top: 0;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        box-shadow: 0 -2px 10px rgba(0, 240, 255, 0.25),
+          0 0 18px rgba(0, 240, 255, 0.15),
+          inset 0 0 6px rgba(0, 240, 255, 0.05);
+      }
+
+      /* --- Compact Cyber Modal (Webhook window) --- */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        background: rgba(0, 10, 20, 0.75);
+        backdrop-filter: blur(10px);
+        animation: cyberFadeIn 0.3s ease forwards;
+      }
+
+      @keyframes cyberFadeIn {
+        from {
+          opacity: 0;
+        }
+
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal {
+        background: linear-gradient(
+          180deg,
+          rgba(5, 15, 25, 0.96),
+          rgba(0, 10, 20, 0.9)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.25);
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
+          inset 0 0 12px rgba(0, 240, 255, 0.05);
+        padding: 22px 20px;
+        width: 340px;
+        max-width: 90%;
+        color: var(--text);
+        text-align: center;
         transform: translateY(30px) scale(0.96);
-        box-shadow: none;
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .modal h3 {
-      margin: 0 0 10px 0;
-      font-size: 16px;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow:
-        0 0 8px rgba(0, 240, 255, 0.7),
-        0 0 14px rgba(0, 240, 255, 0.4);
-    }
-
-    /* --- Cyber-styled Webhook Input --- */
-    #webhookInput {
-      width: 100%;
-      margin: 16px 0 18px 0;
-      padding: 10px 12px;
-      background: rgba(0, 240, 255, 0.05);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-radius: 8px;
-      color: var(--accent);
-      font-family: Consolas, monospace;
-      font-size: 12px;
-      text-align: center;
-      outline: none;
-      transition: all 0.3s ease;
-      box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.08);
-    }
-
-    #webhookInput::placeholder {
-      color: rgba(125, 211, 252, 0.35);
-      font-style: italic;
-    }
-
-    #webhookInput:focus {
-      border-color: rgba(0, 240, 255, 0.6);
-      box-shadow:
-        0 0 14px rgba(0, 240, 255, 0.4),
-        inset 0 0 8px rgba(0, 240, 255, 0.25);
-      background: rgba(0, 240, 255, 0.08);
-      color: #fff;
-      animation: inputPulse 2.2s ease-in-out infinite;
-    }
-
-    @keyframes inputPulse {
-
-      0%,
-      100% {
-        box-shadow:
-          0 0 10px rgba(0, 240, 255, 0.4),
-          inset 0 0 6px rgba(0, 240, 255, 0.2);
-      }
-
-      50% {
-        box-shadow:
-          0 0 20px rgba(0, 240, 255, 0.8),
-          inset 0 0 10px rgba(0, 240, 255, 0.35);
-      }
-    }
-
-    /* --- Webhook Modal Buttons (SAVE, TEST, CLEAR) --- */
-    #webhookModalBackdrop .actions {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 8px;
-    }
-
-    #webhookSave,
-    #webhookTest,
-    #webhookClear {
-      flex: 1;
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 12px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 6px rgba(0, 240, 255, 0.15);
-      backdrop-filter: blur(4px);
-    }
-
-    /* --- SAVE button: bright cyan accent --- */
-    #webhookSave:hover {
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.18), rgba(125, 211, 252, 0.18));
-      color: #fff;
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
-      transform: translateY(-1px);
-    }
-
-    #webhookSave:active {
-      transform: scale(0.96);
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
-    }
-
-    /* --- TEST button: purple accent --- */
-    #webhookTest {
-      border-color: rgba(180, 100, 255, 0.3);
-      color: #bfaeff;
-      background: rgba(150, 80, 255, 0.08);
-      box-shadow: 0 0 6px rgba(180, 100, 255, 0.15);
-    }
-
-    #webhookTest:hover {
-      background: linear-gradient(90deg, rgba(150, 80, 255, 0.25), rgba(0, 240, 255, 0.2));
-      color: #fff;
-      box-shadow: 0 0 14px rgba(180, 100, 255, 0.45);
-    }
-
-    /* --- CLEAR button: danger red accent --- */
-    #webhookClear {
-      border-color: rgba(255, 80, 80, 0.4);
-      color: #ff8080;
-      background: rgba(255, 60, 60, 0.05);
-      box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
-    }
-
-    #webhookClear:hover {
-      background: rgba(255, 60, 60, 0.15);
-      box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
-      color: #fff;
-    }
-
-    #webhookClear:active {
-      transform: scale(0.96);
-      box-shadow: 0 0 8px rgba(255, 80, 80, 0.3);
-    }
-
-    .small {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .loader-text {
-      color: var(--accent);
-      font-size: 1.3rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px var(--accent);
-      animation: pulseText 1.5s infinite;
-    }
-
-    @keyframes pulseText {
-
-      0%,
-      100% {
-        opacity: 0.7;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-      }
-
-      50% {
-        opacity: 1;
-        text-shadow: 0 0 14px rgba(0, 240, 255, 1);
-      }
-    }
-
-    @keyframes shakeFlash {
-
-      0%,
-      100% {
-        transform: translateX(0);
-        box-shadow: none;
-        border-color: rgba(0, 240, 255, 0.08);
-      }
-
-      10%,
-      30%,
-      50%,
-      70%,
-      90% {
-        transform: translateX(-4px);
-        box-shadow: 0 0 12px rgba(255, 60, 60, 0.7);
-        border-color: rgba(255, 100, 100, 0.6);
-      }
-
-      20%,
-      40%,
-      60%,
-      80% {
-        transform: translateX(4px);
-        box-shadow: 0 0 12px rgba(255, 60, 60, 0.7);
-        border-color: rgba(255, 100, 100, 0.6);
-      }
-    }
-
-    /* === CYBER POPUP: Set Time Modal === */
-    #timeModal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      /* JS toggles this */
-      align-items: center;
-      justify-content: center;
-      z-index: 5000;
-      background: rgba(0, 10, 20, 0.8);
-      backdrop-filter: blur(10px);
-    }
-
-    #timeModal .modal-content {
-      background: linear-gradient(180deg, rgba(5, 15, 25, 0.96), rgba(0, 10, 20, 0.9));
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-radius: 12px;
-      box-shadow:
-        0 0 20px rgba(0, 240, 255, 0.2),
-        inset 0 0 12px rgba(0, 240, 255, 0.05);
-      padding: 20px 18px;
-      width: 340px;
-      max-width: 90%;
-      color: var(--text);
-      text-align: center;
-      animation: popupRise 0.28s ease-out;
-      transform: translateY(0);
-      font-family: 'Orbitron', sans-serif;
-    }
-
-    @keyframes popupRise {
-      0% {
         opacity: 0;
-        transform: translateY(18px) scale(0.98);
+        animation: cyberModalIn 0.4s ease-out forwards;
+        backdrop-filter: blur(12px);
       }
 
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+      @keyframes cyberModalIn {
+        0% {
+          opacity: 0;
+          transform: translateY(30px) scale(0.96);
+          box-shadow: none;
+        }
+
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
       }
-    }
 
-    #timeModal h3 {
-      font-size: 16px;
-      color: var(--accent);
-      margin: 0 0 10px 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow:
-        0 0 8px rgba(0, 240, 255, 0.7),
-        0 0 14px rgba(0, 240, 255, 0.4);
-    }
+      .modal h3 {
+        margin: 0 0 10px 0;
+        font-size: 16px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7),
+          0 0 14px rgba(0, 240, 255, 0.4);
+      }
 
-    #timeModal .modal-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 14px;
-      letter-spacing: 0.5px;
-      text-transform: none;
-      font-family: 'Inter', sans-serif;
-    }
+      /* --- Cyber-styled Webhook Input --- */
+      #webhookInput {
+        width: 100%;
+        margin: 16px 0 18px 0;
+        padding: 10px 12px;
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.25);
+        border-radius: 8px;
+        color: var(--accent);
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        text-align: center;
+        outline: none;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.08);
+      }
 
-    #killTimeInput {
-      width: 100%;
-      margin-bottom: 14px;
-      padding: 10px 12px;
-      background: rgba(0, 240, 255, 0.04);
-      border: 1px solid rgba(0, 240, 255, 0.20);
-      border-radius: 8px;
-      color: var(--accent);
-      font-family: Consolas, monospace;
-      font-size: 13px;
-      text-align: center;
-      outline: none;
-      box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.06);
-      transition: all 0.22s ease;
-    }
+      #webhookInput::placeholder {
+        color: rgba(125, 211, 252, 0.35);
+        font-style: italic;
+      }
 
-    #killTimeInput:focus {
-      border-color: rgba(0, 240, 255, 0.6);
-      box-shadow:
-        0 0 14px rgba(0, 240, 255, 0.32),
-        inset 0 0 8px rgba(0, 240, 255, 0.18);
-      background: rgba(0, 240, 255, 0.08);
-      color: #fff;
-    }
+      #webhookInput:focus {
+        border-color: rgba(0, 240, 255, 0.6);
+        box-shadow: 0 0 14px rgba(0, 240, 255, 0.4),
+          inset 0 0 8px rgba(0, 240, 255, 0.25);
+        background: rgba(0, 240, 255, 0.08);
+        color: #fff;
+        animation: inputPulse 2.2s ease-in-out infinite;
+      }
 
-    #timeModal .actions {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 12px;
-    }
+      @keyframes inputPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(0, 240, 255, 0.4),
+            inset 0 0 6px rgba(0, 240, 255, 0.2);
+        }
 
-    #timeModal .kbtn {
-      flex: 1;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      background: rgba(0, 240, 255, 0.08);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      border-radius: 8px;
-      color: var(--accent);
-      padding: 8px 10px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 6px rgba(0, 240, 255, 0.12);
-    }
+        50% {
+          box-shadow: 0 0 20px rgba(0, 240, 255, 0.8),
+            inset 0 0 10px rgba(0, 240, 255, 0.35);
+        }
+      }
 
-    #timeModal .kbtn:hover {
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.18), rgba(125, 211, 252, 0.18));
-      box-shadow: 0 0 14px rgba(0, 240, 255, 0.38);
-      color: #fff;
-      transform: translateY(-1px);
-    }
+      /* --- Webhook Modal Buttons (SAVE, TEST, CLEAR) --- */
+      #webhookModalBackdrop .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 8px;
+      }
 
-    #timeModal .kbtn:active {
-      transform: scale(0.98);
-      box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
-    }
+      #webhookSave,
+      #webhookTest,
+      #webhookClear {
+        flex: 1;
+        background: rgba(0, 240, 255, 0.08);
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        color: var(--accent);
+        font-weight: 700;
+        font-size: 12px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        transition: all 0.25s ease;
+        box-shadow: 0 0 6px rgba(0, 240, 255, 0.15);
+        backdrop-filter: blur(4px);
+      }
 
-    /* Mobile tweak */
-    @media (max-width: 420px) {
+      /* --- SAVE button: bright cyan accent --- */
+      #webhookSave:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.18),
+          rgba(125, 211, 252, 0.18)
+        );
+        color: #fff;
+        box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+        transform: translateY(-1px);
+      }
+
+      #webhookSave:active {
+        transform: scale(0.96);
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+      }
+
+      /* --- TEST button: purple accent --- */
+      #webhookTest {
+        border-color: rgba(180, 100, 255, 0.3);
+        color: #bfaeff;
+        background: rgba(150, 80, 255, 0.08);
+        box-shadow: 0 0 6px rgba(180, 100, 255, 0.15);
+      }
+
+      #webhookTest:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(150, 80, 255, 0.25),
+          rgba(0, 240, 255, 0.2)
+        );
+        color: #fff;
+        box-shadow: 0 0 14px rgba(180, 100, 255, 0.45);
+      }
+
+      /* --- CLEAR button: danger red accent --- */
+      #webhookClear {
+        border-color: rgba(255, 80, 80, 0.4);
+        color: #ff8080;
+        background: rgba(255, 60, 60, 0.05);
+        box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
+      }
+
+      #webhookClear:hover {
+        background: rgba(255, 60, 60, 0.15);
+        box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
+        color: #fff;
+      }
+
+      #webhookClear:active {
+        transform: scale(0.96);
+        box-shadow: 0 0 8px rgba(255, 80, 80, 0.3);
+      }
+
+      .small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .loader-text {
+        color: var(--accent);
+        font-size: 1.3rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-shadow: 0 0 10px var(--accent);
+        animation: pulseText 1.5s infinite;
+      }
+
+      @keyframes pulseText {
+        0%,
+        100% {
+          opacity: 0.7;
+          text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+
+        50% {
+          opacity: 1;
+          text-shadow: 0 0 14px rgba(0, 240, 255, 1);
+        }
+      }
+
+      @keyframes shakeFlash {
+        0%,
+        100% {
+          transform: translateX(0);
+          box-shadow: none;
+          border-color: rgba(0, 240, 255, 0.08);
+        }
+
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-4px);
+          box-shadow: 0 0 12px rgba(255, 60, 60, 0.7);
+          border-color: rgba(255, 100, 100, 0.6);
+        }
+
+        20%,
+        40%,
+        60%,
+        80% {
+          transform: translateX(4px);
+          box-shadow: 0 0 12px rgba(255, 60, 60, 0.7);
+          border-color: rgba(255, 100, 100, 0.6);
+        }
+      }
+
+      /* === CYBER POPUP: Set Time Modal === */
+      #timeModal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        /* JS toggles this */
+        align-items: center;
+        justify-content: center;
+        z-index: 5000;
+        background: rgba(0, 10, 20, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
       #timeModal .modal-content {
-        width: 92%;
-        padding: 14px;
+        background: linear-gradient(
+          180deg,
+          rgba(5, 15, 25, 0.96),
+          rgba(0, 10, 20, 0.9)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.25);
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.2),
+          inset 0 0 12px rgba(0, 240, 255, 0.05);
+        padding: 20px 18px;
+        width: 340px;
+        max-width: 90%;
+        color: var(--text);
+        text-align: center;
+        animation: popupRise 0.28s ease-out;
+        transform: translateY(0);
+        font-family: "Orbitron", sans-serif;
+      }
+
+      @keyframes popupRise {
+        0% {
+          opacity: 0;
+          transform: translateY(18px) scale(0.98);
+        }
+
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      #timeModal h3 {
+        font-size: 16px;
+        color: var(--accent);
+        margin: 0 0 10px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7),
+          0 0 14px rgba(0, 240, 255, 0.4);
+      }
+
+      #timeModal .modal-subtitle {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 14px;
+        letter-spacing: 0.5px;
+        text-transform: none;
+        font-family: "Inter", sans-serif;
       }
 
       #killTimeInput {
-        font-size: 14px;
-        padding: 10px;
-      }
-    }
-
-    .boss.shake {
-      animation: shakeFlash 1.2s ease-in-out;
-      z-index: 10;
-      position: relative;
-      transition: none !important;
-    }
-
-    /* === DEAD BOSS STYLE — aligned baseline for name + SPAWNING tag === */
-    .boss .name.dead {
-      color: #8b8b8b;
-      font-weight: 800;
-      text-shadow:
-        0 0 6px rgba(255, 40, 40, 0.5),
-        0 0 12px rgba(255, 0, 0, 0.3);
-      transition: color 0.4s ease, text-shadow 0.4s ease;
-      display: inline-flex;
-      align-items: baseline;
-      /* <-- align text baselines */
-      gap: 8px;
-      font-size: 1rem;
-      /* explicit base size for alignment */
-    }
-
-    /* SPAWNING tag sits to the right and aligns on the same baseline */
-    .boss .name.dead::after {
-      content: "SPAWNING";
-      font-weight: 400;
-      font-size: 0.5rem;
-      /* smaller than the name */
-      line-height: 1;
-      /* ensure baseline alignment */
-      display: inline-block;
-      vertical-align: baseline;
-      color: rgba(255, 85, 85, 0.9);
-      letter-spacing: 1px;
-      text-shadow:
-        0 0 3px rgba(255, 60, 60, 0.5),
-        0 0 6px rgba(255, 0, 0, 0.3);
-      animation: spawningDots 2s infinite;
-      opacity: 0.9;
-    }
-
-    /* Animate dots only — brackets/word remain fixed in place visually */
-    @keyframes spawningDots {
-      0% {
-        content: "SPAWNING";
-      }
-
-      25% {
-        content: "SPAWNING.";
-      }
-
-      50% {
-        content: "SPAWNING..";
-      }
-
-      75% {
-        content: "SPAWNING...";
-      }
-
-      100% {
-        content: "SPAWNING";
-      }
-    }
-
-    /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
-    .card-header {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(13px, 2vw, 16px);
-      /* auto-scales for screen size */
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 48px;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.12);
-      padding: 8px 0;
-      text-shadow:
-        0 0 5px rgba(0, 240, 255, 0.4),
-        0 0 10px rgba(0, 240, 255, 0.2);
-      box-sizing: border-box;
-      margin: 0;
-      width: 100%;
-      /* no overflow */
-    }
-
-    /* --- Mobile refinement --- */
-    @media (max-width: 720px) {
-      .card-header {
+        width: 100%;
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        background: rgba(0, 240, 255, 0.04);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        border-radius: 8px;
+        color: var(--accent);
+        font-family: Consolas, monospace;
         font-size: 13px;
-        letter-spacing: 0.8px;
-        padding: 8px 4px;
-        min-height: 44px;
         text-align: center;
-      }
-    }
-
-		.clear-icon {
-			position: absolute;
-			right: 10px;
-			top: 50%;
-			transform: translateY(-50%);
-			cursor: pointer;
-			display: none;
-			color: var(--muted);
-			font-size: 14px;
-			line-height: 1;
-			transition: color 0.2s ease;
-		}
-
-		.clear-icon:hover {
-			color: var(--accent);
-		}
-
-    /* === Custom Scrollbars for Boss List & Timers === */
-    #bossList::-webkit-scrollbar,
-    #timers::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    #bossList::-webkit-scrollbar-track,
-    #timers::-webkit-scrollbar-track {
-      background: rgba(0, 20, 30, 0.3);
-      border-radius: 10px;
-      border: 1px solid rgba(0, 240, 255, 0.1);
-    }
-
-    #bossList::-webkit-scrollbar-thumb,
-    #timers::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, rgba(0, 240, 255, 0.4), rgba(125, 211, 252, 0.4));
-      border-radius: 10px;
-      box-shadow:
-        0 0 6px rgba(0, 240, 255, 0.3),
-        inset 0 0 4px rgba(0, 240, 255, 0.2);
-      transition: background 0.3s ease;
-    }
-
-    #bossList::-webkit-scrollbar-thumb:hover,
-    #timers::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(180deg, rgba(0, 240, 255, 0.7), rgba(125, 211, 252, 0.7));
-      box-shadow:
-        0 0 10px rgba(0, 240, 255, 0.6),
-        inset 0 0 6px rgba(0, 240, 255, 0.3);
-    }
-
-    /* Firefox scrollbar customization */
-    #bossList,
-    #timers {
-      scrollbar-width: thin;
-      scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
-    }
-
-    /* --- Online Users Indicator --- */
-    .online-users {
-      position: fixed;
-      bottom: 14px;
-      right: 16px;
-      padding: 6px 10px;
-      font-family: Consolas, monospace;
-      font-size: 12px;
-      color: var(--accent);
-      background: rgba(0, 240, 255, 0.06);
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      border-radius: 8px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-      text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      animation: fadeInUsers 0.5s ease-out;
-      z-index: 3000;
-    }
-
-    @keyframes fadeInUsers {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
+        outline: none;
+        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.06);
+        transition: all 0.22s ease;
       }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      #killTimeInput:focus {
+        border-color: rgba(0, 240, 255, 0.6);
+        box-shadow: 0 0 14px rgba(0, 240, 255, 0.32),
+          inset 0 0 8px rgba(0, 240, 255, 0.18);
+        background: rgba(0, 240, 255, 0.08);
+        color: #fff;
       }
-    }
 
-    .online-users:hover {
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
-      transform: translateY(-1px);
-    }
-  </style>
-</head>
+      #timeModal .actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 12px;
+      }
 
-<body>
+      #timeModal .kbtn {
+        flex: 1;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        background: rgba(0, 240, 255, 0.08);
+        border: 1px solid rgba(0, 240, 255, 0.25);
+        border-radius: 8px;
+        color: var(--accent);
+        padding: 8px 10px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 0 6px rgba(0, 240, 255, 0.12);
+      }
+
+      #timeModal .kbtn:hover {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 240, 255, 0.18),
+          rgba(125, 211, 252, 0.18)
+        );
+        box-shadow: 0 0 14px rgba(0, 240, 255, 0.38);
+        color: #fff;
+        transform: translateY(-1px);
+      }
+
+      #timeModal .kbtn:active {
+        transform: scale(0.98);
+        box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
+      }
+
+      /* Mobile tweak */
+      @media (max-width: 420px) {
+        #timeModal .modal-content {
+          width: 92%;
+          padding: 14px;
+        }
+
+        #killTimeInput {
+          font-size: 14px;
+          padding: 10px;
+        }
+      }
+
+      .boss.shake {
+        animation: shakeFlash 1.2s ease-in-out;
+        z-index: 10;
+        position: relative;
+        transition: none !important;
+      }
+
+      /* === DEAD BOSS STYLE — aligned baseline for name + SPAWNING tag === */
+      .boss .name.dead {
+        color: #8b8b8b;
+        font-weight: 800;
+        text-shadow: 0 0 6px rgba(255, 40, 40, 0.5),
+          0 0 12px rgba(255, 0, 0, 0.3);
+        transition: color 0.4s ease, text-shadow 0.4s ease;
+        display: inline-flex;
+        align-items: baseline;
+        /* <-- align text baselines */
+        gap: 8px;
+        font-size: 1rem;
+        /* explicit base size for alignment */
+      }
+
+      /* SPAWNING tag sits to the right and aligns on the same baseline */
+      .boss .name.dead::after {
+        content: "SPAWNING";
+        font-weight: 400;
+        font-size: 0.5rem;
+        /* smaller than the name */
+        line-height: 1;
+        /* ensure baseline alignment */
+        display: inline-block;
+        vertical-align: baseline;
+        color: rgba(255, 85, 85, 0.9);
+        letter-spacing: 1px;
+        text-shadow: 0 0 3px rgba(255, 60, 60, 0.5),
+          0 0 6px rgba(255, 0, 0, 0.3);
+        animation: spawningDots 2s infinite;
+        opacity: 0.9;
+      }
+
+      /* Animate dots only — brackets/word remain fixed in place visually */
+      @keyframes spawningDots {
+        0% {
+          content: "SPAWNING";
+        }
+
+        25% {
+          content: "SPAWNING.";
+        }
+
+        50% {
+          content: "SPAWNING..";
+        }
+
+        75% {
+          content: "SPAWNING...";
+        }
+
+        100% {
+          content: "SPAWNING";
+        }
+      }
+
+      /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
+      .card-header {
+        font-family: "Orbitron", sans-serif;
+        font-size: clamp(13px, 2vw, 16px);
+        /* auto-scales for screen size */
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 48px;
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+        padding: 8px 0;
+        text-shadow: 0 0 5px rgba(0, 240, 255, 0.4),
+          0 0 10px rgba(0, 240, 255, 0.2);
+        box-sizing: border-box;
+        margin: 0;
+        width: 100%;
+        /* no overflow */
+      }
+
+      /* --- Mobile refinement --- */
+      @media (max-width: 720px) {
+        .card-header {
+          font-size: 13px;
+          letter-spacing: 0.8px;
+          padding: 8px 4px;
+          min-height: 44px;
+          text-align: center;
+        }
+      }
+
+      .clear-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        display: none;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1;
+        transition: color 0.2s ease;
+      }
+
+      .clear-icon:hover {
+        color: var(--accent);
+      }
+
+      /* === Custom Scrollbars for Boss List & Timers === */
+      #bossList::-webkit-scrollbar,
+      #timers::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      #bossList::-webkit-scrollbar-track,
+      #timers::-webkit-scrollbar-track {
+        background: rgba(0, 20, 30, 0.3);
+        border-radius: 10px;
+        border: 1px solid rgba(0, 240, 255, 0.1);
+      }
+
+      #bossList::-webkit-scrollbar-thumb,
+      #timers::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 240, 255, 0.4),
+          rgba(125, 211, 252, 0.4)
+        );
+        border-radius: 10px;
+        box-shadow: 0 0 6px rgba(0, 240, 255, 0.3),
+          inset 0 0 4px rgba(0, 240, 255, 0.2);
+        transition: background 0.3s ease;
+      }
+
+      #bossList::-webkit-scrollbar-thumb:hover,
+      #timers::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 240, 255, 0.7),
+          rgba(125, 211, 252, 0.7)
+        );
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.6),
+          inset 0 0 6px rgba(0, 240, 255, 0.3);
+      }
+
+      /* Firefox scrollbar customization */
+      #bossList,
+      #timers {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
+      }
+
+      /* --- Online Users Indicator --- */
+      .online-users {
+        position: fixed;
+        bottom: 14px;
+        right: 16px;
+        padding: 6px 10px;
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        color: var(--accent);
+        background: rgba(0, 240, 255, 0.06);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        border-radius: 8px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        animation: fadeInUsers 0.5s ease-out;
+        z-index: 3000;
+      }
+
+      @keyframes fadeInUsers {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .online-users:hover {
+        box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+        transform: translateY(-1px);
+      }
+    </style>
+  </head>
+
+  <body>
     <div class="container">
-   <header class="app-header">
-    <div class="app-title">
-     <div class="logo">
-      <img alt="logo" class="logo-img" src="assets/images/logo5.png">
-     </div>
-     <div>
-      <div class="main-title">
-				FIELD BOSS TIME TRACKER
-			</div>
-      <div class="warning-text">
-       FOR RICARDO01 ONLY
+      <header class="app-header">
+        <div class="app-title">
+          <div class="logo">
+            <img alt="logo" class="logo-img" src="assets/images/logo5.png" />
+          </div>
+          <div>
+            <div class="main-title">FIELD BOSS TIME TRACKER</div>
+            <div class="warning-text">FOR RICARDO01 ONLY</div>
+          </div>
+        </div>
+        <div class="header-controls">
+          <div class="search-wrapper" style="position: relative">
+            <input
+              class="search"
+              id="bossSearch"
+              placeholder="Search boss..."
+            />
+            <span class="clear-icon" id="clearSearch"> ✖ </span>
+          </div>
+          <button aria-label="Settings" class="settings" id="settingsBtn">
+            <svg
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.6"
+              style="color: var(--accent)"
+              viewbox="0 0 24 24"
+              width="18"
+            >
+              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z"
+              ></path>
+            </svg>
+          </button>
+          <div class="settings-menu" id="settingsMenu">
+            <button class="menu-item" id="exportBtn">EXPORT 📤</button>
+            <button class="menu-item" id="importBtn">IMPORT 📥</button>
+            <button class="menu-item" id="resetBtn">RESET 🗑️</button>
+            <button class="menu-item" id="syncBtn">SYNC 🔄</button>
+            <button class="menu-item" id="discordWebhookBtn">WEBHOOK 💬</button>
+          </div>
+        </div>
+      </header>
+      <main class="main">
+        <section class="card" id="bossListPanel">
+          <h4 class="card-header">BOSS LIST</h4>
+          <div class="scrollable" id="bossList"></div>
+        </section>
+        <aside class="right-column">
+          <div class="card" id="nextBoss">
+            <div class="boss-name">Next Boss</div>
+            <div class="time-remaining" id="nextTime">— —</div>
+          </div>
+          <section class="card" id="timersPanel">
+            <h4 class="card-header">ACTIVE TIMERS</h4>
+            <div class="scrollable" id="timers"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+    <!-- Time modal (cyber-styled) -->
+    <div aria-hidden="true" id="timeModal">
+      <div
+        aria-labelledby="modalBossName"
+        aria-modal="true"
+        class="modal-content"
+        role="dialog"
+      >
+        <h3 id="modalBossName"></h3>
+        <div class="modal-subtitle">Set date and time of death</div>
+        <input id="killTimeInput" type="datetime-local" />
+        <div class="actions">
+          <button class="kbtn" id="cancelTimeBtn">Cancel</button>
+          <button class="kbtn" id="saveTimeBtn">Save</button>
+        </div>
       </div>
-     </div>
     </div>
-    <div class="header-controls">
-     <div class="search-wrapper" style="position:relative">
-      <input class="search" id="bossSearch" placeholder="Search boss..."/>
-      <span class="clear-icon" id="clearSearch">
-       ✖
-      </span>
-     </div>
-     <button aria-label="Settings" class="settings" id="settingsBtn">
-      <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--accent)" viewbox="0 0 24 24" width="18">
-       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z">
-       </path>
-       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z">
-       </path>
-      </svg>
-     </button>
-     <div class="settings-menu" id="settingsMenu">
-      <button class="menu-item" id="exportBtn">
-       EXPORT 📤
-      </button>
-      <button class="menu-item" id="importBtn">
-       IMPORT 📥
-      </button>
-      <button class="menu-item" id="resetBtn">
-       RESET 🗑️
-      </button>
-      <button class="menu-item" id="syncBtn">
-       SYNC 🔄
-      </button>
-      <button class="menu-item" id="discordWebhookBtn">
-       WEBHOOK 💬
-      </button>
-     </div>
-    </div>
-   </header>
-   <main class="main">
-    <section class="card" id="bossListPanel">
-     <h4 class="card-header">
-      BOSS LIST
-     </h4>
-     <div class="scrollable" id="bossList">
-     </div>
-    </section>
-    <aside class="right-column">
-     <div class="card" id="nextBoss">
-      <div class="boss-name">
-       Next Boss
+    <!-- Webhook modal — compact cyber panel -->
+    <div class="modal-backdrop" id="webhookModalBackdrop">
+      <div
+        aria-labelledby="webhookTitle"
+        aria-modal="true"
+        class="modal cyber-modal"
+        role="dialog"
+      >
+        <h3 id="webhookTitle">💬 Discord Webhook</h3>
+        <div class="small">Paste your Discord webhook URL below.</div>
+        <input
+          class="webhook-input"
+          id="webhookInput"
+          placeholder="Paste your Discord Webhook URL here."
+          type="text"
+        />
+        <div class="modal-actions">
+          <button class="cyber-btn" id="webhookSave">SAVE</button>
+          <button class="cyber-btn" id="webhookTest">TEST</button>
+          <button class="cyber-btn danger" id="webhookClear">CLEAR</button>
+        </div>
       </div>
-      <div class="time-remaining" id="nextTime">
-       — —
-      </div>
-     </div>
-     <section class="card" id="timersPanel">
-      <h4 class="card-header">
-       ACTIVE TIMERS
-      </h4>
-      <div class="scrollable" id="timers">
-      </div>
-     </section>
-    </aside>
-   </main>
-  </div>
-  <!-- Time modal (cyber-styled) -->
-  <div aria-hidden="true" id="timeModal">
-   <div aria-labelledby="modalBossName" aria-modal="true" class="modal-content" role="dialog">
-    <h3 id="modalBossName">
-    </h3>
-    <div class="modal-subtitle">
-     Set date and time of death
     </div>
-    <input id="killTimeInput" type="datetime-local"/>
-    <div class="actions">
-     <button class="kbtn" id="cancelTimeBtn">
-      Cancel
-     </button>
-     <button class="kbtn" id="saveTimeBtn">
-      Save
-     </button>
+    <div
+      id="loadingOverlay"
+      style="
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(8px);
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 10, 20, 0.95) 0%,
+          rgba(0, 0, 0, 0.98) 100%
+        );
+      "
+    >
+      <div class="loader-text">Loading...</div>
     </div>
-   </div>
-  </div>
-  <!-- Webhook modal — compact cyber panel -->
-  <div class="modal-backdrop" id="webhookModalBackdrop">
-   <div aria-labelledby="webhookTitle" aria-modal="true" class="modal cyber-modal" role="dialog">
-    <h3 id="webhookTitle">
-     💬 Discord Webhook
-    </h3>
-    <div class="small">
-     Paste your Discord webhook URL below.
-    </div>
-    <input class="webhook-input" id="webhookInput" placeholder="Paste your Discord Webhook URL here." type="text"/>
-    <div class="modal-actions">
-     <button class="cyber-btn" id="webhookSave">
-      SAVE
-     </button>
-     <button class="cyber-btn" id="webhookTest">
-      TEST
-     </button>
-     <button class="cyber-btn danger" id="webhookClear">
-      CLEAR
-     </button>
-    </div>
-   </div>
-  </div>
-  <div id="loadingOverlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);background:radial-gradient(circle at center, rgba(0,10,20,0.95) 0%, rgba(0,0,0,0.98) 100%);">
-   <div class="loader-text">
-    Loading...
-   </div>
-  </div>
 
-  <script type="module">
-    // -------------------------
-    // Data + constants (FULL BOSSES)
-    // -------------------------
-    const BOSSES = [
-      { id: 'Venatus', name: 'Venatus', respawn: 60 * 60 * 10 },
-      { id: 'Viorent', name: 'Viorent', respawn: 60 * 60 * 10 },
-      { id: 'Ego', name: 'Ego', respawn: 60 * 60 * 21 },
-      { id: 'Clemantis', name: 'Clemantis', weeklyRespawns: [{ day: 1, hour: 12, minute: 30 }, { day: 4, hour: 20, minute: 0 }] },
-      { id: 'Livera', name: 'Livera', respawn: 60 * 60 * 24 },
-      { id: 'Araneo', name: 'Araneo', respawn: 60 * 60 * 24 },
-      { id: 'Undomiel', name: 'Undomiel', respawn: 60 * 60 * 24 },
-      { id: 'Saphirus', name: 'Saphirus', weeklyRespawns: [{ day: 0, hour: 18, minute: 0 }, { day: 2, hour: 12, minute: 30 }] },
-      { id: 'Neutro', name: 'Neutro', weeklyRespawns: [{ day: 2, hour: 20, minute: 0 }, { day: 4, hour: 12, minute: 30 }] },
-      { id: 'Lady Dalia', name: 'Lady Dalia', respawn: 60 * 60 * 18 },
-      { id: 'General Aquleus', name: 'General Aquleus', respawn: 60 * 60 * 29 },
-      { id: 'Thymele', name: 'Thymele', weeklyRespawns: [{ day: 1, hour: 20, minute: 0 }, { day: 3, hour: 12, minute: 30 }] },
-      { id: 'Amentis', name: 'Amentis', respawn: 60 * 60 * 29 },
-      { id: 'Baron Braudmore', name: 'Baron Braudmore', respawn: 60 * 60 * 32 },
-      { id: 'Milavy', name: 'Milavy', weeklyRespawns: [{ day: 6, hour: 16, minute: 0 }] },
-      { id: 'Wannitas', name: 'Wannitas', respawn: 60 * 60 * 48 },
-      { id: 'Metus', name: 'Metus', respawn: 60 * 60 * 48 },
-      { id: 'Duplican', name: 'Duplican', respawn: 60 * 60 * 48 },
-      { id: 'Shuliar', name: 'Shuliar', respawn: 60 * 60 * 35 },
-      { id: 'Ringor', name: 'Ringor', weeklyRespawns: [{ day: 6, hour: 18, minute: 0 }] },
-      { id: 'Roderick', name: 'Roderick', weeklyRespawns: [{ day: 5, hour: 20, minute: 0 }] },
-      { id: 'Gareth', name: 'Gareth', respawn: 60 * 60 * 32 },
-      { id: 'Titore', name: 'Titore', respawn: 60 * 60 * 37 },
-      { id: 'Larba', name: 'Larba', respawn: 60 * 60 * 35 },
-      { id: 'Catena', name: 'Catena', respawn: 60 * 60 * 35 },
-      { id: 'Auraq', name: 'Auraq', weeklyRespawns: [{ day: 5, hour: 23, minute: 0 }, { day: 3, hour: 22, minute: 0 }] },
-      { id: 'Secreta', name: 'Secreta', respawn: 60 * 60 * 62 },
-      { id: 'Ordo', name: 'Ordo', respawn: 60 * 60 * 62 },
-      { id: 'Asta', name: 'Asta', respawn: 60 * 60 * 62 },
-      { id: 'Supore', name: 'Supore', respawn: 60 * 60 * 62 },
-      { id: 'Chaiflock', name: 'Chaiflock', weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }] },
-      { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }] },
-      { id: 'Test Boss', name: 'Test Boss', respawn: 60 * 5 + 10 }
-    ];
+    <script type="module">
+      // -------------------------
+      // Data + constants (FULL BOSSES)
+      // -------------------------
+      const BOSSES = [
+        { id: "Venatus", name: "Venatus", respawn: 60 * 60 * 10 },
+        { id: "Viorent", name: "Viorent", respawn: 60 * 60 * 10 },
+        { id: "Ego", name: "Ego", respawn: 60 * 60 * 21 },
+        {
+          id: "Clemantis",
+          name: "Clemantis",
+          weeklyRespawns: [
+            { day: 1, hour: 12, minute: 30 },
+            { day: 4, hour: 20, minute: 0 },
+          ],
+        },
+        { id: "Livera", name: "Livera", respawn: 60 * 60 * 24 },
+        { id: "Araneo", name: "Araneo", respawn: 60 * 60 * 24 },
+        { id: "Undomiel", name: "Undomiel", respawn: 60 * 60 * 24 },
+        {
+          id: "Saphirus",
+          name: "Saphirus",
+          weeklyRespawns: [
+            { day: 0, hour: 18, minute: 0 },
+            { day: 2, hour: 12, minute: 30 },
+          ],
+        },
+        {
+          id: "Neutro",
+          name: "Neutro",
+          weeklyRespawns: [
+            { day: 2, hour: 20, minute: 0 },
+            { day: 4, hour: 12, minute: 30 },
+          ],
+        },
+        { id: "Lady Dalia", name: "Lady Dalia", respawn: 60 * 60 * 18 },
+        {
+          id: "General Aquleus",
+          name: "General Aquleus",
+          respawn: 60 * 60 * 29,
+        },
+        {
+          id: "Thymele",
+          name: "Thymele",
+          weeklyRespawns: [
+            { day: 1, hour: 20, minute: 0 },
+            { day: 3, hour: 12, minute: 30 },
+          ],
+        },
+        { id: "Amentis", name: "Amentis", respawn: 60 * 60 * 29 },
+        {
+          id: "Baron Braudmore",
+          name: "Baron Braudmore",
+          respawn: 60 * 60 * 32,
+        },
+        {
+          id: "Milavy",
+          name: "Milavy",
+          weeklyRespawns: [{ day: 6, hour: 16, minute: 0 }],
+        },
+        { id: "Wannitas", name: "Wannitas", respawn: 60 * 60 * 48 },
+        { id: "Metus", name: "Metus", respawn: 60 * 60 * 48 },
+        { id: "Duplican", name: "Duplican", respawn: 60 * 60 * 48 },
+        { id: "Shuliar", name: "Shuliar", respawn: 60 * 60 * 35 },
+        {
+          id: "Ringor",
+          name: "Ringor",
+          weeklyRespawns: [{ day: 6, hour: 18, minute: 0 }],
+        },
+        {
+          id: "Roderick",
+          name: "Roderick",
+          weeklyRespawns: [{ day: 5, hour: 20, minute: 0 }],
+        },
+        { id: "Gareth", name: "Gareth", respawn: 60 * 60 * 32 },
+        { id: "Titore", name: "Titore", respawn: 60 * 60 * 37 },
+        { id: "Larba", name: "Larba", respawn: 60 * 60 * 35 },
+        { id: "Catena", name: "Catena", respawn: 60 * 60 * 35 },
+        {
+          id: "Auraq",
+          name: "Auraq",
+          weeklyRespawns: [
+            { day: 5, hour: 23, minute: 0 },
+            { day: 3, hour: 22, minute: 0 },
+          ],
+        },
+        { id: "Secreta", name: "Secreta", respawn: 60 * 60 * 62 },
+        { id: "Ordo", name: "Ordo", respawn: 60 * 60 * 62 },
+        { id: "Asta", name: "Asta", respawn: 60 * 60 * 62 },
+        { id: "Supore", name: "Supore", respawn: 60 * 60 * 62 },
+        {
+          id: "Chaiflock",
+          name: "Chaiflock",
+          weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }],
+        },
+        {
+          id: "Benji",
+          name: "Benji",
+          weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }],
+        },
+        { id: "Test Boss", name: "Test Boss", respawn: 60 * 5 + 10 },
+      ];
 
-    // -------------------------
-    // DOM refs
-    // -------------------------
-    const bossListEl = document.getElementById('bossList');
-    const timersEl = document.getElementById('timers');
-    const nextBossNameEl = document.querySelector('#nextBoss .boss-name');
-    const nextTimeEl = document.getElementById('nextTime');
-    const searchInput = document.getElementById('bossSearch');
-    const clearSearch = document.getElementById('clearSearch');
-    const searchWrapper = document.querySelector('.search-wrapper');
-    const modal = document.getElementById('timeModal');
-    const modalName = document.getElementById('modalBossName');
-    const killTimeInput = document.getElementById('killTimeInput');
-    const cancelTimeBtn = document.getElementById('cancelTimeBtn');
-    const saveTimeBtn = document.getElementById('saveTimeBtn');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const settingsBtn = document.getElementById('settingsBtn');
-    const settingsMenu = document.getElementById('settingsMenu');
-    const discordWebhookBtn = document.getElementById('discordWebhookBtn');
-    const webhookBackdrop = document.getElementById('webhookModalBackdrop');
-    const webhookInput = document.getElementById('webhookInput');
-    const webhookSave = document.getElementById('webhookSave');
-    const webhookTest = document.getElementById('webhookTest');
-    const webhookClear = document.getElementById('webhookClear');
+      // -------------------------
+      // DOM refs
+      // -------------------------
+      const bossListEl = document.getElementById("bossList");
+      const timersEl = document.getElementById("timers");
+      const nextBossNameEl = document.querySelector("#nextBoss .boss-name");
+      const nextTimeEl = document.getElementById("nextTime");
+      const searchInput = document.getElementById("bossSearch");
+      const clearSearch = document.getElementById("clearSearch");
+      const searchWrapper = document.querySelector(".search-wrapper");
+      const modal = document.getElementById("timeModal");
+      const modalName = document.getElementById("modalBossName");
+      const killTimeInput = document.getElementById("killTimeInput");
+      const cancelTimeBtn = document.getElementById("cancelTimeBtn");
+      const saveTimeBtn = document.getElementById("saveTimeBtn");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const settingsBtn = document.getElementById("settingsBtn");
+      const settingsMenu = document.getElementById("settingsMenu");
+      const discordWebhookBtn = document.getElementById("discordWebhookBtn");
+      const webhookBackdrop = document.getElementById("webhookModalBackdrop");
+      const webhookInput = document.getElementById("webhookInput");
+      const webhookSave = document.getElementById("webhookSave");
+      const webhookTest = document.getElementById("webhookTest");
+      const webhookClear = document.getElementById("webhookClear");
 
-    // -------------------------
-    // State
-    // -------------------------
-    let firebaseLoaded = false;
-    let cachedWebhookUrl = null;
-    let timers = {};               // { bossId: { endTime, startedAt, weekly?, notifiedSoon?, spawnAnnounced? } }
-    let currentBossForTime = null;
-    let justLoaded = true;
-    let deadLocks = {};            // in-memory map of boss cooldowns
+      // -------------------------
+      // State
+      // -------------------------
+      let firebaseLoaded = false;
+      let cachedWebhookUrl = null;
+      let timers = {}; // { bossId: { endTime, startedAt, weekly?, notifiedSoon?, spawnAnnounced? } }
+      let currentBossForTime = null;
+      let justLoaded = true;
+      let deadLocks = {}; // in-memory map of boss cooldowns
 
-    // Dedup caches
-    const lastWriteCache = {};     // { bossId: lastJson }
-    const localNotifCache = {};    // { `${bossId}_${type}`: timestamp(ms) }
+      // Dedup caches
+      const lastWriteCache = {}; // { bossId: lastJson }
+      const localNotifCache = {}; // { `${bossId}_${type}`: timestamp(ms) }
 
-    // -------------------------
-    // Helpers
-    // -------------------------
-    function sortActiveTimersSmoothly() {
-      const timersContainer = document.getElementById("timers");
-      if (!timersContainer) return;
-      const timerCards = Array.from(timersContainer.children);
-      timerCards.sort((a, b) => {
-        const aTime = parseInt(a.dataset.remaining || 0);
-        const bTime = parseInt(b.dataset.remaining || 0);
-        return aTime - bTime;
-      });
-      let changed = false;
-      for (let i = 0; i < timerCards.length; i++) {
-        if (timersContainer.children[i] !== timerCards[i]) { changed = true; break; }
-      }
-      if (changed) {
-        const fragment = document.createDocumentFragment();
-        timerCards.forEach(card => fragment.appendChild(card));
-        timersContainer.appendChild(fragment);
-      }
-    }
-
-    function formatSec(s) {
-      if (s <= 0) return 'Ready';
-      const d = Math.floor(s / 86400);
-      s %= 86400;
-      const h = Math.floor(s / 3600);
-      s %= 3600;
-      const m = Math.floor(s / 60);
-      const sec = Math.floor(s % 60);
-      if (d > 0) return `${d}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
-      if (h > 0) return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
-      return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
-    }
-
-    function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-      const now = new Date(fromTime);
-      let soonest = null;
-      for (const { day, hour, minute } of respawns) {
-        const t = new Date(now);
-        t.setHours(hour, minute, 0, 0);
-        const delta = (day + 7 - now.getDay()) % 7;
-        t.setDate(now.getDate() + delta);
-        if (t.getTime() <= now.getTime()) t.setDate(t.getDate() + 7);
-        if (!soonest || t.getTime() < soonest.getTime()) soonest = t;
-      }
-      return soonest ? soonest.getTime() : now.getTime();
-    }
-
-    // ✅ Import Firebase core and services
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      getDoc,
-      updateDoc,
-      deleteDoc,
-      deleteField,
-      runTransaction,
-      onSnapshot,
-      serverTimestamp, // ✅ Firestore FieldValue server timestamp (used in dedupe transaction)
-    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
-    import {
-      getDatabase,
-      ref,
-      onDisconnect,
-      onValue,
-      set,
-      push,
-      serverTimestamp as rtdbServerTimestamp, // ✅ rename this one so you don’t clash
-    } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-
-
-    // ✅ Initialize Firebase app
-    const firebaseConfig = {
-      apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-      authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-      databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "lordnine-timer-9f21e",
-      storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-      messagingSenderId: "644000692891",
-      appId: "1:644000692891:web:224bca1478655a43c0243e",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const rtdb = getDatabase(app);
-
-    // === Presence & Global Sync Management ===
-
-    // ✅ Online presence tracking (Realtime Database)
-    const presenceRef = ref(rtdb, "presence");
-    const myConnection = push(presenceRef);
-    set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
-    onDisconnect(myConnection).remove();
-
-    onValue(presenceRef, (snap) => {
-      const count = snap.size || snap.numChildren();
-      let el = document.getElementById("onlineCount");
-      if (!el) {
-        el = document.createElement("div");
-        el.id = "onlineCount";
-        el.className = "online-users";
-        document.body.appendChild(el);
-      }
-      el.textContent = `🟢 Online: ${count}`;
-    });
-
-    // ✅ Firestore-based Global Synchronization
-    let lastTriggeredBySelf = null;
-    const syncBtn = document.getElementById('syncBtn');
-    const refreshDocRef = doc(db, 'meta', 'refresh'); // Firestore doc for sync trigger
-
-    // --- Trigger Sync ---
-    syncBtn.addEventListener('click', async () => {
-      if (confirm("Synchronize all clients? This will reload every user's page.")) {
-        const now = Date.now();
-        lastTriggeredBySelf = now;
-        await setDoc(refreshDocRef, { forceRefresh: now });
-        alert('✅ Synchronization triggered for all connected users.');
-        console.log('🔁 sync triggered at', new Date(now).toISOString());
-      }
-    });
-
-    // --- Auto-refresh on Firestore update ---
-    let hasInitialized = false;
-    onSnapshot(refreshDocRef, (snapshot) => {
-      const data = snapshot.data();
-      if (!data) return;
-      const lastTrigger = data.forceRefresh;
-      const lastTriggerMs =
-        lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
-
-      if (!hasInitialized) { hasInitialized = true; return; }
-      if (lastTriggerMs === lastTriggeredBySelf) return;
-
-      console.log('🔄 Firestore refresh triggered, reloading page.');
-      location.reload();
-    });
-
-    // ✅ Safe Firestore write helper — ensures reliable merges
-    async function safeWrite(ref, payload) {
-      try {
-        await updateDoc(ref, payload);
-      } catch (err) {
-        console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
-        await setDoc(ref, payload, { merge: true });
-      }
-    }
-
-    // --- Load Discord webhook on startup (Firestore version) ---
-    async function autoLoadWebhook() {
-      try {
-        const docRef = doc(db, 'config', 'discordWebhook');
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          cachedWebhookUrl = data.url || null;
-          console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
-        } else {
-          console.warn("⚠️ No webhook found in Firestore config.");
-        }
-      } catch (e) {
-        console.error("❌ Failed to auto-load webhook:", e);
-      }
-    }
-
-    // -------------------------
-    // Webhook load/save/clear
-    // -------------------------
-    async function loadWebhookFromFirestore() {
-      try {
-        const docRef = doc(db, 'config', 'discordWebhook');
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          cachedWebhookUrl = data.url || null;
-          webhookInput.value = cachedWebhookUrl || '';
-          console.log('✅ Loaded webhook from Firestore.');
-          return cachedWebhookUrl;
-        } else {
-          cachedWebhookUrl = null;
-          webhookInput.value = '';
-          console.log('ℹ️ No webhook stored in Firestore.');
-          return null;
-        }
-      } catch (e) {
-        console.warn('load webhook err', e);
-        return null;
-      }
-    }
-
-    async function saveWebhookToFirestore(url) {
-      try {
-        await setDoc(doc(db, 'config', 'discordWebhook'), { url });
-        cachedWebhookUrl = url;
-        webhookInput.value = url;
-        alert('✅ Webhook saved.');
-        console.log('✅ Webhook saved to Firestore.');
-      } catch (e) {
-        console.warn('save webhook err', e);
-        alert('❌ Failed to save webhook.');
-      }
-    }
-
-    async function clearWebhookInFirestore() {
-      try {
-        await deleteDoc(doc(db, 'config', 'discordWebhook'));
-        cachedWebhookUrl = null;
-        webhookInput.value = '';
-        alert('✅ Webhook cleared.');
-        console.log('✅ Webhook cleared from Firestore.');
-      } catch (e) {
-        console.warn('clear webhook err', e);
-        alert('❌ Failed to clear webhook.');
-      }
-    }
-
-    // -------------------------
-    // Discord send helpers
-    // -------------------------
-    async function sendDiscordEmbed(embed) {
-      const webhook =
-        cachedWebhookUrl ||
-        (webhookInput && webhookInput.value.trim()) ||
-        null;
-
-      if (!webhook) {
-        console.warn("⚠️ No Discord webhook configured.");
-        return;
-      }
-
-      const mentionTarget = '@everyone'; // no @everyone by default
-
-      try {
-        const payload = {
-          content: mentionTarget,
-          embeds: [embed],
-        };
-
-        const res = await fetch(webhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+      // -------------------------
+      // Helpers
+      // -------------------------
+      function sortActiveTimersSmoothly() {
+        const timersContainer = document.getElementById("timers");
+        if (!timersContainer) return;
+        const timerCards = Array.from(timersContainer.children);
+        timerCards.sort((a, b) => {
+          const aTime = parseInt(a.dataset.remaining || 0);
+          const bTime = parseInt(b.dataset.remaining || 0);
+          return aTime - bTime;
         });
-
-        if (!res.ok) {
-          console.error("❌ Discord webhook failed:", res.status, await res.text());
-        } else {
-          console.log("✅ Discord embed sent successfully.");
+        let changed = false;
+        for (let i = 0; i < timerCards.length; i++) {
+          if (timersContainer.children[i] !== timerCards[i]) {
+            changed = true;
+            break;
+          }
         }
-      } catch (err) {
-        console.error("⚠️ Discord webhook error:", err);
+        if (changed) {
+          const fragment = document.createDocumentFragment();
+          timerCards.forEach((card) => fragment.appendChild(card));
+          timersContainer.appendChild(fragment);
+        }
       }
-    }
 
-		// === patched sendDiscordEmbedOnce: normalized key + endTimeMs dedupe ===
-		async function sendDiscordEmbedOnce(type, boss) {
-			try {
-				if (!boss || !type) return;
+      function formatSec(s) {
+        if (s <= 0) return "Ready";
+        const d = Math.floor(s / 86400);
+        s %= 86400;
+        const h = Math.floor(s / 3600);
+        s %= 3600;
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        if (d > 0)
+          return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(
+            2,
+            "0"
+          )}m`;
+        if (h > 0)
+          return `${String(h).padStart(2, "0")}h ${String(m).padStart(
+            2,
+            "0"
+          )}m`;
+        return `${String(m).padStart(2, "0")}m ${String(sec).padStart(
+          2,
+          "0"
+        )}s`;
+      }
 
-				// 🔹 Normalize Firestore key (handles spaces, punctuation)
-				const safeId = encodeURIComponent(boss.id.trim());
-				const key = `${safeId}_${type}`;
+      function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+        const now = new Date(fromTime);
+        let soonest = null;
+        for (const { day, hour, minute } of respawns) {
+          const t = new Date(now);
+          t.setHours(hour, minute, 0, 0);
+          const delta = (day + 7 - now.getDay()) % 7;
+          t.setDate(now.getDate() + delta);
+          if (t.getTime() <= now.getTime()) t.setDate(t.getDate() + 7);
+          if (!soonest || t.getTime() < soonest.getTime()) soonest = t;
+        }
+        return soonest ? soonest.getTime() : now.getTime();
+      }
 
-				const now = Date.now();
-				const localWindow = 2 * 60 * 1000; // 2 min client dedupe
+      // ✅ Import Firebase core and services
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+        updateDoc,
+        deleteDoc,
+        deleteField,
+        runTransaction,
+        onSnapshot,
+        serverTimestamp, // ✅ Firestore FieldValue server timestamp (used in dedupe transaction)
+      } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
-				// 🔹 Local dedupe guard (fast path)
-				if (localNotifCache[key] && now - localNotifCache[key] < localWindow) {
-					console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
-					return;
-				}
+      import {
+        getDatabase,
+        ref,
+        onDisconnect,
+        onValue,
+        set,
+        push,
+        serverTimestamp as rtdbServerTimestamp, // ✅ rename this one so you don’t clash
+      } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-				// 🔒 Reserve locally
-				localNotifCache[key] = now;
-				console.log(`🔒 Local reserve set for ${key}`);
-
-				const ref = doc(db, "notifications", key);
-				const thresholdMs = 2 * 60 * 1000; // server dedupe window
-
-				const txResult = await runTransaction(db, async (tx) => {
-					const snap = await tx.get(ref);
-					const data = snap.exists() ? snap.data() : {};
-
-					// Normalize timestamp formats
-					let lastSentMs = 0;
-					if (data.lastSent && typeof data.lastSent.toMillis === "function") {
-						lastSentMs = data.lastSent.toMillis();
-					} else if (typeof data.lastSent === "number") {
-						lastSentMs = data.lastSent;
-					} else if (typeof data.lastSent === "string") {
-						const parsed = Date.parse(data.lastSent);
-						if (!isNaN(parsed)) lastSentMs = parsed;
-					}
-
-					const lastEndTimeMs = data.lastEndTimeMs || 0;
-					const thisEndTimeMs = timers[boss.id]?.endTime || 0;
-					const nowMs = Date.now();
-
-					// 🔹 Only skip if (a) last send < 2min ago AND (b) same spawn cycle
-					const recentlySent =
-						nowMs - lastSentMs < thresholdMs && lastEndTimeMs === thisEndTimeMs;
-
-					if (recentlySent) {
-						console.log(
-							`⏸️ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
-						);
-						return false;
-					}
-
-					// 🔹 Write both lastSent + lastEndTimeMs atomically
-					tx.set(
-						ref,
-						{
-							lastSent: serverTimestamp(),
-							lastEndTimeMs: thisEndTimeMs,
-							bossId: boss.id,
-							type,
-						},
-						{ merge: true }
-					);
-
-					return { endTimeMs: thisEndTimeMs };
-				});
-
-				if (!txResult) {
-					console.log(
-						`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
-					);
-					return;
-				}
-
-				const formattedTime = formatShortDateTime(
-					txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()
-				);
-
-				// 🔹 Build appropriate embed
-				let embed;
-				switch (type) {
-					case "killed":
-						embed = buildEmbed(
-							`💀 ${boss.name} has been defeated!`,
-							`Next respawn: ${formattedTime}`,
-							0xff3333
-						);
-						break;
-					case "soon":
-						embed = buildEmbed(
-							`⚠️ ${boss.name} will respawn soon!`,
-							`Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
-							0xffcc00
-						);
-						break;
-					case "spawn":
-						embed = buildEmbed(
-							`⚔️ ${boss.name} has spawned!`,
-							`It’s time to hunt!`,
-							0xb266ff
-						);
-						break;
-					case "manual":
-						embed = buildEmbed(
-							`⏰ ${boss.name} manual time set`,
-							`Next respawn: ${formattedTime}`,
-							0x3399ff
-						);
-						break;
-					default:
-						console.warn(`⚠️ Unknown notification type: ${type}`);
-						return;
-				}
-
-				// 🔹 Final Discord send
-				await sendDiscordEmbed(embed);
-				console.log(`✅ Sent ${type} notification for ${boss.name}`);
-			} catch (e) {
-				if (e?.code === "ABORTED") {
-					console.warn("ℹ️ Transaction aborted (expected):", e);
-					return;
-				}
-				console.warn("⚠️ sendDiscordEmbedOnce error:", e);
-				delete localNotifCache[key]; // allow retry if failed
-			}
-		}
-
-    function buildEmbed(title, description, colorHex) {
-      return {
-        title,
-        description,
-        color: colorHex,
-        footer: { text: 'Lordnine Tracker' },
-        timestamp: new Date().toISOString()
+      // ✅ Initialize Firebase app
+      const firebaseConfig = {
+        apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
+        authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+        databaseURL:
+          "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "lordnine-timer-9f21e",
+        storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
+        messagingSenderId: "644000692891",
+        appId: "1:644000692891:web:224bca1478655a43c0243e",
       };
-    }
 
-    async function testWebhook() {
-      if (!cachedWebhookUrl && !webhookInput.value.trim()) {
-        alert('No webhook URL configured.');
-        return;
-      }
-      if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
-      await sendDiscordEmbed(buildEmbed('🧪 Webhook test successful!', 'This is a test message from Lord Nine Tracker.', 0x00ff99));
-      alert('Test sent (check your Discord).');
-    }
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const rtdb = getDatabase(app);
 
-    // -------------------------
-    // Firestore save dedupe helpers
-    // -------------------------
-    async function saveTimersToFirestore() {
-      try {
-        await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true });
-        console.log('✅ saveTimersToFirestore: saved timers document.');
-      } catch (e) {
-        console.warn('saveTimersToFirestore err', e);
-      }
-    }
+      // === Presence & Global Sync Management ===
 
-    // Save or update a single boss timer in Firestore safely, with dedupe
-    async function saveTimerToFirestoreOnce(bossId) {
-      try {
-        const ref = doc(db, 'timers', 'global');
-        const data = timers[bossId];
-        const json = JSON.stringify(data || {});
-        if (lastWriteCache[bossId] === json) {
-          console.log(`ℹ️ Skipping redundant write for ${bossId}`);
+      // ✅ Online presence tracking (Realtime Database)
+      const presenceRef = ref(rtdb, "presence");
+      const myConnection = push(presenceRef);
+      set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
+      onDisconnect(myConnection).remove();
+
+      onValue(presenceRef, (snap) => {
+        const count = snap.size || snap.numChildren();
+        let el = document.getElementById("onlineCount");
+        if (!el) {
+          el = document.createElement("div");
+          el.id = "onlineCount";
+          el.className = "online-users";
+          document.body.appendChild(el);
+        }
+        el.textContent = `🟢 Online: ${count}`;
+      });
+
+      // ✅ Firestore-based Global Synchronization
+      let lastTriggeredBySelf = null;
+      const syncBtn = document.getElementById("syncBtn");
+      const refreshDocRef = doc(db, "meta", "refresh"); // Firestore doc for sync trigger
+
+      // --- Trigger Sync ---
+      syncBtn.addEventListener("click", async () => {
+        if (
+          confirm(
+            "Synchronize all clients? This will reload every user's page."
+          )
+        ) {
+          const now = Date.now();
+          lastTriggeredBySelf = now;
+          await setDoc(refreshDocRef, { forceRefresh: now });
+          alert("✅ Synchronization triggered for all connected users.");
+          console.log("🔁 sync triggered at", new Date(now).toISOString());
+        }
+      });
+
+      // --- Auto-refresh on Firestore update ---
+      let hasInitialized = false;
+      onSnapshot(refreshDocRef, (snapshot) => {
+        const data = snapshot.data();
+        if (!data) return;
+        const lastTrigger = data.forceRefresh;
+        const lastTriggerMs =
+          lastTrigger && lastTrigger.toMillis
+            ? lastTrigger.toMillis()
+            : lastTrigger;
+
+        if (!hasInitialized) {
+          hasInitialized = true;
           return;
         }
-        lastWriteCache[bossId] = json;
-        await safeWrite(ref, { [`timers.${bossId}`]: data });
-        console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
-      } catch (e) {
-        console.warn('saveTimerToFirestoreOnce err', e);
-      }
-    }
+        if (lastTriggerMs === lastTriggeredBySelf) return;
 
-    async function saveTimers() {
-      try {
-        await saveTimersToFirestore();
-      } catch (e) {
-        console.warn('saveTimers err', e);
-      }
-    }
+        console.log("🔄 Firestore refresh triggered, reloading page.");
+        location.reload();
+      });
 
-    // -------------------------
-    // Actions: start / clear / reset
-    // -------------------------
-    async function startTimer(bossId) {
-      const boss = BOSSES.find(b => b.id === bossId);
-      if (!boss) return;
-      const now = Date.now();
-      let endTime;
-      if (boss.weeklyRespawns) {
-        endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-        timers[bossId] = { endTime, startedAt: now, weekly: true, notifiedSoon: false, spawnAnnounced: false };
-      } else {
-        endTime = now + boss.respawn * 1000;
-        timers[bossId] = { endTime, startedAt: now, notifiedSoon: false, spawnAnnounced: false };
+      // ✅ Safe Firestore write helper — ensures reliable merges
+      async function safeWrite(ref, payload) {
+        try {
+          await updateDoc(ref, payload);
+        } catch (err) {
+          console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
+          await setDoc(ref, payload, { merge: true });
+        }
       }
 
-      // deduped write
-      await saveTimerToFirestoreOnce(bossId);
-      addOrUpdateTimerElement(bossId);
-      renderBossList();
-
-      console.log(`🕹️ startTimer: started ${bossId} -> ${new Date(timers[bossId].endTime).toISOString()}`);
-
-      // send killed embed (deduped)
-      await sendDiscordEmbedOnce('killed', boss);
-    }
-
-    async function clearTimer(bossId) {
-      const boss = BOSSES.find(b => b.id === bossId);
-      const ref = doc(db, 'timers', 'global');
-
-      if (!timers[bossId]) {
-        console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
-        return;
+      // --- Load Discord webhook on startup (Firestore version) ---
+      async function autoLoadWebhook() {
+        try {
+          const docRef = doc(db, "config", "discordWebhook");
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            const data = snap.data();
+            cachedWebhookUrl = data.url || null;
+            console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
+          } else {
+            console.warn("⚠️ No webhook found in Firestore config.");
+          }
+        } catch (e) {
+          console.error("❌ Failed to auto-load webhook:", e);
+        }
       }
 
-      delete timers[bossId]; // remove locally
+      // -------------------------
+      // Webhook load/save/clear
+      // -------------------------
+      async function loadWebhookFromFirestore() {
+        try {
+          const docRef = doc(db, "config", "discordWebhook");
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            const data = snap.data();
+            cachedWebhookUrl = data.url || null;
+            webhookInput.value = cachedWebhookUrl || "";
+            console.log("✅ Loaded webhook from Firestore.");
+            return cachedWebhookUrl;
+          } else {
+            cachedWebhookUrl = null;
+            webhookInput.value = "";
+            console.log("ℹ️ No webhook stored in Firestore.");
+            return null;
+          }
+        } catch (e) {
+          console.warn("load webhook err", e);
+          return null;
+        }
+      }
 
-      try {
-        // Ensure the document exists first
-        const snap = await getDoc(ref);
-        if (!snap.exists()) {
-          console.warn('⚠️ timers/global did not exist. Creating it first...');
-          await setDoc(ref, { timers: {} }, { merge: true });
+      async function saveWebhookToFirestore(url) {
+        try {
+          await setDoc(doc(db, "config", "discordWebhook"), { url });
+          cachedWebhookUrl = url;
+          webhookInput.value = url;
+          alert("✅ Webhook saved.");
+          console.log("✅ Webhook saved to Firestore.");
+        } catch (e) {
+          console.warn("save webhook err", e);
+          alert("❌ Failed to save webhook.");
+        }
+      }
+
+      async function clearWebhookInFirestore() {
+        try {
+          await deleteDoc(doc(db, "config", "discordWebhook"));
+          cachedWebhookUrl = null;
+          webhookInput.value = "";
+          alert("✅ Webhook cleared.");
+          console.log("✅ Webhook cleared from Firestore.");
+        } catch (e) {
+          console.warn("clear webhook err", e);
+          alert("❌ Failed to clear webhook.");
+        }
+      }
+
+      // -------------------------
+      // Discord send helpers
+      // -------------------------
+      async function sendDiscordEmbed(embed) {
+        const webhook =
+          cachedWebhookUrl ||
+          (webhookInput && webhookInput.value.trim()) ||
+          null;
+
+        if (!webhook) {
+          console.warn("⚠️ No Discord webhook configured.");
+          return;
         }
 
-        // ✅ Delete nested key with updateDoc and field path
-        await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
+        const mentionTarget = "@everyone"; // no @everyone by default
 
-        console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
-      } catch (err) {
-        console.error('❌ Firestore delete failed for', bossId, err);
-        alert('Failed to clear timer in Firestore. Please retry.');
+        try {
+          const payload = {
+            content: mentionTarget,
+            embeds: [embed],
+          };
+
+          const res = await fetch(webhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            console.error(
+              "❌ Discord webhook failed:",
+              res.status,
+              await res.text()
+            );
+          } else {
+            console.log("✅ Discord embed sent successfully.");
+          }
+        } catch (err) {
+          console.error("⚠️ Discord webhook error:", err);
+        }
       }
 
-      // Update UI
-      removeTimerElement(bossId);
-      renderBossList();
+      // === patched sendDiscordEmbedOnce: normalized key + endTimeMs dedupe ===
+      async function sendDiscordEmbedOnce(type, boss) {
+        try {
+          if (!boss || !type) return;
 
-      console.log(`🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`);
-    }
+          // 🔹 Normalize Firestore key (handles spaces, punctuation)
+          const safeId = encodeURIComponent(boss.id.trim());
+          const key = `${safeId}_${type}`;
 
-    async function resetAll() {
-      if (!confirm('Clear all non-weekly timers?')) return;
-      const preserved = {};
-      for (const [id, info] of Object.entries(timers)) {
-        const boss = BOSSES.find(b => b.id === id);
-        if (boss && boss.weeklyRespawns) preserved[id] = info;
+          const now = Date.now();
+          const localWindow = 2 * 60 * 1000; // 2 min client dedupe
+
+          // 🔹 Local dedupe guard (fast path)
+          if (
+            localNotifCache[key] &&
+            now - localNotifCache[key] < localWindow
+          ) {
+            console.log(
+              `🛑 Locally skipped duplicate ${type} notification for ${boss.name}`
+            );
+            return;
+          }
+
+          // 🔒 Reserve locally
+          localNotifCache[key] = now;
+          console.log(`🔒 Local reserve set for ${key}`);
+
+          const ref = doc(db, "notifications", key);
+          const thresholdMs = 2 * 60 * 1000; // server dedupe window
+
+          const txResult = await runTransaction(db, async (tx) => {
+            const snap = await tx.get(ref);
+            const data = snap.exists() ? snap.data() : {};
+
+            // Normalize timestamp formats
+            let lastSentMs = 0;
+            if (data.lastSent && typeof data.lastSent.toMillis === "function") {
+              lastSentMs = data.lastSent.toMillis();
+            } else if (typeof data.lastSent === "number") {
+              lastSentMs = data.lastSent;
+            } else if (typeof data.lastSent === "string") {
+              const parsed = Date.parse(data.lastSent);
+              if (!isNaN(parsed)) lastSentMs = parsed;
+            }
+
+            const lastEndTimeMs = data.lastEndTimeMs || 0;
+            const thisEndTimeMs = timers[boss.id]?.endTime || 0;
+            const nowMs = Date.now();
+
+            // 🔹 Only skip if (a) last send < 2min ago AND (b) same spawn cycle
+            const recentlySent =
+              nowMs - lastSentMs < thresholdMs &&
+              lastEndTimeMs === thisEndTimeMs;
+
+            if (recentlySent) {
+              console.log(
+                `⏸️ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
+              );
+              return false;
+            }
+
+            // 🔹 Write both lastSent + lastEndTimeMs atomically
+            tx.set(
+              ref,
+              {
+                lastSent: serverTimestamp(),
+                lastEndTimeMs: thisEndTimeMs,
+                bossId: boss.id,
+                type,
+              },
+              { merge: true }
+            );
+
+            return { endTimeMs: thisEndTimeMs };
+          });
+
+          if (!txResult) {
+            console.log(
+              `⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
+            );
+            return;
+          }
+
+          const formattedTime = formatShortDateTime(
+            txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()
+          );
+
+          // 🔹 Build appropriate embed
+          let embed;
+          switch (type) {
+            case "killed":
+              embed = buildEmbed(
+                `💀 ${boss.name} has been defeated!`,
+                `Next respawn: ${formattedTime}`,
+                0xff3333
+              );
+              break;
+            case "soon":
+              embed = buildEmbed(
+                `⚠️ ${boss.name} will respawn soon!`,
+                `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
+                0xffcc00
+              );
+              break;
+            case "spawn":
+              embed = buildEmbed(
+                `⚔️ ${boss.name} has spawned!`,
+                `It’s time to hunt!`,
+                0xb266ff
+              );
+              break;
+            case "manual":
+              embed = buildEmbed(
+                `⏰ ${boss.name} manual time set`,
+                `Next respawn: ${formattedTime}`,
+                0x3399ff
+              );
+              break;
+            default:
+              console.warn(`⚠️ Unknown notification type: ${type}`);
+              return;
+          }
+
+          // 🔹 Final Discord send
+          await sendDiscordEmbed(embed);
+          console.log(`✅ Sent ${type} notification for ${boss.name}`);
+        } catch (e) {
+          if (e?.code === "ABORTED") {
+            console.warn("ℹ️ Transaction aborted (expected):", e);
+            return;
+          }
+          console.warn("⚠️ sendDiscordEmbedOnce error:", e);
+          delete localNotifCache[key]; // allow retry if failed
+        }
       }
-      timers = preserved;
 
-      try {
-        await setDoc(doc(db, 'timers', 'global'), { timers }); // overwrite entire timers doc
-        rebuildTimersPanel();
-        renderBossList();
-        alert('✅ All non-weekly timers reset (Firestore updated).');
-        console.log('🔁 resetAll: fully reset timers and updated Firestore.');
-      } catch (e) {
-        console.warn('❌ resetAll Firestore update failed', e);
-        alert('⚠️ Failed to update Firestore.');
-      }
-    }
-
-    // -------------------------
-    // Modal for manual time
-    // -------------------------
-    function openTimeModal(bossId) {
-      const boss = BOSSES.find(b => b.id === bossId);
-      if (!boss) return;
-      currentBossForTime = boss;
-      modalName.textContent = boss.name;
-      killTimeInput.value = '';
-      modal.style.display = 'flex';
-    }
-
-    function closeTimeModal() {
-      modal.style.display = 'none';
-      currentBossForTime = null;
-    }
-
-    cancelTimeBtn.addEventListener('click', closeTimeModal);
-
-    saveTimeBtn.addEventListener('click', async () => {
-      const input = killTimeInput.value;
-      if (!input || !currentBossForTime) return;
-
-      const parsed = new Date(input);
-      if (isNaN(parsed)) {
-        alert('Invalid date format.');
-        return;
-      }
-
-      const killedAt = parsed.getTime();
-      const boss = currentBossForTime;
-      let endTime;
-
-      // ✅ Calculate respawn
-      if (boss.weeklyRespawns) {
-        endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
-        while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
-        timers[boss.id] = {
-          endTime,
-          startedAt: killedAt,
-          weekly: true,
-          notifiedSoon: false,
-          spawnAnnounced: false,
+      function buildEmbed(title, description, colorHex) {
+        return {
+          title,
+          description,
+          color: colorHex,
+          footer: { text: "Lordnine Tracker" },
+          timestamp: new Date().toISOString(),
         };
-      } else {
-        endTime = killedAt + boss.respawn * 1000;
-        timers[boss.id] = {
-          endTime,
-          startedAt: killedAt,
-          notifiedSoon: false,
-          spawnAnnounced: false,
-        };
       }
 
-      try {
-        // ✅ Ensure webhook is loaded before use
-        if (!cachedWebhookUrl) await autoLoadWebhook();
-
-        const ref = doc(db, 'timers', 'global');
-
-        // ✅ Correct Firestore structure
-        await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
-
-        console.log(`✅ Firestore updated: ${boss.name} manual time saved.`);
-
-        // ✅ Update local UI
-        closeTimeModal();
-        addOrUpdateTimerElement(boss.id);
-        renderBossList();
-
-        // ✅ Send Discord notification (manual entry always sends)
-        const formattedTime = formatShortDateTime(endTime);
-        const embed = buildEmbed(
-          `⏰ ${boss.name} manual time set`,
-          `Next respawn: ${formattedTime}`,
-          0x3399ff
+      async function testWebhook() {
+        if (!cachedWebhookUrl && !webhookInput.value.trim()) {
+          alert("No webhook URL configured.");
+          return;
+        }
+        if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
+        await sendDiscordEmbed(
+          buildEmbed(
+            "🧪 Webhook test successful!",
+            "This is a test message from Lord Nine Tracker.",
+            0x00ff99
+          )
         );
-        await sendDiscordEmbedOnce('manual', boss);
-
-        console.log(`📡 Discord notification sent for ${boss.name}.`);
-        alert(`✅ Manual time saved and synced for ${boss.name}.`);
-      } catch (err) {
-        console.error('❌ Failed to record manual time:', err);
-        alert('❌ Failed to record manual time to Firestore. Check console for details.');
+        alert("Test sent (check your Discord).");
       }
-    });
 
-    // -------------------------
-    // Render functions
-    // -------------------------
-    function renderBossList() {
-      bossListEl.innerHTML = '';
-      const q = (searchInput.value || '').toLowerCase().trim();
+      // -------------------------
+      // Firestore save dedupe helpers
+      // -------------------------
+      async function saveTimersToFirestore() {
+        try {
+          await setDoc(
+            doc(db, "timers", "global"),
+            { timers },
+            { merge: true }
+          );
+          console.log("✅ saveTimersToFirestore: saved timers document.");
+        } catch (e) {
+          console.warn("saveTimersToFirestore err", e);
+        }
+      }
 
-      for (const b of BOSSES) {
-        const isWeekly = !!b.weeklyRespawns;
-        const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-        if (q && !b.name.toLowerCase().includes(q)) continue;
+      // Save or update a single boss timer in Firestore safely, with dedupe
+      async function saveTimerToFirestoreOnce(bossId) {
+        try {
+          const ref = doc(db, "timers", "global");
+          const data = timers[bossId];
+          const json = JSON.stringify(data || {});
+          if (lastWriteCache[bossId] === json) {
+            console.log(`ℹ️ Skipping redundant write for ${bossId}`);
+            return;
+          }
+          lastWriteCache[bossId] = json;
+          await safeWrite(ref, { [`timers.${bossId}`]: data });
+          console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
+        } catch (e) {
+          console.warn("saveTimerToFirestoreOnce err", e);
+        }
+      }
 
-        const subText = isWeekly
-          ? b.weeklyRespawns
-            .map(r => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][r.day] + ' ' + String(r.hour).padStart(2, '0') + ':' + String(r.minute).padStart(2, '0'))
-            .join(', ')
-          : (b.respawn / 3600) + ' hr';
+      async function saveTimers() {
+        try {
+          await saveTimersToFirestore();
+        } catch (e) {
+          console.warn("saveTimers err", e);
+        }
+      }
 
-        const node = document.createElement('div');
-        node.className = 'boss';
+      // -------------------------
+      // Actions: start / clear / reset
+      // -------------------------
+      async function startTimer(bossId) {
+        const boss = BOSSES.find((b) => b.id === bossId);
+        if (!boss) return;
+        const now = Date.now();
+        let endTime;
+        if (boss.weeklyRespawns) {
+          endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
+          timers[bossId] = {
+            endTime,
+            startedAt: now,
+            weekly: true,
+            notifiedSoon: false,
+            spawnAnnounced: false,
+          };
+        } else {
+          endTime = now + boss.respawn * 1000;
+          timers[bossId] = {
+            endTime,
+            startedAt: now,
+            notifiedSoon: false,
+            spawnAnnounced: false,
+          };
+        }
 
-        const nameClass = isActive ? 'name dead' : 'name';
+        // deduped write
+        await saveTimerToFirestoreOnce(bossId);
+        addOrUpdateTimerElement(bossId);
+        renderBossList();
 
-        node.innerHTML = `
+        console.log(
+          `🕹️ startTimer: started ${bossId} -> ${new Date(
+            timers[bossId].endTime
+          ).toISOString()}`
+        );
+
+        // send killed embed (deduped)
+        await sendDiscordEmbedOnce("killed", boss);
+      }
+
+      async function clearTimer(bossId) {
+        const boss = BOSSES.find((b) => b.id === bossId);
+        const ref = doc(db, "timers", "global");
+
+        if (!timers[bossId]) {
+          console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
+          return;
+        }
+
+        delete timers[bossId]; // remove locally
+
+        try {
+          // Ensure the document exists first
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            console.warn(
+              "⚠️ timers/global did not exist. Creating it first..."
+            );
+            await setDoc(ref, { timers: {} }, { merge: true });
+          }
+
+          // ✅ Delete nested key with updateDoc and field path
+          await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
+
+          console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
+        } catch (err) {
+          console.error("❌ Firestore delete failed for", bossId, err);
+          alert("Failed to clear timer in Firestore. Please retry.");
+        }
+
+        // Update UI
+        removeTimerElement(bossId);
+        renderBossList();
+
+        console.log(
+          `🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`
+        );
+      }
+
+      async function resetAll() {
+        if (!confirm("Clear all non-weekly timers?")) return;
+        const preserved = {};
+        for (const [id, info] of Object.entries(timers)) {
+          const boss = BOSSES.find((b) => b.id === id);
+          if (boss && boss.weeklyRespawns) preserved[id] = info;
+        }
+        timers = preserved;
+
+        try {
+          await setDoc(doc(db, "timers", "global"), { timers }); // overwrite entire timers doc
+          rebuildTimersPanel();
+          renderBossList();
+          alert("✅ All non-weekly timers reset (Firestore updated).");
+          console.log("🔁 resetAll: fully reset timers and updated Firestore.");
+        } catch (e) {
+          console.warn("❌ resetAll Firestore update failed", e);
+          alert("⚠️ Failed to update Firestore.");
+        }
+      }
+
+      // -------------------------
+      // Modal for manual time
+      // -------------------------
+      function openTimeModal(bossId) {
+        const boss = BOSSES.find((b) => b.id === bossId);
+        if (!boss) return;
+        currentBossForTime = boss;
+        modalName.textContent = boss.name;
+        killTimeInput.value = "";
+        modal.style.display = "flex";
+      }
+
+      function closeTimeModal() {
+        modal.style.display = "none";
+        currentBossForTime = null;
+      }
+
+      cancelTimeBtn.addEventListener("click", closeTimeModal);
+
+      saveTimeBtn.addEventListener("click", async () => {
+        const input = killTimeInput.value;
+        if (!input || !currentBossForTime) return;
+
+        const parsed = new Date(input);
+        if (isNaN(parsed)) {
+          alert("Invalid date format.");
+          return;
+        }
+
+        const killedAt = parsed.getTime();
+        const boss = currentBossForTime;
+        let endTime;
+
+        // ✅ Calculate respawn
+        if (boss.weeklyRespawns) {
+          endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
+          while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
+          timers[boss.id] = {
+            endTime,
+            startedAt: killedAt,
+            weekly: true,
+            notifiedSoon: false,
+            spawnAnnounced: false,
+          };
+        } else {
+          endTime = killedAt + boss.respawn * 1000;
+          timers[boss.id] = {
+            endTime,
+            startedAt: killedAt,
+            notifiedSoon: false,
+            spawnAnnounced: false,
+          };
+        }
+
+        try {
+          // ✅ Ensure webhook is loaded before use
+          if (!cachedWebhookUrl) await autoLoadWebhook();
+
+          const ref = doc(db, "timers", "global");
+
+          // ✅ Correct Firestore structure
+          await setDoc(
+            ref,
+            { timers: { [boss.id]: timers[boss.id] } },
+            { merge: true }
+          );
+
+          console.log(`✅ Firestore updated: ${boss.name} manual time saved.`);
+
+          // ✅ Update local UI
+          closeTimeModal();
+          addOrUpdateTimerElement(boss.id);
+          renderBossList();
+
+          // ✅ Send Discord notification (manual entry always sends)
+          const formattedTime = formatShortDateTime(endTime);
+          const embed = buildEmbed(
+            `⏰ ${boss.name} manual time set`,
+            `Next respawn: ${formattedTime}`,
+            0x3399ff
+          );
+          await sendDiscordEmbedOnce("manual", boss);
+
+          console.log(`📡 Discord notification sent for ${boss.name}.`);
+          alert(`✅ Manual time saved and synced for ${boss.name}.`);
+        } catch (err) {
+          console.error("❌ Failed to record manual time:", err);
+          alert(
+            "❌ Failed to record manual time to Firestore. Check console for details."
+          );
+        }
+      });
+
+      // -------------------------
+      // Render functions
+      // -------------------------
+      function renderBossList() {
+        bossListEl.innerHTML = "";
+        const q = (searchInput.value || "").toLowerCase().trim();
+
+        for (const b of BOSSES) {
+          const isWeekly = !!b.weeklyRespawns;
+          const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
+          if (q && !b.name.toLowerCase().includes(q)) continue;
+
+          const subText = isWeekly
+            ? b.weeklyRespawns
+                .map(
+                  (r) =>
+                    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][r.day] +
+                    " " +
+                    String(r.hour).padStart(2, "0") +
+                    ":" +
+                    String(r.minute).padStart(2, "0")
+                )
+                .join(", ")
+            : b.respawn / 3600 + " hr";
+
+          const node = document.createElement("div");
+          node.className = "boss";
+
+          const nameClass = isActive ? "name dead" : "name";
+
+          node.innerHTML = `
           <div class="meta">
             <div class="${nameClass}">${b.name}</div>
             <div class="sub">${subText}</div>
           </div>
           <div class="actions">
-            <button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
-            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>` : ''}
+            <button class="kbtn" data-action="mark" data-id="${
+              b.id
+            }">Mark Dead</button>
+            ${
+              !isWeekly
+                ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>`
+                : ""
+            }
           </div>
         `;
-        bossListEl.appendChild(node);
-      }
-    }
-
-    // === Unified Boss List Click Handler with atomic deadlock attempt ===
-    bossListEl.addEventListener('click', async (e) => {
-      const btn = e.target.closest('.kbtn');
-      if (!btn) return;
-
-      const action = btn.getAttribute('data-action');
-      const id = btn.getAttribute('data-id');
-      if (!id) return;
-
-      if (action === 'clear') {
-        await clearTimer(id);
-        return;
-      }
-
-      if (action === 'mark') {
-        const now = Date.now();
-        const lockDuration = 60 * 1000; // 1 minute
-        const lockUntil = now + lockDuration;
-
-        // Immediate visual disable to give feedback
-        btn.disabled = true;
-        console.log(`🔘 mark clicked: attempting lock for ${id} (local visual disabled)`);
-
-        try {
-          // Try atomic transaction to set lock only if not locked
-          const locked = await runTransaction(db, async (tx) => {
-            const snap = await tx.get(deadLockRef);
-            const data = snap.exists() ? snap.data() : {};
-            const existing = data[id] || 0;
-            const tsNow = Date.now();
-
-            if (existing && existing > tsNow) {
-              // someone else holds lock
-              return false;
-            }
-            // set lock
-            tx.set(deadLockRef, { [id]: lockUntil }, { merge: true });
-            return true;
-          });
-
-          if (!locked) {
-            // lock lost to another client: re-enable and warn
-            console.warn(`⛔ markDead: failed to acquire lock for ${id} — another user locked it.`);
-            // refresh deadLocks on next snapshot will correct disabled state, but re-enable for good UX
-            btn.disabled = false;
-            return;
-          }
-
-          // We acquired lock: update local memory immediately and disable all mark buttons for this boss
-          deadLocks[id] = lockUntil;
-          document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(b => (b.disabled = true));
-          console.log(`🔒 Acquired lock for ${id} until ${new Date(lockUntil).toISOString()}`);
-
-          // Animate the boss card
-          const card = btn.closest('.boss');
-          if (card) {
-            card.classList.add('shake');
-            card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
-          }
-
-          // Start the timer (this writes timer and triggers Discord send)
-          await startTimer(id);
-        } catch (err) {
-          console.error('⚠️ Error during mark dead transaction:', err);
-          btn.disabled = false;
+          bossListEl.appendChild(node);
         }
-        return;
       }
 
-      if (action === 'set') {
-        openTimeModal(id);
+      // === Unified Boss List Click Handler with atomic deadlock attempt ===
+      bossListEl.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".kbtn");
+        if (!btn) return;
+
+        const action = btn.getAttribute("data-action");
+        const id = btn.getAttribute("data-id");
+        if (!id) return;
+
+        if (action === "clear") {
+          await clearTimer(id);
+          return;
+        }
+
+        if (action === "mark") {
+          const now = Date.now();
+          const lockDuration = 60 * 1000; // 1 minute
+          const lockUntil = now + lockDuration;
+
+          // Immediate visual disable to give feedback
+          btn.disabled = true;
+          console.log(
+            `🔘 mark clicked: attempting lock for ${id} (local visual disabled)`
+          );
+
+          try {
+            // Try atomic transaction to set lock only if not locked
+            const locked = await runTransaction(db, async (tx) => {
+              const snap = await tx.get(deadLockRef);
+              const data = snap.exists() ? snap.data() : {};
+              const existing = data[id] || 0;
+              const tsNow = Date.now();
+
+              if (existing && existing > tsNow) {
+                // someone else holds lock
+                return false;
+              }
+              // set lock
+              tx.set(deadLockRef, { [id]: lockUntil }, { merge: true });
+              return true;
+            });
+
+            if (!locked) {
+              // lock lost to another client: re-enable and warn
+              console.warn(
+                `⛔ markDead: failed to acquire lock for ${id} — another user locked it.`
+              );
+              // refresh deadLocks on next snapshot will correct disabled state, but re-enable for good UX
+              btn.disabled = false;
+              return;
+            }
+
+            // We acquired lock: update local memory immediately and disable all mark buttons for this boss
+            deadLocks[id] = lockUntil;
+            document
+              .querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`)
+              .forEach((b) => (b.disabled = true));
+            console.log(
+              `🔒 Acquired lock for ${id} until ${new Date(
+                lockUntil
+              ).toISOString()}`
+            );
+
+            // Animate the boss card
+            const card = btn.closest(".boss");
+            if (card) {
+              card.classList.add("shake");
+              card.addEventListener(
+                "animationend",
+                () => card.classList.remove("shake"),
+                { once: true }
+              );
+            }
+
+            // Start the timer (this writes timer and triggers Discord send)
+            await startTimer(id);
+          } catch (err) {
+            console.error("⚠️ Error during mark dead transaction:", err);
+            btn.disabled = false;
+          }
+          return;
+        }
+
+        if (action === "set") {
+          openTimeModal(id);
+        }
+      });
+
+      // Safer, locale-aware short datetime formatter
+      function formatShortDateTime(ms) {
+        const d = new Date(ms);
+        const options = {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        };
+        const formatted = d.toLocaleString("en-US", options);
+        return formatted
+          .replace(/\s{2,}/g, " ")
+          .replace(/\s*,\s*/g, ", ")
+          .trim();
       }
-    });
 
-    // Safer, locale-aware short datetime formatter
-    function formatShortDateTime(ms) {
-      const d = new Date(ms);
-      const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
-      const formatted = d.toLocaleString('en-US', options);
-      return formatted.replace(/\s{2,}/g, ' ').replace(/\s*,\s*/g, ', ').trim();
-    }
+      function addOrUpdateTimerElement(bossId) {
+        const boss = BOSSES.find((b) => b.id === bossId);
+        if (!boss) return;
 
-    function addOrUpdateTimerElement(bossId) {
-      const boss = BOSSES.find(b => b.id === bossId);
-      if (!boss) return;
+        const info = timers[bossId];
+        if (!info || !info.endTime) {
+          return;
+        }
 
-      const info = timers[bossId];
-      if (!info || !info.endTime) {
-        return;
-      }
+        const existing = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
+        const remainingSec = Math.max(
+          0,
+          Math.round((info.endTime - Date.now()) / 1000)
+        );
+        const spawnStr = formatShortDateTime(info.endTime);
 
-      const existing = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
-      const remainingSec = Math.max(0, Math.round((info.endTime - Date.now()) / 1000));
-      const spawnStr = formatShortDateTime(info.endTime);
+        if (existing) {
+          existing.dataset.remaining = String(remainingSec);
+          const nameEl = existing.querySelector(".timer-name");
+          const remainEl = existing.querySelector(".timer-remaining");
+          const spawnEl = existing.querySelector(".timer-spawn");
 
-      if (existing) {
-        existing.dataset.remaining = String(remainingSec);
-        const nameEl = existing.querySelector('.timer-name');
-        const remainEl = existing.querySelector('.timer-remaining');
-        const spawnEl = existing.querySelector('.timer-spawn');
-
-        if (nameEl) nameEl.textContent = boss.name;
-        if (remainEl) remainEl.textContent = formatSec(remainingSec);
-        if (spawnEl) spawnEl.textContent = spawnStr;
-        if (remainingSec === 0) existing.classList.add('ready'); else existing.classList.remove('ready');
-      } else {
-        const node = document.createElement('div');
-        node.className = 'timer';
-        node.dataset.id = bossId;
-        node.dataset.remaining = String(remainingSec);
-        node.innerHTML = `
+          if (nameEl) nameEl.textContent = boss.name;
+          if (remainEl) remainEl.textContent = formatSec(remainingSec);
+          if (spawnEl) spawnEl.textContent = spawnStr;
+          if (remainingSec === 0) existing.classList.add("ready");
+          else existing.classList.remove("ready");
+        } else {
+          const node = document.createElement("div");
+          node.className = "timer";
+          node.dataset.id = bossId;
+          node.dataset.remaining = String(remainingSec);
+          node.innerHTML = `
           <div style="min-width:0">
             <div class="timer-name" style="font-weight:700">${boss.name}</div>
             <div class="timer-spawn small" style="color:var(--muted);font-size:11px">Spawn: ${spawnStr}</div>
           </div>
           <div style="text-align:right;min-width:86px">
-            <div class="timer-remaining" style="font-weight:800">${formatSec(remainingSec)}</div>
+            <div class="timer-remaining" style="font-weight:800">${formatSec(
+              remainingSec
+            )}</div>
             <div style="margin-top:6px">
               <button class="kbtn clear-timer-btn" data-id="${bossId}">Clear</button>
             </div>
           </div>
         `;
-        if (remainingSec === 0) node.classList.add('ready');
-        timersEl.appendChild(node);
+          if (remainingSec === 0) node.classList.add("ready");
+          timersEl.appendChild(node);
 
-        // attach clear handler specifically for this timer's clear button
-        node.querySelectorAll('.clear-timer-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const bid = e.currentTarget.getAttribute('data-id');
-            if (bid) await clearTimer(bid);
+          // attach clear handler specifically for this timer's clear button
+          node.querySelectorAll(".clear-timer-btn").forEach((btn) => {
+            btn.addEventListener("click", async (e) => {
+              const bid = e.currentTarget.getAttribute("data-id");
+              if (bid) await clearTimer(bid);
+            });
           });
-        });
-      }
-    }
-
-    function removeTimerElement(bossId) {
-      const el = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
-      if (el) el.remove();
-    }
-
-    function rebuildTimersPanel() {
-      timersEl.innerHTML = '';
-      const entries = Object.entries(timers)
-        .map(([id, info]) => ({ id, info, boss: BOSSES.find(b => b.id === id) }))
-        .filter(x => x.boss)
-        .sort((a, b) => a.info.endTime - b.info.endTime);
-      for (const e of entries) addOrUpdateTimerElement(e.id);
-      console.log('🔁 rebuildTimersPanel: timers rendered.');
-    }
-
-    // -------------------------
-    // Compute next boss helper
-    // -------------------------
-    function computeNextBoss() {
-      const upcoming = Object.entries(timers)
-        .map(([id, info]) => ({ id, endTime: info.endTime, boss: BOSSES.find(b => b.id === id) }))
-        .filter(x => x.boss)
-        .sort((a, b) => a.endTime - b.endTime);
-
-      if (upcoming.length === 0) {
-        nextBossNameEl.textContent = 'Next Boss: —';
-        nextTimeEl.textContent = '—';
-        return;
+        }
       }
 
-      const soon = upcoming[0];
-      const now = Date.now();
-      const remainingMs = Math.max(0, soon.endTime - now);
-      const totalSeconds = Math.floor(remainingMs / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = Math.floor(totalSeconds % 60);
+      function removeTimerElement(bossId) {
+        const el = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
+        if (el) el.remove();
+      }
 
-      nextBossNameEl.textContent = `${soon.boss.name}`;
-      nextTimeEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
+      function rebuildTimersPanel() {
+        timersEl.innerHTML = "";
+        const entries = Object.entries(timers)
+          .map(([id, info]) => ({
+            id,
+            info,
+            boss: BOSSES.find((b) => b.id === id),
+          }))
+          .filter((x) => x.boss)
+          .sort((a, b) => a.info.endTime - b.info.endTime);
+        for (const e of entries) addOrUpdateTimerElement(e.id);
+        console.log("🔁 rebuildTimersPanel: timers rendered.");
+      }
 
-    // Main periodic update logic (tick)
-    async function tickUpdate() {
-      const now = Date.now();
-      const savePromises = [];
+      // -------------------------
+      // Compute next boss helper
+      // -------------------------
+      function computeNextBoss() {
+        const upcoming = Object.entries(timers)
+          .map(([id, info]) => ({
+            id,
+            endTime: info.endTime,
+            boss: BOSSES.find((b) => b.id === id),
+          }))
+          .filter((x) => x.boss)
+          .sort((a, b) => a.endTime - b.endTime);
 
-      for (const [id, info] of Object.entries(timers)) {
-        const boss = BOSSES.find(b => b.id === id);
-        if (!boss) continue;
-
-        const remainingMs = info.endTime - now;
-
-        // "Soon" warning (5 min before respawn)
-        if (remainingMs <= 5 * 60 * 1000 && !info.notifiedSoon) {
-          console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
-          info.notifiedSoon = true;
-          // deduped write + deduped send
-          savePromises.push(saveTimerToFirestoreOnce(id));
-          savePromises.push((async () => await sendDiscordEmbedOnce('soon', boss))());
-          continue;
+        if (upcoming.length === 0) {
+          nextBossNameEl.textContent = "Next Boss: —";
+          nextTimeEl.textContent = "—";
+          return;
         }
 
-        // Spawn announcement
-        if (remainingMs <= 0 && !info.spawnAnnounced) {
-          console.log(`🎉 spawn: ${id} reached spawn, announcing`);
-          info.spawnAnnounced = true;
-          savePromises.push(saveTimerToFirestoreOnce(id));
-          savePromises.push((async () => await sendDiscordEmbedOnce('spawn', boss))());
-          continue;
-        }
+        const soon = upcoming[0];
+        const now = Date.now();
+        const remainingMs = Math.max(0, soon.endTime - now);
+        const totalSeconds = Math.floor(remainingMs / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = Math.floor(totalSeconds % 60);
 
-        // Advance timer to next cycle when expired (after spawn handling)
-        if (remainingMs <= 0) {
-          let nextTime;
-          if (boss.weeklyRespawns) {
-            nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-            while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
-          } else {
-            nextTime = now + boss.respawn * 1000;
+        nextBossNameEl.textContent = `${soon.boss.name}`;
+        nextTimeEl.textContent = `${String(hours).padStart(2, "0")}:${String(
+          minutes
+        ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      // Main periodic update logic (tick)
+      async function tickUpdate() {
+        const now = Date.now();
+        const savePromises = [];
+
+        for (const [id, info] of Object.entries(timers)) {
+          const boss = BOSSES.find((b) => b.id === id);
+          if (!boss) continue;
+
+          const remainingMs = info.endTime - now;
+
+          // "Soon" warning (5 min before respawn)
+          if (remainingMs <= 5 * 60 * 1000 && !info.notifiedSoon) {
+            console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
+            info.notifiedSoon = true;
+            // deduped write + deduped send
+            savePromises.push(saveTimerToFirestoreOnce(id));
+            savePromises.push(
+              (async () => await sendDiscordEmbedOnce("soon", boss))()
+            );
+            continue;
           }
 
-          timers[id] = {
-            endTime: nextTime,
-            startedAt: now,
-            weekly: !!boss.weeklyRespawns,
-            notifiedSoon: false,
-            spawnAnnounced: false
-          };
+          // Spawn announcement
+          if (remainingMs <= 0 && !info.spawnAnnounced) {
+            console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+            info.spawnAnnounced = true;
+            savePromises.push(saveTimerToFirestoreOnce(id));
+            savePromises.push(
+              (async () => await sendDiscordEmbedOnce("spawn", boss))()
+            );
+            continue;
+          }
 
-          savePromises.push(saveTimerToFirestoreOnce(id));
-          addOrUpdateTimerElement(id);
-          continue;
+          // Advance timer to next cycle when expired (after spawn handling)
+          if (remainingMs <= 0) {
+            let nextTime;
+            if (boss.weeklyRespawns) {
+              nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+              while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
+            } else {
+              nextTime = now + boss.respawn * 1000;
+            }
+
+            timers[id] = {
+              endTime: nextTime,
+              startedAt: now,
+              weekly: !!boss.weeklyRespawns,
+              notifiedSoon: false,
+              spawnAnnounced: false,
+            };
+
+            savePromises.push(saveTimerToFirestoreOnce(id));
+            addOrUpdateTimerElement(id);
+            continue;
+          }
+        }
+
+        if (savePromises.length) {
+          try {
+            await Promise.all(savePromises);
+            console.log(
+              `💾 tickUpdate: completed ${savePromises.length} save/send ops`
+            );
+          } catch (e) {
+            console.warn("⚠️ tickUpdate savePromises error", e);
+          }
+        }
+
+        // UI updates
+        computeNextBoss();
+        sortActiveTimersSmoothly();
+      }
+
+      // Optional lightweight visual update every second (no Firestore writes)
+      function updateCountdownDisplay() {
+        const now = Date.now();
+        for (const [bossId, info] of Object.entries(timers)) {
+          const el = document.querySelector(`.timer[data-id="${bossId}"]`);
+          if (!el || !info?.endTime) continue;
+          const remainingSec = Math.max(
+            0,
+            Math.round((info.endTime - now) / 1000)
+          );
+          const timeSpan = el.querySelector(".timer-remaining");
+          if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
+          el.dataset.remaining = String(remainingSec);
+          if (remainingSec === 0) el.classList.add("ready");
+          else el.classList.remove("ready");
         }
       }
 
-      if (savePromises.length) {
+      // fast visual refresh (every 1s, no Firestore writes)
+      setInterval(updateCountdownDisplay, 1000);
+
+      // slower background sync + notifications (every 1s)
+      setInterval(() => {
+        if (firebaseLoaded) tickUpdate();
+      }, 1000);
+      setTimeout(() => (justLoaded = false), 5000);
+
+      // -------------------------
+      // UI wiring
+      // -------------------------
+      searchInput.addEventListener("input", () => {
+        renderBossList();
+        document
+          .querySelector(".search-wrapper")
+          ?.classList.toggle("has-text", !!searchInput.value);
+        clearSearch.style.display = !!searchInput.value ? "inline" : "none";
+      });
+
+      clearSearch.addEventListener("click", () => {
+        searchInput.value = "";
+        document.querySelector(".search-wrapper")?.classList.remove("has-text");
+        clearSearch.style.display = "none";
+        renderBossList();
+      });
+
+      // === SETTINGS BUTTON + MENU TOGGLE (Animated Connected Mode) ===
+      settingsBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        const isActive = settingsMenu.classList.toggle("active");
+        settingsBtn.classList.toggle("active", isActive);
+        console.log(`⚙️ settings toggled -> active=${isActive}`);
+      });
+
+      document.addEventListener("click", (ev) => {
+        if (!settingsMenu.contains(ev.target) && ev.target !== settingsBtn) {
+          settingsMenu.classList.remove("active");
+          settingsBtn.classList.remove("active");
+        }
+      });
+
+      settingsMenu.addEventListener("click", (ev) => ev.stopPropagation());
+
+      discordWebhookBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        settingsMenu.classList.remove("active");
+        settingsBtn.classList.remove("active");
+        await loadWebhookFromFirestore();
+        webhookBackdrop.style.display = "flex";
+        console.log("🔧 open webhook modal");
+      });
+
+      webhookBackdrop.addEventListener("click", (ev) => {
+        if (ev.target === webhookBackdrop)
+          webhookBackdrop.style.display = "none";
+      });
+
+      const exportBtn = document.getElementById("exportBtn");
+      const importBtn = document.getElementById("importBtn");
+      const resetBtn = document.getElementById("resetBtn");
+
+      exportBtn.addEventListener("click", () => {
         try {
-          await Promise.all(savePromises);
-          console.log(`💾 tickUpdate: completed ${savePromises.length} save/send ops`);
+          const blob = new Blob([JSON.stringify(timers, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "boss_timers_backup.json";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          alert("✅ Timers exported successfully.");
+          console.log("📤 Exported timers.json");
         } catch (e) {
-          console.warn('⚠️ tickUpdate savePromises error', e);
+          alert("❌ Failed to export timers.");
         }
-      }
+      });
 
-      // UI updates
-      computeNextBoss();
-      sortActiveTimersSmoothly();
-    }
+      importBtn.addEventListener("click", () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/json";
+        input.onchange = async (event) => {
+          const file = event.target.files[0];
+          if (!file) return;
+          const text = await file.text();
+          try {
+            const imported = JSON.parse(text);
+            if (
+              confirm(
+                "Import this JSON data? It will overwrite existing timers."
+              )
+            ) {
+              timers = imported;
+              await saveTimers();
+              rebuildTimersPanel();
+              renderBossList();
+              alert("✅ Timers imported successfully.");
+              console.log("📥 Imported timers from file.");
+            }
+          } catch (e) {
+            alert("❌ Invalid JSON file.");
+          }
+        };
+        input.click();
+      });
 
-    // Optional lightweight visual update every second (no Firestore writes)
-    function updateCountdownDisplay() {
-      const now = Date.now();
-      for (const [bossId, info] of Object.entries(timers)) {
-        const el = document.querySelector(`.timer[data-id="${bossId}"]`);
-        if (!el || !info?.endTime) continue;
-        const remainingSec = Math.max(0, Math.round((info.endTime - now) / 1000));
-        const timeSpan = el.querySelector('.timer-remaining');
-        if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
-        el.dataset.remaining = String(remainingSec);
-        if (remainingSec === 0) el.classList.add('ready'); else el.classList.remove('ready');
-      }
-    }
+      resetBtn.addEventListener("click", () => {
+        if (confirm("Are you sure you want to reset all timers?")) resetAll();
+      });
 
-    // fast visual refresh (every 1s, no Firestore writes)
-    setInterval(updateCountdownDisplay, 1000);
+      // ✅ Firestore document for lock management
+      const deadLockRef = doc(db, "meta", "deadLocks");
+      onSnapshot(deadLockRef, (snapshot) => {
+        const data = snapshot.data() || {};
+        deadLocks = data;
+        const now = Date.now();
 
-    // slower background sync + notifications (every 1s)
-    setInterval(() => { if (firebaseLoaded) tickUpdate(); }, 1000);
-    setTimeout(() => justLoaded = false, 5000);
+        document
+          .querySelectorAll('.kbtn[data-action="mark"]')
+          .forEach((btn) => {
+            const bossId = btn.getAttribute("data-id");
+            const lockedUntil = deadLocks[bossId] || 0;
+            btn.disabled = now < lockedUntil;
+          });
 
-    // -------------------------
-    // UI wiring
-    // -------------------------
-    searchInput.addEventListener('input', () => {
-      renderBossList();
-      document.querySelector('.search-wrapper')?.classList.toggle('has-text', !!searchInput.value);
-      clearSearch.style.display = !!searchInput.value ? 'inline' : 'none';
-    });
+        console.log("🔔 deadLocks updated from Firestore:", deadLocks);
+      });
 
-    clearSearch.addEventListener('click', () => {
-      searchInput.value = '';
-      document.querySelector('.search-wrapper')?.classList.remove('has-text');
-      clearSearch.style.display = 'none';
-      renderBossList();
-    });
+      // Periodically re-check (every 10s)
+      setInterval(() => {
+        const now = Date.now();
+        document
+          .querySelectorAll('.kbtn[data-action="mark"]')
+          .forEach((btn) => {
+            const bossId = btn.getAttribute("data-id");
+            const lockedUntil = deadLocks[bossId] || 0;
+            btn.disabled = now < lockedUntil;
+          });
+      }, 10000);
 
-    // === SETTINGS BUTTON + MENU TOGGLE (Animated Connected Mode) ===
-    settingsBtn.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      const isActive = settingsMenu.classList.toggle('active');
-      settingsBtn.classList.toggle('active', isActive);
-      console.log(`⚙️ settings toggled -> active=${isActive}`);
-    });
+      webhookSave.addEventListener("click", async () => {
+        const url = webhookInput.value.trim();
+        if (!url) {
+          alert("Please paste a webhook URL");
+          return;
+        }
+        await saveWebhookToFirestore(url);
+      });
 
-    document.addEventListener('click', (ev) => {
-      if (!settingsMenu.contains(ev.target) && ev.target !== settingsBtn) {
-        settingsMenu.classList.remove('active');
-        settingsBtn.classList.remove('active');
-      }
-    });
+      webhookTest.addEventListener("click", async () => {
+        if (!cachedWebhookUrl) await loadWebhookFromFirestore();
+        await testWebhook();
+      });
 
-    settingsMenu.addEventListener('click', (ev) => ev.stopPropagation());
+      webhookClear.addEventListener("click", async () => {
+        if (!confirm("Clear webhook from Firestore?")) return;
+        await clearWebhookInFirestore();
+      });
 
-    discordWebhookBtn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      settingsMenu.classList.remove('active');
-      settingsBtn.classList.remove('active');
-      await loadWebhookFromFirestore();
-      webhookBackdrop.style.display = 'flex';
-      console.log('🔧 open webhook modal');
-    });
+      // -------------------------
+      // Init sequence
+      // -------------------------
+      async function init() {
+        loadingOverlay.style.display = "flex";
 
-    webhookBackdrop.addEventListener('click', (ev) => { if (ev.target === webhookBackdrop) webhookBackdrop.style.display = 'none'; });
+        // ✅ Wait until the DOM is fully loaded
+        await new Promise((resolve) => {
+          if (
+            document.readyState === "complete" ||
+            document.readyState === "interactive"
+          )
+            resolve();
+          else
+            document.addEventListener("DOMContentLoaded", resolve, {
+              once: true,
+            });
+        });
 
-    const exportBtn = document.getElementById('exportBtn');
-    const importBtn = document.getElementById('importBtn');
-    const resetBtn = document.getElementById('resetBtn');
+        bossListEl.innerHTML = "";
+        timersEl.innerHTML = "";
+        nextBossNameEl.textContent = "";
+        nextTimeEl.textContent = "";
 
-    exportBtn.addEventListener('click', () => {
-      try {
-        const blob = new Blob([JSON.stringify(timers, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'boss_timers_backup.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        alert('✅ Timers exported successfully.');
-        console.log('📤 Exported timers.json');
-      } catch (e) {
-        alert('❌ Failed to export timers.');
-      }
-    });
-
-    importBtn.addEventListener('click', () => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'application/json';
-      input.onchange = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-        const text = await file.text();
         try {
-          const imported = JSON.parse(text);
-          if (confirm('Import this JSON data? It will overwrite existing timers.')) {
-            timers = imported;
-            await saveTimers();
+          // ✅ Firestore real-time listener
+          const docRef = doc(db, "timers", "global");
+          onSnapshot(docRef, async (snap) => {
+            // ✅ Auto-create if the timers document doesn’t exist
+            if (!snap.exists()) {
+              console.log(
+                "ℹ️ No Firestore timers document found. Creating empty one..."
+              );
+              await setDoc(docRef, { timers: {} }, { merge: true });
+              return;
+            }
+
+            // ✅ Sync local state with Firestore data
+            const newTimers = snap.data().timers || {};
+            timers = newTimers;
+
             rebuildTimersPanel();
             renderBossList();
-            alert('✅ Timers imported successfully.');
-            console.log('📥 Imported timers from file.');
-          }
+            computeNextBoss();
+
+            console.log("🔄 Timers auto-updated from Firestore:", timers);
+          });
         } catch (e) {
-          alert('❌ Invalid JSON file.');
+          console.warn("Firestore load failed", e);
         }
-      };
-      input.click();
-    });
 
-    resetBtn.addEventListener('click', () => { if (confirm('Are you sure you want to reset all timers?')) resetAll(); });
+        // ✅ Normalize expired timers so everything is forward-looking
+        const now = Date.now();
+        let timersChanged = false;
 
-    // ✅ Firestore document for lock management
-    const deadLockRef = doc(db, 'meta', 'deadLocks');
-    onSnapshot(deadLockRef, (snapshot) => {
-      const data = snapshot.data() || {};
-      deadLocks = data;
-      const now = Date.now();
+        for (const [id, info] of Object.entries(timers)) {
+          const boss = BOSSES.find((b) => b.id === id);
+          if (!boss || !info || !info.endTime) continue;
 
-      document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
-        const bossId = btn.getAttribute('data-id');
-        const lockedUntil = deadLocks[bossId] || 0;
-        btn.disabled = now < lockedUntil;
-      });
-
-      console.log('🔔 deadLocks updated from Firestore:', deadLocks);
-    });
-
-    // Periodically re-check (every 10s)
-    setInterval(() => {
-      const now = Date.now();
-      document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
-        const bossId = btn.getAttribute('data-id');
-        const lockedUntil = deadLocks[bossId] || 0;
-        btn.disabled = now < lockedUntil;
-      });
-    }, 10000);
-
-    webhookSave.addEventListener('click', async () => {
-      const url = webhookInput.value.trim();
-      if (!url) { alert('Please paste a webhook URL'); return; }
-      await saveWebhookToFirestore(url);
-    });
-
-    webhookTest.addEventListener('click', async () => {
-      if (!cachedWebhookUrl) await loadWebhookFromFirestore();
-      await testWebhook();
-    });
-
-    webhookClear.addEventListener('click', async () => {
-      if (!confirm('Clear webhook from Firestore?')) return;
-      await clearWebhookInFirestore();
-    });
-
-    // -------------------------
-    // Init sequence
-    // -------------------------
-    async function init() {
-      loadingOverlay.style.display = 'flex';
-
-      // ✅ Wait until the DOM is fully loaded
-      await new Promise(resolve => {
-        if (document.readyState === 'complete' || document.readyState === 'interactive') resolve();
-        else document.addEventListener('DOMContentLoaded', resolve, { once: true });
-      });
-
-      bossListEl.innerHTML = '';
-      timersEl.innerHTML = '';
-      nextBossNameEl.textContent = '';
-      nextTimeEl.textContent = '';
-
-      try {
-        // ✅ Firestore real-time listener
-        const docRef = doc(db, 'timers', 'global');
-        onSnapshot(docRef, async (snap) => {
-          // ✅ Auto-create if the timers document doesn’t exist
-          if (!snap.exists()) {
-            console.log('ℹ️ No Firestore timers document found. Creating empty one...');
-            await setDoc(docRef, { timers: {} }, { merge: true });
-            return;
-          }
-
-          // ✅ Sync local state with Firestore data
-          const newTimers = snap.data().timers || {};
-          timers = newTimers;
-
-          rebuildTimersPanel();
-          renderBossList();
-          computeNextBoss();
-
-          console.log('🔄 Timers auto-updated from Firestore:', timers);
-        });
-      } catch (e) {
-        console.warn('Firestore load failed', e);
-      }
-
-      // ✅ Normalize expired timers so everything is forward-looking
-      const now = Date.now();
-      let timersChanged = false;
-
-      for (const [id, info] of Object.entries(timers)) {
-        const boss = BOSSES.find(b => b.id === id);
-        if (!boss || !info || !info.endTime) continue;
-
-        if (info.endTime <= now) {
-          if (boss.weeklyRespawns) {
-            const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-            timers[id] = {
-              endTime: next,
-              startedAt: now,
-              weekly: true,
-              notifiedSoon: false,
-              spawnAnnounced: false,
-            };
-            timersChanged = true;
-          } else if (boss.respawn) {
-            const respMs = boss.respawn * 1000;
-            const cycles = Math.floor((now - info.endTime) / respMs) + 1;
-            const newEnd = info.endTime + cycles * respMs;
-            timers[id] = {
-              endTime: newEnd,
-              startedAt: now,
-              notifiedSoon: false,
-              spawnAnnounced: false,
-            };
-            timersChanged = true;
+          if (info.endTime <= now) {
+            if (boss.weeklyRespawns) {
+              const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+              timers[id] = {
+                endTime: next,
+                startedAt: now,
+                weekly: true,
+                notifiedSoon: false,
+                spawnAnnounced: false,
+              };
+              timersChanged = true;
+            } else if (boss.respawn) {
+              const respMs = boss.respawn * 1000;
+              const cycles = Math.floor((now - info.endTime) / respMs) + 1;
+              const newEnd = info.endTime + cycles * respMs;
+              timers[id] = {
+                endTime: newEnd,
+                startedAt: now,
+                notifiedSoon: false,
+                spawnAnnounced: false,
+              };
+              timersChanged = true;
+            }
           }
         }
-      }
 
-      // ✅ Save normalized timers if any changed
-      if (timersChanged) {
-        try {
-          await saveTimers();
-          console.log('🔁 Timers normalized and saved after init.');
-        } catch (err) {
-          console.error('❌ Failed to save normalized timers:', err);
+        // ✅ Save normalized timers if any changed
+        if (timersChanged) {
+          try {
+            await saveTimers();
+            console.log("🔁 Timers normalized and saved after init.");
+          } catch (err) {
+            console.error("❌ Failed to save normalized timers:", err);
+          }
         }
+
+        // ✅ Ensure Discord webhook is ready before any future notification
+        await autoLoadWebhook();
+
+        firebaseLoaded = true;
+        renderBossList();
+        rebuildTimersPanel();
+        computeNextBoss();
+        loadingOverlay.style.display = "none";
+
+        console.log("✅ init completed successfully.");
       }
 
-      // ✅ Ensure Discord webhook is ready before any future notification
-      await autoLoadWebhook();
+      window.addEventListener("load", () => init());
 
-      firebaseLoaded = true;
-      renderBossList();
-      rebuildTimersPanel();
-      computeNextBoss();
-      loadingOverlay.style.display = 'none';
-
-      console.log('✅ init completed successfully.');
-    }
-
-    window.addEventListener('load', () => init());
-
-    // Auto-refresh the page every 5 minutes
-    setTimeout(() => {
-      location.reload();
-    }, 300000); // 300,000 ms = 5 minutes
-
-  </script>
-  <div id="onlineUsers" class="online-users">
-    <span id="onlineCount">0</span> online
-  </div>
-</body>
+      // Auto-refresh the page every 5 minutes
+      setTimeout(() => {
+        location.reload();
+      }, 300000); // 300,000 ms = 5 minutes
+    </script>
+    <div id="onlineUsers" class="online-users">
+      <span id="onlineCount">0</span> online
+    </div>
+  </body>
 </html>
