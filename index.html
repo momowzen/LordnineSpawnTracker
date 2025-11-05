@@ -1894,42 +1894,72 @@
       }
     });
 
-    // -------------------------
-    // Render functions
-    // -------------------------
-    function renderBossList() {
-      bossListEl.innerHTML = '';
-      const q = (searchInput.value || '').toLowerCase().trim();
+		function renderBossList() {
+			bossListEl.innerHTML = '';
+			const q = (searchInput.value || '').toLowerCase().trim();
+			const now = Date.now();
 
-      for (const b of BOSSES) {
-        const isWeekly = !!b.weeklyRespawns;
-        const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-        if (q && !b.name.toLowerCase().includes(q)) continue;
+			for (const b of BOSSES) {
+				const isWeekly = !!b.weeklyRespawns;
+				const t = timers[b.id];
 
-        const subText = isWeekly
-          ? b.weeklyRespawns
-            .map(r => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][r.day] + ' ' + String(r.hour).padStart(2, '0') + ':' + String(r.minute).padStart(2, '0'))
-            .join(', ')
-          : (b.respawn / 3600) + ' hr';
+				// Determine specific states
+				const hasActiveTimer = t && t.endTime > now; // SPAWNING phase
+				const inCooldown = t && t.spawnWindowUntil && t.spawnWindowUntil > now; // 5-min cooldown
 
-        const node = document.createElement('div');
-        node.className = 'boss';
+				if (q && !b.name.toLowerCase().includes(q)) continue;
 
-        const nameClass = isActive ? 'name dead' : 'name';
+				const subText = isWeekly
+					? b.weeklyRespawns
+							.map(
+								r =>
+									['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][r.day] +
+									' ' +
+									String(r.hour).padStart(2, '0') +
+									':' +
+									String(r.minute).padStart(2, '0')
+							)
+							.join(', ')
+					: b.respawn / 3600 + ' hr';
 
-        node.innerHTML = `
-          <div class="meta">
-            <div class="${nameClass}">${b.name}</div>
-            <div class="sub">${subText}</div>
-          </div>
-          <div class="actions">
-            <button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
-            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>` : ''}
-          </div>
-        `;
-        bossListEl.appendChild(node);
-      }
-    }
+				const node = document.createElement('div');
+				node.className = 'boss';
+				node.setAttribute('data-id', b.id);
+
+				// === VISUAL STATES ===
+				// Active timer → SPAWNING effect
+				// Cooldown → no glow + dimmed card
+				// Default → normal bright accent
+				let nameClass = 'name';
+				if (hasActiveTimer) nameClass += ' dead';
+				node.style.opacity = inCooldown ? '0.3' : '1';
+
+				node.innerHTML = `
+					<div class="meta">
+						<div class="${nameClass}">${b.name}</div>
+						<div class="sub">${subText}</div>
+					</div>
+					<div class="actions">
+						<button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
+						${!isWeekly
+							? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>`
+							: ''}
+					</div>
+				`;
+
+				bossListEl.appendChild(node);
+			}
+
+			// Rebind action buttons after rebuild
+			bossListEl.querySelectorAll('.kbtn').forEach(btn => {
+				btn.addEventListener('click', e => {
+					const id = e.currentTarget.dataset.id;
+					const action = e.currentTarget.dataset.action;
+					if (action === 'mark') handleMarkDead(id);
+					else if (action === 'set') openManualSetModal(id);
+				});
+			});
+		}
 
     // === Unified Boss List Click Handler with atomic deadlock attempt ===
     bossListEl.addEventListener('click', async (e) => {
@@ -2113,105 +2143,106 @@
       nextTimeEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
 
-    // Main periodic update logic (tick)
-    async function tickUpdate() {
-      const now = Date.now();
-      const savePromises = [];
+		// -------------------------
+		// Main periodic update logic (tick)
+		// -------------------------
+		async function tickUpdate() {
+			const now = Date.now();
+			const savePromises = [];
 
-      for (const [id, info] of Object.entries(timers)) {
-        const boss = BOSSES.find(b => b.id === id);
-        if (!boss) continue;
+			for (const [id, info] of Object.entries(timers)) {
+				const boss = BOSSES.find(b => b.id === id);
+				if (!boss) continue;
 
-        const remainingMs = info.endTime - now;
+				const remainingMs = info.endTime - now;
 
-        // "Soon" warning (5 min before respawn)
-        if (remainingMs <= 5 * 60 * 1000 && !info.notifiedSoon) {
-          console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
-          info.notifiedSoon = true;
-          // deduped write + deduped send
-          savePromises.push(saveTimerToFirestoreOnce(id));
-          savePromises.push((async () => await sendDiscordEmbedOnce('soon', boss))());
-          continue;
-        }
+				// "Soon" warning (5 min before respawn)
+				if (remainingMs <= 5 * 60 * 1000 && remainingMs > 0 && !info.notifiedSoon) {
+					console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
+					info.notifiedSoon = true;
+					savePromises.push(saveTimerToFirestoreOnce(id));
+					savePromises.push((async () => await sendDiscordEmbedOnce('soon', boss))());
+				}
 
-        // Spawn announcement
-        if (remainingMs <= 0 && !info.spawnAnnounced) {
-          console.log(`🎉 spawn: ${id} reached spawn, announcing`);
-          info.spawnAnnounced = true;
-          savePromises.push(saveTimerToFirestoreOnce(id));
-          savePromises.push((async () => await sendDiscordEmbedOnce('spawn', boss))());
-          continue;
-        }
+				// Spawn announcement
+				if (remainingMs <= 0 && !info.spawnAnnounced) {
+					console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+					info.spawnAnnounced = true;
+					savePromises.push(saveTimerToFirestoreOnce(id));
+					savePromises.push((async () => await sendDiscordEmbedOnce('spawn', boss))());
+				}
 
-        // Advance timer to next cycle when expired (after spawn handling)
-				if (remainingMs <= 0) {
-					// Trigger spawn notification once
-					if (!info.spawnAnnounced) {
-						console.log(`🎉 spawn: ${id} reached spawn, announcing`);
-						info.spawnAnnounced = true;
-						await sendDiscordEmbedOnce('spawn', boss);
-					}
+				// ========== Persisted 5-minute spawn window ==========
+				// When timer expires, start a shared 5-minute spawn window if not set yet
+				if (remainingMs <= 0 && !info.spawnWindowUntil) {
+					info.spawnWindowUntil = Date.now() + 5 * 60 * 1000; // persist 5-minute window
+					console.log(`⏳ ${boss.name} entering 5-minute spawn window until ${new Date(info.spawnWindowUntil).toLocaleTimeString()}`);
 
-					// Temporarily hide boss visuals
-					const bossCard = document.querySelector(`[data-id="${id}"]`);
+					// Dim visuals & disable mark button
+					const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
 					if (bossCard) {
-						bossCard.classList.remove('dead'); // remove SPAWNING effect
+						bossCard.classList.remove('dead');
 						bossCard.style.opacity = '0.3';
 					}
+					document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(btn => (btn.disabled = true));
 
-					console.log(`⏳ ${boss.name} entering 5-minute spawn window...`);
-
-					// Wait 5 minutes (300000 ms) before registering new timer
-					setTimeout(async () => {
-						const nowLater = Date.now();
-
-						let nextTime;
-						if (boss.weeklyRespawns) {
-							// Weekly: schedule next weekly without delay
-							nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, nowLater + 1);
-							while (nextTime <= nowLater) nextTime += 7 * 24 * 60 * 60 * 1000;
-						} else {
-							// Non-weekly: full respawn cycle after the 5-minute delay
-							nextTime = nowLater + boss.respawn * 1000;
-						}
-
-						timers[id] = {
-							endTime: nextTime,
-							startedAt: nowLater,
-							weekly: !!boss.weeklyRespawns,
-							notifiedSoon: false,
-							spawnAnnounced: false
-						};
-
-						saveTimerToFirestoreOnce(id);
-						addOrUpdateTimerElement(id);
-
-						// Restore visuals
-						if (bossCard) {
-							bossCard.style.opacity = '1';
-						}
-
-						console.log(`✅ ${boss.name} respawn timer restarted after 5-minute delay.`);
-					}, 5 * 60 * 1000);
-
+					// Save to Firestore so other clients know
+					savePromises.push(saveTimerToFirestoreOnce(id));
 					continue;
 				}
 
-      }
+				// ========== When spawn window expires ==========
+				if (info.spawnWindowUntil && info.spawnWindowUntil <= now) {
+					console.log(`✅ ${boss.name} 5-minute spawn window ended. Respawning...`);
+					const nowLater = Date.now();
 
-      if (savePromises.length) {
-        try {
-          await Promise.all(savePromises);
-          console.log(`💾 tickUpdate: completed ${savePromises.length} save/send ops`);
-        } catch (e) {
-          console.warn('⚠️ tickUpdate savePromises error', e);
-        }
-      }
+					let nextTime;
+					if (boss.weeklyRespawns) {
+						nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, nowLater + 1);
+						while (nextTime <= nowLater)
+							nextTime += 7 * 24 * 60 * 60 * 1000;
+					} else {
+						nextTime = nowLater + boss.respawn * 1000;
+					}
 
-      // UI updates
-      computeNextBoss();
-      sortActiveTimersSmoothly();
-    }
+					// Reset timer cleanly
+					timers[id] = {
+						endTime: nextTime,
+						startedAt: nowLater,
+						weekly: !!boss.weeklyRespawns,
+						notifiedSoon: false,
+						spawnAnnounced: false
+					};
+
+					// Update Firestore + UI
+					await saveTimerToFirestoreOnce(id);
+					addOrUpdateTimerElement(id);
+					renderBossList();
+
+					// Restore visuals and enable button
+					const bossCardLater = document.querySelector(`.boss[data-id="${id}"]`);
+					if (bossCardLater) bossCardLater.style.opacity = '1';
+					document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(btn => (btn.disabled = false));
+
+					console.log(`🔁 ${boss.name} timer restarted after 5-minute delay.`);
+					continue;
+				}
+			}
+
+			// Save queued updates
+			if (savePromises.length) {
+				try {
+					await Promise.all(savePromises);
+					console.log(`💾 tickUpdate: completed ${savePromises.length} save/send ops`);
+				} catch (e) {
+					console.warn('⚠️ tickUpdate savePromises error', e);
+				}
+			}
+
+			// UI updates
+			computeNextBoss();
+			sortActiveTimersSmoothly();
+		}
 
     // Optional lightweight visual update every second (no Firestore writes)
     function updateCountdownDisplay() {
