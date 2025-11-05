@@ -5,10 +5,10 @@
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
   <title>
-   L9 TIME TRACKER
+   LORDNINE TIME TRACKER
   </title>
-  <link href="assets/images/logo5.png" rel="icon" sizes="32x32" type="image/png"/>
-  <link href="assets/images/logo5.png" rel="icon" sizes="64x64" type="image/png"/>
+  <link href="assets/images/logo.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="assets/images/logo.png" rel="icon" sizes="64x64" type="image/png"/>
   <style>
    :root {
       --bg: #07101a;
@@ -69,23 +69,17 @@
       color: var(--accent);
     }
 
-		/* === LOGO STYLE (theme-matched soft glow) === */
+		/* === LOGO STYLE (no glow) === */
 		.logo-img {
-			height: 30px;
+			height: 35px;
 			width: auto;
-			border-radius: 25%; /* rounded corners */
-			box-shadow:
-				0 0 6px var(--accentGlow, #ff2e2e), /* soft outer glow */
-				0 0 12px rgba(255, 46, 46, 0.3);     /* faint secondary aura */
-			transition: all 0.3s ease;
+			border-radius: 25%; /* rounded corners only */
+			transition: transform 0.3s ease;
 			display: inline-block;
 		}
 
-		/* Slightly stronger glow on hover */
+		/* Simple hover scale (no glow) */
 		.logo-img:hover {
-			box-shadow:
-				0 0 8px var(--accentGlow, #ff2e2e),
-				0 0 18px rgba(255, 46, 46, 0.4);
 			transform: scale(1.05);
 		}
 
@@ -1062,7 +1056,7 @@
    <header class="app-header">
     <div class="app-title">
      <div class="logo">
-      <img alt="logo" class="logo-img" src="assets/images/logo5.png">
+      <img alt="logo" class="logo-img" src="assets/images/logo4.jpg">
      </div>
      <div>
       <div style="font-size:13px">
