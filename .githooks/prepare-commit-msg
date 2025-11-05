@@ -1,5 +1,6 @@
 #!/bin/sh
-# prepare-commit-msg hook: if index.html is staged and commit-msg is empty or default, generate a title from index.html <title> or first <h1>
+# prepare-commit-msg hook: auto-commit with generated message from index.html title or first h1
+
 COMMIT_MSG_FILE="$1"
 COMMIT_SOURCE="$2"
 SHA1="$3"
@@ -9,32 +10,29 @@ if [ "$COMMIT_SOURCE" = "merge" ]; then
   exit 0
 fi
 
-# Check if index.html is staged
+# Only proceed if index.html is staged
 if git diff --cached --name-only | grep -q "index.html"; then
   # Extract staged index.html content
   tmpfile=$(mktemp)
   git show :index.html > "$tmpfile" 2>/dev/null || git show HEAD:index.html > "$tmpfile" 2>/dev/null
-  # Try to get <title>
-title=$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$tmpfile" | head -n1 | sed 's/^[ \t]*//;s/[ \t]*$//')
+
+  # Try <title> first, then <h1>
+  title=$(sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' "$tmpfile" | head -n1 | sed 's/^[ \t]*//;s/[ \t]*$//')
   if [ -z "$title" ]; then
-    # Try first H1
     title=$(sed -n 's/.*<h1[^>]*>\(.*\)<\/h1>.*/\1/p' "$tmpfile" | head -n1 | sed 's/^[ \t]*//;s/[ \t]*$//')
   fi
   rm "$tmpfile"
+
   if [ -n "$title" ]; then
-    # Normalize title: truncate to 72 chars
     gen_title="feat(index.html): ${title}"
     gen_title=$(echo "$gen_title" | cut -c1-72)
-    # If commit message file is empty or only contains template, replace first line
-    firstline=$(sed -n '1p' "$COMMIT_MSG_FILE")
-    if [ -z "$firstline" ] || echo "$firstline" | grep -qE "^WIP|^\[skip ci\]|^Revert"; then
-      echo "$gen_title" > "$COMMIT_MSG_FILE"
-    else
-      # Prepend generated title if current first line is generic like "update" or empty
-      echo "$gen_title" > /tmp/newmsg$$
-      cat "$COMMIT_MSG_FILE" >> /tmp/newmsg$$
-      mv /tmp/newmsg$$ "$COMMIT_MSG_FILE"
-    fi
+
+    # Auto-commit directly
+    echo "[auto-commit-hook] Generated message: $gen_title"
+    git commit -m "$gen_title" --no-verify
+
+    # Cancel the original commit process (since we've committed already)
+    exit 1
   fi
 fi
 
