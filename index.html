@@ -2468,12 +2468,19 @@
 					const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
 					const nameElem = bossCard?.querySelector(".name");
 
-					// --- (0) Handle cooldown visuals & skip logic during cooldown ---
+					// --- (0) Handle cooldown visuals & UI adjustments during cooldown ---
 					if (info.cooldownUntil && now < info.cooldownUntil) {
 						// Ensure boss name shows alive look (no .dead)
 						if (nameElem && nameElem.classList.contains("dead")) {
 							nameElem.classList.remove("dead");
 						}
+
+						// 🔹 Change "Clear" button text to "Killed" during cooldown
+						const clearBtn = bossCard?.querySelector('.kbtn[data-action="clear"]');
+						if (clearBtn && clearBtn.textContent.trim() === "Clear") {
+							clearBtn.textContent = "Killed";
+						}
+
 						continue; // Skip further processing while cooldown active
 					}
 
@@ -2481,6 +2488,12 @@
 					if (remainingMs > 0 && !info.cooldownUntil) {
 						if (nameElem && !nameElem.classList.contains("dead")) {
 							nameElem.classList.add("dead");
+						}
+
+						// 🔹 Ensure "Clear" button text reverts to normal during timer
+						const clearBtn = bossCard?.querySelector('.kbtn[data-action="clear"]');
+						if (clearBtn && clearBtn.textContent.trim() === "Killed") {
+							clearBtn.textContent = "Clear";
 						}
 					}
 
@@ -2521,6 +2534,21 @@
 						// 🟢 Visual: back to normal white glow during cooldown
 						if (nameElem) nameElem.classList.remove("dead");
 
+						// 🔹 Change "Clear" button text to "Killed"
+						const clearBtn = bossCard?.querySelector('.kbtn[data-action="clear"]');
+						if (clearBtn) {
+							clearBtn.textContent = "Killed";
+
+							// 💥 Optional: flash red for 1 second to show defeat
+							clearBtn.style.transition = "background 0.3s ease, color 0.3s ease";
+							clearBtn.style.background = "rgba(255, 50, 50, 0.8)";
+							clearBtn.style.color = "#fff";
+							setTimeout(() => {
+								clearBtn.style.background = "";
+								clearBtn.style.color = "";
+							}, 1000);
+						}
+
 						// 💾 Save cooldown state to Firestore
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						continue;
@@ -2556,6 +2584,12 @@
 							nameElem.classList.add("dead");
 						}
 
+						// 🔹 Restore "Clear" button text after cooldown
+						const clearBtn = bossCard?.querySelector('.kbtn[data-action="clear"]');
+						if (clearBtn && clearBtn.textContent.trim() === "Killed") {
+							clearBtn.textContent = "Clear";
+						}
+
 						await saveTimerToFirestoreOnce(id);
 						addOrUpdateTimerElement(id);
 						renderBossList();
@@ -2579,6 +2613,7 @@
 				computeNextBoss();
 				sortActiveTimersSmoothly();
 			}
+
 
       // Optional lightweight visual update every second (no Firestore writes)
       function updateCountdownDisplay() {
