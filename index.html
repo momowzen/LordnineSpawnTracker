@@ -1601,7 +1601,7 @@
         let title, color, desc;
         switch (type) {
           case 'killed':
-            title = `💀 ${boss.name} defeated!`;
+            title = `💀 ${boss.name} has been defeated!`;
             color = 0xff3333;
             desc = `Next respawn: ${jstStr}`;
             break;
@@ -2607,8 +2607,8 @@ async function sendDiscordEmbedOnce(type, boss) {
     const formattedTime = new Date(txResult.endTimeMs).toLocaleString('en-US', { timeZone: 'Asia/Tokyo', hour12: false });
     let embed;
     switch (type) {
-      case 'killed': embed = buildEmbed(`💀 ${boss.name} defeated!`, `Next respawn: ${formattedTime} JST`, 0xff3333); break;
-      case 'soon': embed = buildEmbed(`⚠️ ${boss.name} will respawn soon!`, `Next respawn: ${formattedTime} JST`, 0xffcc00); break;
+      case 'killed': embed = buildEmbed(`💀 ${boss.name} has been defeated!`, `Next respawn: ${formattedTime} JST`, 0xff3333); break;
+      case 'soon': embed = buildEmbed(`⚠️ ${boss.name} will respawn soon!`, `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime} JST`, 0xffcc00); break;
       case 'spawn': embed = buildEmbed(`⚔️ ${boss.name} has spawned!`, `Time to hunt!`, 0xb266ff); break;
       case 'manual': embed = buildEmbed(`⏰ ${boss.name} manual time set`, `Next respawn: ${formattedTime} JST`, 0x3399ff); break;
       default: return;
