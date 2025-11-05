@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
-<title>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
+  <title>
    LORDNINE TIME TRACKER
   </title>
-<link href="assets/images/logo5.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="assets/images/logo5.png" rel="icon" sizes="64x64" type="image/png"/>
-<style>
+  <link href="assets/images/logo5.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="assets/images/logo5.png" rel="icon" sizes="64x64" type="image/png"/>
+  <style>
    :root {
       --bg: #07101a;
       --muted: #9aa6b2;
@@ -1143,131 +1142,137 @@
     }
   </style>
 </head>
+
 <body>
-<div class="container">
-<header class="app-header">
-<div class="app-title">
-<div class="logo">
-<img alt="logo" class="logo-img" src="assets/images/logo5.png"/>
-</div>
-<div>
-<div class="main-title">
+    <div class="container">
+   <header class="app-header">
+    <div class="app-title">
+     <div class="logo">
+      <img alt="logo" class="logo-img" src="assets/images/logo5.png">
+     </div>
+     <div>
+      <div class="main-title">
 				FIELD BOSS TIME TRACKER
 			</div>
-<div class="warning-text">
+      <div class="warning-text">
        FOR RICARDO01 ONLY
       </div>
-</div>
-</div>
-<div class="header-controls">
-<div class="search-wrapper" style="position:relative">
-<input class="search" id="bossSearch" placeholder="Search boss..."/>
-<span class="clear-icon" id="clearSearch">
+     </div>
+    </div>
+    <div class="header-controls">
+     <div class="search-wrapper" style="position:relative">
+      <input class="search" id="bossSearch" placeholder="Search boss..."/>
+      <span class="clear-icon" id="clearSearch">
        ✖
       </span>
-</div>
-<button aria-label="Settings" class="settings" id="settingsBtn">
-<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--accent)" viewbox="0 0 24 24" width="18">
-<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z">
-</path>
-<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z">
-</path>
-</svg>
-</button>
-<div class="settings-menu" id="settingsMenu">
-<button class="menu-item" id="exportBtn">
+     </div>
+     <button aria-label="Settings" class="settings" id="settingsBtn">
+      <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--accent)" viewbox="0 0 24 24" width="18">
+       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z">
+       </path>
+       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z">
+       </path>
+      </svg>
+     </button>
+     <div class="settings-menu" id="settingsMenu">
+      <button class="menu-item" id="exportBtn">
        EXPORT 📤
       </button>
-<button class="menu-item" id="importBtn">
+      <button class="menu-item" id="importBtn">
        IMPORT 📥
       </button>
-<button class="menu-item" id="resetBtn">
+      <button class="menu-item" id="resetBtn">
        RESET 🗑️
       </button>
-<button class="menu-item" id="syncBtn">
+      <button class="menu-item" id="syncBtn">
        SYNC 🔄
       </button>
-<button class="menu-item" id="discordWebhookBtn">
+      <button class="menu-item" id="discordWebhookBtn">
        WEBHOOK 💬
       </button>
-</div>
-</div>
-</header>
-<main class="main">
-<section class="card" id="bossListPanel">
-<h4 class="card-header">
+     </div>
+    </div>
+   </header>
+   <main class="main">
+    <section class="card" id="bossListPanel">
+     <h4 class="card-header">
       BOSS LIST
      </h4>
-<div class="scrollable" id="bossList">
-</div>
-</section>
-<aside class="right-column">
-<div class="card" id="nextBoss">
-<div class="boss-name">
+     <div class="scrollable" id="bossList">
+     </div>
+    </section>
+    <aside class="right-column">
+     <div class="card" id="nextBoss">
+      <div class="boss-name">
        Next Boss
       </div>
-<div class="time-remaining" id="nextTime">
+      <div class="time-remaining" id="nextTime">
        — —
       </div>
-</div>
-<section class="card" id="timersPanel">
-<h4 class="card-header">
+     </div>
+     <section class="card" id="timersPanel">
+      <h4 class="card-header">
        ACTIVE TIMERS
       </h4>
-<div class="scrollable" id="timers">
-</div>
-</section>
-</aside>
-</main>
-</div>
-<!-- Time modal (cyber-styled) -->
-<div aria-hidden="true" id="timeModal">
-<div aria-labelledby="modalBossName" aria-modal="true" class="modal-content" role="dialog">
-<h3 id="modalBossName">
-</h3>
-<div class="modal-subtitle">
+      <div class="scrollable" id="timers">
+      </div>
+     </section>
+    </aside>
+   </main>
+  </div>
+  <!-- Time modal (cyber-styled) -->
+  <div aria-hidden="true" id="timeModal">
+   <div aria-labelledby="modalBossName" aria-modal="true" class="modal-content" role="dialog">
+    <h3 id="modalBossName">
+    </h3>
+    <div class="modal-subtitle">
      Set date and time of death
     </div>
-<input id="killTimeInput" type="datetime-local"/>
-<div class="actions">
-<button class="kbtn" id="cancelTimeBtn">
+    <input id="killTimeInput" type="datetime-local"/>
+    <div class="actions">
+     <button class="kbtn" id="cancelTimeBtn">
       Cancel
      </button>
-<button class="kbtn" id="saveTimeBtn">
+     <button class="kbtn" id="saveTimeBtn">
       Save
      </button>
-</div>
-</div>
-</div>
-<!-- Webhook modal — compact cyber panel -->
-<div class="modal-backdrop" id="webhookModalBackdrop">
-<div aria-labelledby="webhookTitle" aria-modal="true" class="modal cyber-modal" role="dialog">
-<h3 id="webhookTitle">
+    </div>
+   </div>
+  </div>
+  <!-- Webhook modal — compact cyber panel -->
+  <div class="modal-backdrop" id="webhookModalBackdrop">
+   <div aria-labelledby="webhookTitle" aria-modal="true" class="modal cyber-modal" role="dialog">
+    <h3 id="webhookTitle">
      💬 Discord Webhook
     </h3>
-<div class="small">
+    <div class="small">
      Paste your Discord webhook URL below.
     </div>
-<input class="webhook-input" id="webhookInput" placeholder="Paste your Discord Webhook URL here." type="text"/>
-<div class="modal-actions">
-<button class="cyber-btn" id="webhookSave">
+    <input class="webhook-input" id="webhookInput" placeholder="Paste your Discord Webhook URL here." type="text"/>
+    <div class="modal-actions">
+     <button class="cyber-btn" id="webhookSave">
       SAVE
      </button>
-<button class="cyber-btn" id="webhookTest">
+     <button class="cyber-btn" id="webhookTest">
       TEST
      </button>
-<button class="cyber-btn danger" id="webhookClear">
+     <button class="cyber-btn danger" id="webhookClear">
       CLEAR
      </button>
-</div>
-</div>
-</div>
-<div id="loadingOverlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);background:radial-gradient(circle at center, rgba(0,10,20,0.95) 0%, rgba(0,0,0,0.98) 100%);">
-<div class="loader-text">
+    </div>
+   </div>
+  </div>
+  <div id="loadingOverlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);background:radial-gradient(circle at center, rgba(0,10,20,0.95) 0%, rgba(0,0,0,0.98) 100%);">
+   <div class="loader-text">
     Loading...
    </div>
-</div>
-<script type="module">    const BOSSES = [
+  </div>
+
+  <script type="module">
+    // -------------------------
+    // Data + constants (FULL BOSSES)
+    // -------------------------
+    const BOSSES = [
       { id: 'Venatus', name: 'Venatus', respawn: 60 * 60 * 10 },
       { id: 'Viorent', name: 'Viorent', respawn: 60 * 60 * 10 },
       { id: 'Ego', name: 'Ego', respawn: 60 * 60 * 21 },
@@ -1302,6 +1307,10 @@
       { id: 'Benji', name: 'Benji', weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }] },
       { id: 'Test Boss', name: 'Test Boss', respawn: 60 * 5 + 10 }
     ];
+
+    // -------------------------
+    // DOM refs
+    // -------------------------
     const bossListEl = document.getElementById('bossList');
     const timersEl = document.getElementById('timers');
     const nextBossNameEl = document.querySelector('#nextBoss .boss-name');
@@ -1323,14 +1332,24 @@
     const webhookSave = document.getElementById('webhookSave');
     const webhookTest = document.getElementById('webhookTest');
     const webhookClear = document.getElementById('webhookClear');
+
+    // -------------------------
+    // State
+    // -------------------------
     let firebaseLoaded = false;
     let cachedWebhookUrl = null;
-    let timers = {};               
+    let timers = {};               // { bossId: { endTime, startedAt, weekly?, notifiedSoon?, spawnAnnounced? } }
     let currentBossForTime = null;
     let justLoaded = true;
-    let deadLocks = {};            
-    const lastWriteCache = {};     
-    const localNotifCache = {};    
+    let deadLocks = {};            // in-memory map of boss cooldowns
+
+    // Dedup caches
+    const lastWriteCache = {};     // { bossId: lastJson }
+    const localNotifCache = {};    // { `${bossId}_${type}`: timestamp(ms) }
+
+    // -------------------------
+    // Helpers
+    // -------------------------
     function sortActiveTimersSmoothly() {
       const timersContainer = document.getElementById("timers");
       if (!timersContainer) return;
@@ -1350,6 +1369,7 @@
         timersContainer.appendChild(fragment);
       }
     }
+
     function formatSec(s) {
       if (s <= 0) return 'Ready';
       const d = Math.floor(s / 86400);
@@ -1362,23 +1382,22 @@
       if (h > 0) return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m`;
       return `${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
     }
-  function toJSTDate(timestamp) {
-  return new Date(new Date(timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-  }
-  function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-  const nowJST = toJSTDate(fromTime);
-  let soonest = null;
-  for (const { day, hour, minute } of respawns) {
-    const t = toJSTDate(nowJST.getTime());
-    const delta = (day + 7 - nowJST.getDay()) % 7;
-    t.setDate(nowJST.getDate() + delta);
-    t.setHours(hour, minute, 0, 0);
-    if (t <= nowJST) t.setDate(t.getDate() + 7);
-    const tJST = toJSTDate(t.getTime());
-    if (!soonest || tJST < soonest) soonest = tJST;
-  }
-  return soonest ? soonest.getTime() : nowJST.getTime();
-  }
+
+    function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
+      const now = new Date(fromTime);
+      let soonest = null;
+      for (const { day, hour, minute } of respawns) {
+        const t = new Date(now);
+        t.setHours(hour, minute, 0, 0);
+        const delta = (day + 7 - now.getDay()) % 7;
+        t.setDate(now.getDate() + delta);
+        if (t.getTime() <= now.getTime()) t.setDate(t.getDate() + 7);
+        if (!soonest || t.getTime() < soonest.getTime()) soonest = t;
+      }
+      return soonest ? soonest.getTime() : now.getTime();
+    }
+
+    // ✅ Import Firebase core and services
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
     import {
       getFirestore,
@@ -1390,8 +1409,9 @@
       deleteField,
       runTransaction,
       onSnapshot,
-      serverTimestamp, 
+      serverTimestamp, // ✅ Firestore FieldValue server timestamp (used in dedupe transaction)
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
     import {
       getDatabase,
       ref,
@@ -1399,531 +1419,606 @@
       onValue,
       set,
       push,
-      serverTimestamp as rtdbServerTimestamp, 
+      serverTimestamp as rtdbServerTimestamp, // ✅ rename this one so you don’t clash
     } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-		
-		const firebaseConfig = {
-			apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-			authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-			databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
-			projectId: "lordnine-timer-9f21e",
-			storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-			messagingSenderId: "644000692891",
-			appId: "1:644000692891:web:224bca1478655a43c0243e"
-		};
+
+
+    // ✅ Initialize Firebase app
+    const firebaseConfig = {
+      apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
+      authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+      databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "lordnine-timer-9f21e",
+      storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
+      messagingSenderId: "644000692891",
+      appId: "1:644000692891:web:224bca1478655a43c0243e",
+      databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const rtdb = getDatabase(app);
-		const presenceRef = ref(rtdb, "presence");
-		const myConnection = push(presenceRef);
-		set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
-		onDisconnect(myConnection).remove();
-		onValue(presenceRef, (snap) => {
-			const count = snap.size || snap.numChildren();
-			let el = document.getElementById("onlineCount");
-			if (!el) {
-			el = document.createElement("div");
-			el.id = "onlineCount";
-			el.className = "online-users";
-			document.body.appendChild(el);
-			}
-			el.textContent = `🟢 Online: ${count}`;
-		});
-		let lastTriggeredBySelf = null;
-		const syncBtn = document.getElementById('syncBtn');
-		const refreshDocRef = doc(db, 'meta', 'refresh'); 
-		syncBtn.addEventListener('click', async () => {
-			if (confirm("Synchronize all clients? This will reload every user's page.")) {
-			const now = Date.now();
-			lastTriggeredBySelf = now;
-			await setDoc(refreshDocRef, { forceRefresh: now });
-			alert('✅ Synchronization triggered for all connected users.');
-			console.log('🔁 sync triggered at', new Date(now).toISOString());
-			}
-		});
-		let hasInitialized = false;
-		onSnapshot(refreshDocRef, (snapshot) => {
-			const data = snapshot.data();
-			if (!data) return;
-			const lastTrigger = data.forceRefresh;
-			const lastTriggerMs =
-			lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
-			if (!hasInitialized) { hasInitialized = true; return; }
-			if (lastTriggerMs === lastTriggeredBySelf) return;
-			console.log('🔄 Firestore refresh triggered, reloading page.');
-			location.reload();
-		});
-		async function safeWrite(ref, payload) {
-			try {
-			await updateDoc(ref, payload);
-			} catch (err) {
-			console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
-			await setDoc(ref, payload, { merge: true });
-			}
-		}
-		async function autoLoadWebhook() {
-			try {
-			const docRef = doc(db, 'config', 'discordWebhook');
-			const snap = await getDoc(docRef);
-			if (snap.exists()) {
-				const data = snap.data();
-				cachedWebhookUrl = data.url || null;
-				console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
-			} else {
-				console.warn("⚠️ No webhook found in Firestore config.");
-			}
-			} catch (e) {
-			console.error("❌ Failed to auto-load webhook:", e);
-			}
-		}
-		async function loadWebhookFromFirestore() {
-			try {
-			const docRef = doc(db, 'config', 'discordWebhook');
-			const snap = await getDoc(docRef);
-			if (snap.exists()) {
-				const data = snap.data();
-				cachedWebhookUrl = data.url || null;
-				webhookInput.value = cachedWebhookUrl || '';
-				console.log('✅ Loaded webhook from Firestore.');
-				return cachedWebhookUrl;
-			} else {
-				cachedWebhookUrl = null;
-				webhookInput.value = '';
-				console.log('ℹ️ No webhook stored in Firestore.');
-				return null;
-			}
-			} catch (e) {
-			console.warn('load webhook err', e);
-			return null;
-			}
-		}
-		async function saveWebhookToFirestore(url) {
-			try {
-			await setDoc(doc(db, 'config', 'discordWebhook'), { url });
-			cachedWebhookUrl = url;
-			webhookInput.value = url;
-			alert('✅ Webhook saved.');
-			console.log('✅ Webhook saved to Firestore.');
-			} catch (e) {
-			console.warn('save webhook err', e);
-			alert('❌ Failed to save webhook.');
-			}
-		}
-		async function clearWebhookInFirestore() {
-			try {
-			await deleteDoc(doc(db, 'config', 'discordWebhook'));
-			cachedWebhookUrl = null;
-			webhookInput.value = '';
-			alert('✅ Webhook cleared.');
-			console.log('✅ Webhook cleared from Firestore.');
-			} catch (e) {
-			console.warn('clear webhook err', e);
-			alert('❌ Failed to clear webhook.');
-			}
-		}
-		async function sendDiscordEmbed(embed) {
-			const webhook =
-			cachedWebhookUrl ||
-			(webhookInput && webhookInput.value.trim()) ||
-			null;
-			if (!webhook) {
-			console.warn("⚠️ No Discord webhook configured.");
-			return;
-			}
-			const mentionTarget = '@everyone'; 
-			try {
-			const payload = {
-				content: mentionTarget,
-				embeds: [embed],
-			};
-			const res = await fetch(webhook, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(payload),
-			});
-			if (!res.ok) {
-				console.error("❌ Discord webhook failed:", res.status, await res.text());
-			} else {
-				console.log("✅ Discord embed sent successfully.");
-			}
-			} catch (err) {
-			console.error("⚠️ Discord webhook error:", err);
-			}
-		}
-		async function sendDiscordEmbedOnce(type, boss) {
-			try {
-			if (!boss || !type) return;
-			const key = `${boss.id}_${type}`;
-			const now = Date.now();
-			const localWindow = 2 * 60 * 1000; 
-			if (localNotifCache[key] && now - localNotifCache[key] < localWindow) {
-				console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
-				return;
-			}
-    localNotifCache[key] = now;
-    console.log(`🔒 Local reserve set for ${key}`);
-    const ref = doc(db, 'notifications', key);
-    const thresholdMs = 2 * 60 * 1000;
-    const txResult = await runTransaction(db, async (tx) => {
-      const snap = await tx.get(ref);
-      const data = snap.exists() ? snap.data() : {};
-      let lastSentMs = 0;
-      if (data.lastSent?.toMillis) lastSentMs = data.lastSent.toMillis();
-      else if (typeof data.lastSent === 'number') lastSentMs = data.lastSent;
-      else if (typeof data.lastSent === 'string') {
-      const parsed = Date.parse(data.lastSent);
-      if (!isNaN(parsed)) lastSentMs = parsed;
+
+    // === Presence & Global Sync Management ===
+
+    // ✅ Online presence tracking (Realtime Database)
+    const presenceRef = ref(rtdb, "presence");
+    const myConnection = push(presenceRef);
+    set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
+    onDisconnect(myConnection).remove();
+
+    onValue(presenceRef, (snap) => {
+      const count = snap.size || snap.numChildren();
+      let el = document.getElementById("onlineCount");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "onlineCount";
+        el.className = "online-users";
+        document.body.appendChild(el);
       }
-      const nowMs = Date.now();
-      if (nowMs - lastSentMs < thresholdMs) {
-      console.log(`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${toJSTDate(lastSentMs).toISOString()})`);
-      return false;
-      }
-      tx.set(ref, { lastSent: serverTimestamp(), type }, { merge: true });
-      const endTimeMs = timers[boss.id]?.endTime || Date.now();
-      return { endTimeMs };
+      el.textContent = `🟢 Online: ${count}`;
     });
-    if (!txResult) {
-      console.log(`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`);
-      return;
+
+    // ✅ Firestore-based Global Synchronization
+    let lastTriggeredBySelf = null;
+    const syncBtn = document.getElementById('syncBtn');
+    const refreshDocRef = doc(db, 'meta', 'refresh'); // Firestore doc for sync trigger
+
+    // --- Trigger Sync ---
+    syncBtn.addEventListener('click', async () => {
+      if (confirm("Synchronize all clients? This will reload every user's page.")) {
+        const now = Date.now();
+        lastTriggeredBySelf = now;
+        await setDoc(refreshDocRef, { forceRefresh: now });
+        alert('✅ Synchronization triggered for all connected users.');
+        console.log('🔁 sync triggered at', new Date(now).toISOString());
+      }
+    });
+
+    // --- Auto-refresh on Firestore update ---
+    let hasInitialized = false;
+    onSnapshot(refreshDocRef, (snapshot) => {
+      const data = snapshot.data();
+      if (!data) return;
+      const lastTrigger = data.forceRefresh;
+      const lastTriggerMs =
+        lastTrigger && lastTrigger.toMillis ? lastTrigger.toMillis() : lastTrigger;
+
+      if (!hasInitialized) { hasInitialized = true; return; }
+      if (lastTriggerMs === lastTriggeredBySelf) return;
+
+      console.log('🔄 Firestore refresh triggered, reloading page.');
+      location.reload();
+    });
+
+    // ✅ Safe Firestore write helper — ensures reliable merges
+    async function safeWrite(ref, payload) {
+      try {
+        await updateDoc(ref, payload);
+      } catch (err) {
+        console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
+        await setDoc(ref, payload, { merge: true });
+      }
     }
-    const tz = 'Asia/Tokyo';
-    const endTimeMs = txResult.endTimeMs || timers[boss.id]?.endTime || Date.now();
-    const utcStr = toJSTDate(endTimeMs)
-      .toISOString()
-      .replace('T', ' ')
-      .replace('Z', ' UTC');
-    const jstStr =
-      toJSTDate(endTimeMs).toLocaleString('en-US', {
-      timeZone: tz,
-      hour12: false,
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      }) + ' JST';
-    let title, color, desc;
-    switch (type) {
-      case 'killed':
-      title = `💀 ${boss.name} has been defeated!`;
-      color = 0xff3333;
-      desc = `Next respawn: ${jstStr}`;
-      break;
-      case 'soon':
-      title = `⚠️ ${boss.name} will respawn soon!`;
-      color = 0xffcc00;
-      desc = `Spawn expected in 5 minutes.\nSpawn Time: ${jstStr}`;
-      break;
-      case 'spawn':
-      title = `⚔️ ${boss.name} has spawned!`;
-      color = 0xb266ff;
-      desc = `It’s time to hunt!`;
-      break;
-      case 'manual':
-      title = `⏰ ${boss.name} manual time set.`;
-      color = 0x3399ff;
-      desc = `Next respawn: ${jstStr}`;
-      break;
-      default:
-      console.warn(`⚠️ Unknown notification type: ${type}`);
-      return;
+
+    // --- Load Discord webhook on startup (Firestore version) ---
+    async function autoLoadWebhook() {
+      try {
+        const docRef = doc(db, 'config', 'discordWebhook');
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          cachedWebhookUrl = data.url || null;
+          console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
+        } else {
+          console.warn("⚠️ No webhook found in Firestore config.");
+        }
+      } catch (e) {
+        console.error("❌ Failed to auto-load webhook:", e);
+      }
     }
-    const embed = buildEmbed(title, desc, color);
-    await sendDiscordEmbed(embed);
-    console.log(`✅ Sent ${type} notification for ${boss.name} at ${utcStr} (${jstStr})`);
-    } catch (e) {
-    if (e?.code === 'ABORTED') {
-      console.warn('ℹ️ Transaction aborted (expected):', e);
-      return;
+
+    // -------------------------
+    // Webhook load/save/clear
+    // -------------------------
+    async function loadWebhookFromFirestore() {
+      try {
+        const docRef = doc(db, 'config', 'discordWebhook');
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          cachedWebhookUrl = data.url || null;
+          webhookInput.value = cachedWebhookUrl || '';
+          console.log('✅ Loaded webhook from Firestore.');
+          return cachedWebhookUrl;
+        } else {
+          cachedWebhookUrl = null;
+          webhookInput.value = '';
+          console.log('ℹ️ No webhook stored in Firestore.');
+          return null;
+        }
+      } catch (e) {
+        console.warn('load webhook err', e);
+        return null;
+      }
     }
-    console.warn('⚠️ sendDiscordEmbedOnce error:', e);
+
+    async function saveWebhookToFirestore(url) {
+      try {
+        await setDoc(doc(db, 'config', 'discordWebhook'), { url });
+        cachedWebhookUrl = url;
+        webhookInput.value = url;
+        alert('✅ Webhook saved.');
+        console.log('✅ Webhook saved to Firestore.');
+      } catch (e) {
+        console.warn('save webhook err', e);
+        alert('❌ Failed to save webhook.');
+      }
     }
-  }
-  function buildEmbed(title, description, colorHex) {
-    return {
-    title,
-    description,
-    color: colorHex,
-    footer: { text: 'Lordnine Tracker' },
-    timestamp: new Date().toISOString()
-    };
-  }
-  async function testWebhook() {
-    if (!cachedWebhookUrl && !webhookInput.value.trim()) {
-    alert('No webhook URL configured.');
-    return;
+
+    async function clearWebhookInFirestore() {
+      try {
+        await deleteDoc(doc(db, 'config', 'discordWebhook'));
+        cachedWebhookUrl = null;
+        webhookInput.value = '';
+        alert('✅ Webhook cleared.');
+        console.log('✅ Webhook cleared from Firestore.');
+      } catch (e) {
+        console.warn('clear webhook err', e);
+        alert('❌ Failed to clear webhook.');
+      }
     }
-    if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
-    await sendDiscordEmbed(buildEmbed('🧪 Webhook test successful!', 'This is a test message from Lord Nine Tracker.', 0x00ff99));
-    alert('Test sent (check your Discord).');
-  }
-  async function saveTimersToFirestore() {
-    try {
-    await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true });
-    console.log('✅ saveTimersToFirestore: saved timers document.');
-    } catch (e) {
-    console.warn('saveTimersToFirestore err', e);
+
+    // -------------------------
+    // Discord send helpers
+    // -------------------------
+    async function sendDiscordEmbed(embed) {
+      const webhook =
+        cachedWebhookUrl ||
+        (webhookInput && webhookInput.value.trim()) ||
+        null;
+
+      if (!webhook) {
+        console.warn("⚠️ No Discord webhook configured.");
+        return;
+      }
+
+      const mentionTarget = '@everyone'; // no @everyone by default
+
+      try {
+        const payload = {
+          content: mentionTarget,
+          embeds: [embed],
+        };
+
+        const res = await fetch(webhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          console.error("❌ Discord webhook failed:", res.status, await res.text());
+        } else {
+          console.log("✅ Discord embed sent successfully.");
+        }
+      } catch (err) {
+        console.error("⚠️ Discord webhook error:", err);
+      }
     }
-  }
-  async function saveTimerToFirestoreOnce(bossId) {
-    try {
-    const ref = doc(db, 'timers', 'global');
-    const data = timers[bossId];
-    const json = JSON.stringify(data || {});
-    if (lastWriteCache[bossId] === json) {
-      console.log(`ℹ️ Skipping redundant write for ${bossId}`);
-      return;
+
+    // === patched sendDiscordEmbedOnce: safe-handling when transaction returns false ===
+    async function sendDiscordEmbedOnce(type, boss) {
+      try {
+        if (!boss || !type) return;
+
+        const key = `${boss.id}_${type}`;
+        const now = Date.now();
+
+        // Local dedupe guard first (fast path)
+        const localWindow = 2 * 60 * 1000; // 2 minutes
+        if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
+          console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
+          return;
+        }
+
+        // Reserve locally right away to prevent double local sends
+        localNotifCache[key] = now;
+        console.log(`🔒 Local reserve set for ${key}`);
+
+        const ref = doc(db, 'notifications', key);
+        const thresholdMs = 2 * 60 * 1000; // 2-minute dedupe window (server side)
+
+        // Firestore transaction ensures only one client writes lastSent
+        const txResult = await runTransaction(db, async (tx) => {
+          const snap = await tx.get(ref);
+          const data = snap.exists() ? snap.data() : {};
+          // support Firestore Timestamp (.toMillis), numeric ms, or ISO string
+          let lastSentMs = 0;
+          if (data.lastSent && typeof data.lastSent.toMillis === 'function') {
+            lastSentMs = data.lastSent.toMillis();
+          } else if (typeof data.lastSent === 'number') {
+            lastSentMs = data.lastSent;
+          } else if (typeof data.lastSent === 'string') {
+            const parsed = Date.parse(data.lastSent);
+            if (!isNaN(parsed)) lastSentMs = parsed;
+          }
+
+          const nowMs = Date.now();
+          if (nowMs - lastSentMs < thresholdMs) {
+            console.log(`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${new Date(lastSentMs).toISOString()})`);
+            return false; // signal: skip send
+          }
+
+          // write Firestore server timestamp
+          tx.set(ref, { lastSent: serverTimestamp() }, { merge: true });
+          const endTimeMs = timers[boss.id]?.endTime || Date.now();
+          return { endTimeMs };
+        });
+
+        // If transaction returned false => recent send, so skip gracefully
+        if (!txResult) {
+          console.log(`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`);
+          return;
+        }
+
+        const formattedTime = formatShortDateTime(txResult.endTimeMs || (timers[boss.id]?.endTime || Date.now()));
+
+        // Build embed by type
+        let embed;
+        switch (type) {
+          case 'killed':
+            embed = buildEmbed(`💀 ${boss.name} defeated!`, `Next respawn: ${formattedTime}`, 0xff3333);
+            break;
+          case 'soon':
+            embed = buildEmbed(`⚠️ ${boss.name} will respawn within 5 minutes!`, `Next respawn: ${formattedTime}`, 0xffcc00);
+            break;
+          case 'spawn':
+            embed = buildEmbed(`⚔️ ${boss.name} has spawned!`, `It’s time to hunt!`, 0xb266ff);
+            break;
+          case 'manual':
+            embed = buildEmbed(`⏰ ${boss.name} manual time set`, `Next respawn: ${formattedTime}`, 0x3399ff);
+            break;
+          default:
+            console.warn(`⚠️ Unknown notification type: ${type}`);
+            return;
+        }
+
+        // Final send
+        await sendDiscordEmbed(embed);
+        console.log(`✅ Sent ${type} notification for ${boss.name}`);
+      } catch (e) {
+        if (e?.code === 'ABORTED') { console.warn('ℹ️ Transaction aborted (expected):', e); return; }
+        console.warn('⚠️ sendDiscordEmbedOnce error:', e);
+      }
     }
-    lastWriteCache[bossId] = json;
-    await safeWrite(ref, { [`timers.${bossId}`]: data });
-    console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
-    } catch (e) {
-    console.warn('saveTimerToFirestoreOnce err', e);
-    }
-  }
-  async function saveTimers() {
-    try {
-    await saveTimersToFirestore();
-    } catch (e) {
-    console.warn('saveTimers err', e);
-    }
-  }
-  async function startTimer(bossId) {
-    const tz = 'Asia/Tokyo';
-    const boss = BOSSES.find(b => b.id === bossId);
-    if (!boss) return;
-    const nowJST = toJSTDate(Date.now());
-    const now = nowJST.getTime();
-    let endTime;
-    if (boss.weeklyRespawns) {
-    endTime = getNextWeeklyRespawn(boss.weeklyRespawns, now);
-    timers[bossId] = {
-      endTime,
-      startedAt: now,
-      weekly: true,
-      notifiedSoon: false,
-      spawnAnnounced: false
-    };
-    } else {
-    endTime = now + boss.respawn * 1000;
-    timers[bossId] = {
-      endTime,
-      startedAt: now,
-      notifiedSoon: false,
-      spawnAnnounced: false
-    };
-    }
-    await saveTimerToFirestoreOnce(bossId);
-    addOrUpdateTimerElement(bossId);
-    renderBossList();
-    const endTimeJST = toJSTDate(timers[bossId].endTime);
-    console.log(
-    `🕹️ startTimer: started ${bossId} -> ${endTimeJST.toISOString()} (JST: ${endTimeJST.toLocaleString('en-US', { timeZone: tz })})`
-    );
-    await sendDiscordEmbedOnce('killed', boss);
-  }
-  async function clearTimer(bossId) {
-    const boss = BOSSES.find(b => b.id === bossId);
-    const ref = doc(db, 'timers', 'global');
-    if (!timers[bossId]) {
-    console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
-    return;
-    }
-    delete timers[bossId]; 
-    try {
-    const snap = await getDoc(ref);
-    if (!snap.exists()) {
-      console.warn('⚠️ timers/global did not exist. Creating it first...');
-      await setDoc(ref, { timers: {} }, { merge: true });
-    }
-    await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
-    console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
-    } catch (err) {
-    console.error('❌ Firestore delete failed for', bossId, err);
-    alert('Failed to clear timer in Firestore. Please retry.');
-    }
-    removeTimerElement(bossId);
-    renderBossList();
-    console.log(`🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`);
-  }
-  async function resetAll() {
-    if (!confirm('Clear all non-weekly timers?')) return;
-    const preserved = {};
-    for (const [id, info] of Object.entries(timers)) {
-    const boss = BOSSES.find(b => b.id === id);
-    if (boss && boss.weeklyRespawns) preserved[id] = info;
-    }
-    timers = preserved;
-    try {
-    await setDoc(doc(db, 'timers', 'global'), { timers }); 
-    rebuildTimersPanel();
-    renderBossList();
-    alert('✅ All non-weekly timers reset (Firestore updated).');
-    console.log('🔁 resetAll: fully reset timers and updated Firestore.');
-    } catch (e) {
-    console.warn('❌ resetAll Firestore update failed', e);
-    alert('⚠️ Failed to update Firestore.');
-    }
-  }
-  function openTimeModal(bossId) {
-    const boss = BOSSES.find(b => b.id === bossId);
-    if (!boss) return;
-    currentBossForTime = boss;
-    modalName.textContent = boss.name;
-    killTimeInput.value = '';
-    modal.style.display = 'flex';
-  }
-  function closeTimeModal() {
-    modal.style.display = 'none';
-    currentBossForTime = null;
-  }
-    cancelTimeBtn.addEventListener('click', closeTimeModal);
-    saveTimeBtn.addEventListener('click', async () => { 
-    const input = killTimeInput.value;
-    if (!input || !currentBossForTime) return;
-    const manualLocal = new Date(input);
-    if (isNaN(manualLocal)) {
-      alert('Invalid date format.');
-      return;
-    }
-    const manualTime = toJSTDate(manualLocal.getTime());
-    const killedAt = manualTime.getTime();
-    const boss = currentBossForTime;
-    let endTime;
-    if (boss.weeklyRespawns) {
-      endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
-      while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
-      timers[boss.id] = {
-      endTime,
-      startedAt: killedAt,
-      weekly: true,
-      notifiedSoon: false,
-      spawnAnnounced: false,
+
+    function buildEmbed(title, description, colorHex) {
+      return {
+        title,
+        description,
+        color: colorHex,
+        footer: { text: 'Lordnine Tracker' },
+        timestamp: new Date().toISOString()
       };
-    } else {
-      endTime = killedAt + boss.respawn * 1000;
-      timers[boss.id] = {
-      endTime,
-      startedAt: killedAt,
-      notifiedSoon: false,
-      spawnAnnounced: false,
-      };
     }
-    try {
-      if (!cachedWebhookUrl) await autoLoadWebhook();
-      const ref = doc(db, 'timers', 'global');
-      await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
-      console.log(`✅ Firestore updated: ${boss.name} manual time saved (JST).`);
-      closeTimeModal();
-      addOrUpdateTimerElement(boss.id);
+
+    async function testWebhook() {
+      if (!cachedWebhookUrl && !webhookInput.value.trim()) {
+        alert('No webhook URL configured.');
+        return;
+      }
+      if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
+      await sendDiscordEmbed(buildEmbed('🧪 Webhook test successful!', 'This is a test message from Lord Nine Tracker.', 0x00ff99));
+      alert('Test sent (check your Discord).');
+    }
+
+    // -------------------------
+    // Firestore save dedupe helpers
+    // -------------------------
+    async function saveTimersToFirestore() {
+      try {
+        await setDoc(doc(db, 'timers', 'global'), { timers }, { merge: true });
+        console.log('✅ saveTimersToFirestore: saved timers document.');
+      } catch (e) {
+        console.warn('saveTimersToFirestore err', e);
+      }
+    }
+
+    // Save or update a single boss timer in Firestore safely, with dedupe
+    async function saveTimerToFirestoreOnce(bossId) {
+      try {
+        const ref = doc(db, 'timers', 'global');
+        const data = timers[bossId];
+        const json = JSON.stringify(data || {});
+        if (lastWriteCache[bossId] === json) {
+          console.log(`ℹ️ Skipping redundant write for ${bossId}`);
+          return;
+        }
+        lastWriteCache[bossId] = json;
+        await safeWrite(ref, { [`timers.${bossId}`]: data });
+        console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
+      } catch (e) {
+        console.warn('saveTimerToFirestoreOnce err', e);
+      }
+    }
+
+    async function saveTimers() {
+      try {
+        await saveTimersToFirestore();
+      } catch (e) {
+        console.warn('saveTimers err', e);
+      }
+    }
+
+    // -------------------------
+    // Actions: start / clear / reset
+    // -------------------------
+    async function startTimer(bossId) {
+      const boss = BOSSES.find(b => b.id === bossId);
+      if (!boss) return;
+      const now = Date.now();
+      let endTime;
+      if (boss.weeklyRespawns) {
+        endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
+        timers[bossId] = { endTime, startedAt: now, weekly: true, notifiedSoon: false, spawnAnnounced: false };
+      } else {
+        endTime = now + boss.respawn * 1000;
+        timers[bossId] = { endTime, startedAt: now, notifiedSoon: false, spawnAnnounced: false };
+      }
+
+      // deduped write
+      await saveTimerToFirestoreOnce(bossId);
+      addOrUpdateTimerElement(bossId);
       renderBossList();
-      const formattedTime = formatShortDateTime(endTime);
-      const embed = buildEmbed(
-      `⏰ ${boss.name} manual time set (JST)`,
-      `Next respawn: ${formattedTime}`,
-      0x3399ff
-      );
-      await sendDiscordEmbedOnce('manual', boss);
-      console.log(`📡 Discord notification sent for ${boss.name}.`);
-      alert(`✅ Manual time saved and synced for ${boss.name}.`);
-    } catch (err) {
-      console.error('❌ Failed to record manual time:', err);
-      alert('❌ Failed to record manual time to Firestore. Check console for details.');
+
+      console.log(`🕹️ startTimer: started ${bossId} -> ${new Date(timers[bossId].endTime).toISOString()}`);
+
+      // send killed embed (deduped)
+      await sendDiscordEmbedOnce('killed', boss);
     }
+
+    async function clearTimer(bossId) {
+      const boss = BOSSES.find(b => b.id === bossId);
+      const ref = doc(db, 'timers', 'global');
+
+      if (!timers[bossId]) {
+        console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
+        return;
+      }
+
+      delete timers[bossId]; // remove locally
+
+      try {
+        // Ensure the document exists first
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          console.warn('⚠️ timers/global did not exist. Creating it first...');
+          await setDoc(ref, { timers: {} }, { merge: true });
+        }
+
+        // ✅ Delete nested key with updateDoc and field path
+        await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
+
+        console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
+      } catch (err) {
+        console.error('❌ Firestore delete failed for', bossId, err);
+        alert('Failed to clear timer in Firestore. Please retry.');
+      }
+
+      // Update UI
+      removeTimerElement(bossId);
+      renderBossList();
+
+      console.log(`🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`);
+    }
+
+    async function resetAll() {
+      if (!confirm('Clear all non-weekly timers?')) return;
+      const preserved = {};
+      for (const [id, info] of Object.entries(timers)) {
+        const boss = BOSSES.find(b => b.id === id);
+        if (boss && boss.weeklyRespawns) preserved[id] = info;
+      }
+      timers = preserved;
+
+      try {
+        await setDoc(doc(db, 'timers', 'global'), { timers }); // overwrite entire timers doc
+        rebuildTimersPanel();
+        renderBossList();
+        alert('✅ All non-weekly timers reset (Firestore updated).');
+        console.log('🔁 resetAll: fully reset timers and updated Firestore.');
+      } catch (e) {
+        console.warn('❌ resetAll Firestore update failed', e);
+        alert('⚠️ Failed to update Firestore.');
+      }
+    }
+
+    // -------------------------
+    // Modal for manual time
+    // -------------------------
+    function openTimeModal(bossId) {
+      const boss = BOSSES.find(b => b.id === bossId);
+      if (!boss) return;
+      currentBossForTime = boss;
+      modalName.textContent = boss.name;
+      killTimeInput.value = '';
+      modal.style.display = 'flex';
+    }
+
+    function closeTimeModal() {
+      modal.style.display = 'none';
+      currentBossForTime = null;
+    }
+
+    cancelTimeBtn.addEventListener('click', closeTimeModal);
+
+    saveTimeBtn.addEventListener('click', async () => {
+      const input = killTimeInput.value;
+      if (!input || !currentBossForTime) return;
+
+      const parsed = new Date(input);
+      if (isNaN(parsed)) {
+        alert('Invalid date format.');
+        return;
+      }
+
+      const killedAt = parsed.getTime();
+      const boss = currentBossForTime;
+      let endTime;
+
+      // ✅ Calculate respawn
+      if (boss.weeklyRespawns) {
+        endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
+        while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
+        timers[boss.id] = {
+          endTime,
+          startedAt: killedAt,
+          weekly: true,
+          notifiedSoon: false,
+          spawnAnnounced: false,
+        };
+      } else {
+        endTime = killedAt + boss.respawn * 1000;
+        timers[boss.id] = {
+          endTime,
+          startedAt: killedAt,
+          notifiedSoon: false,
+          spawnAnnounced: false,
+        };
+      }
+
+      try {
+        // ✅ Ensure webhook is loaded before use
+        if (!cachedWebhookUrl) await autoLoadWebhook();
+
+        const ref = doc(db, 'timers', 'global');
+
+        // ✅ Correct Firestore structure
+        await setDoc(ref, { timers: { [boss.id]: timers[boss.id] } }, { merge: true });
+
+        console.log(`✅ Firestore updated: ${boss.name} manual time saved.`);
+
+        // ✅ Update local UI
+        closeTimeModal();
+        addOrUpdateTimerElement(boss.id);
+        renderBossList();
+
+        // ✅ Send Discord notification (manual entry always sends)
+        const formattedTime = formatShortDateTime(endTime);
+        const embed = buildEmbed(
+          `⏰ ${boss.name} manual time set`,
+          `Next respawn: ${formattedTime}`,
+          0x3399ff
+        );
+        await sendDiscordEmbedOnce('manual', boss);
+
+        console.log(`📡 Discord notification sent for ${boss.name}.`);
+        alert(`✅ Manual time saved and synced for ${boss.name}.`);
+      } catch (err) {
+        console.error('❌ Failed to record manual time:', err);
+        alert('❌ Failed to record manual time to Firestore. Check console for details.');
+      }
     });
-  function renderBossList() {
-  bossListEl.innerHTML = '';
-  const q = (searchInput.value || '').toLowerCase().trim();
-  const now = Date.now();
-  for (const b of BOSSES) {
-    const isWeekly = !!b.weeklyRespawns;
-    const t = timers[b.id];
-    const hasActiveTimer = t && t.endTime > now; 
-    const inCooldown = t && t.spawnWindowUntil && t.spawnWindowUntil > now; 
-    if (q && !b.name.toLowerCase().includes(q)) continue;
-    const subText = isWeekly
-    ? b.weeklyRespawns
-      .map(
-        r =>
-        ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][r.day] +
-        ' ' +
-        String(r.hour).padStart(2, '0') +
-        ':' +
-        String(r.minute).padStart(2, '0')
-      )
-      .join(', ')
-    : b.respawn / 3600 + ' hr';
-    const node = document.createElement('div');
-    node.className = 'boss';
-    node.setAttribute('data-id', b.id);
-    let nameClass = 'name';
-    if (hasActiveTimer && !inCooldown) nameClass += ' dead';
-    node.innerHTML = `
-    <div class="meta">
-      <div class="${nameClass}">${b.name}</div>
-      <div class="sub">${subText}</div>
-    </div>
-    <div class="actions">
-      <button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
-      ${!isWeekly
-      ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>`
-      : ''}
-    </div>
-    `;
-    bossListEl.appendChild(node);
-  }
-  bossListEl.querySelectorAll('.kbtn').forEach(btn => {
-    btn.addEventListener('click', e => {
-    const id = e.currentTarget.dataset.id;
-    const action = e.currentTarget.dataset.action;
-    if (action === 'mark') handleMarkDead(id);
-    else if (action === 'set') openManualSetModal(id);
-    });
-  });
-  }
+
+    // -------------------------
+    // Render functions
+    // -------------------------
+    function renderBossList() {
+      bossListEl.innerHTML = '';
+      const q = (searchInput.value || '').toLowerCase().trim();
+
+      for (const b of BOSSES) {
+        const isWeekly = !!b.weeklyRespawns;
+        const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
+        if (q && !b.name.toLowerCase().includes(q)) continue;
+
+        const subText = isWeekly
+          ? b.weeklyRespawns
+            .map(r => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][r.day] + ' ' + String(r.hour).padStart(2, '0') + ':' + String(r.minute).padStart(2, '0'))
+            .join(', ')
+          : (b.respawn / 3600) + ' hr';
+
+        const node = document.createElement('div');
+        node.className = 'boss';
+
+        const nameClass = isActive ? 'name dead' : 'name';
+
+        node.innerHTML = `
+          <div class="meta">
+            <div class="${nameClass}">${b.name}</div>
+            <div class="sub">${subText}</div>
+          </div>
+          <div class="actions">
+            <button class="kbtn" data-action="mark" data-id="${b.id}">Mark Dead</button>
+            ${!isWeekly ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>` : ''}
+          </div>
+        `;
+        bossListEl.appendChild(node);
+      }
+    }
+
+    // === Unified Boss List Click Handler with atomic deadlock attempt ===
     bossListEl.addEventListener('click', async (e) => {
       const btn = e.target.closest('.kbtn');
       if (!btn) return;
+
       const action = btn.getAttribute('data-action');
       const id = btn.getAttribute('data-id');
       if (!id) return;
+
       if (action === 'clear') {
         await clearTimer(id);
         return;
       }
+
       if (action === 'mark') {
         const now = Date.now();
-        const lockDuration = 60 * 1000; 
+        const lockDuration = 60 * 1000; // 1 minute
         const lockUntil = now + lockDuration;
+
+        // Immediate visual disable to give feedback
         btn.disabled = true;
         console.log(`🔘 mark clicked: attempting lock for ${id} (local visual disabled)`);
+
         try {
+          // Try atomic transaction to set lock only if not locked
           const locked = await runTransaction(db, async (tx) => {
             const snap = await tx.get(deadLockRef);
             const data = snap.exists() ? snap.data() : {};
             const existing = data[id] || 0;
             const tsNow = Date.now();
+
             if (existing && existing > tsNow) {
+              // someone else holds lock
               return false;
             }
+            // set lock
             tx.set(deadLockRef, { [id]: lockUntil }, { merge: true });
             return true;
           });
+
           if (!locked) {
+            // lock lost to another client: re-enable and warn
             console.warn(`⛔ markDead: failed to acquire lock for ${id} — another user locked it.`);
+            // refresh deadLocks on next snapshot will correct disabled state, but re-enable for good UX
             btn.disabled = false;
             return;
           }
+
+          // We acquired lock: update local memory immediately and disable all mark buttons for this boss
           deadLocks[id] = lockUntil;
           document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(b => (b.disabled = true));
-          console.log(`🔒 Acquired lock for ${id} until ${toJSTDate(lockUntil).toISOString()}`);
+          console.log(`🔒 Acquired lock for ${id} until ${new Date(lockUntil).toISOString()}`);
+
+          // Animate the boss card
           const card = btn.closest('.boss');
           if (card) {
             card.classList.add('shake');
             card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
           }
+
+          // Start the timer (this writes timer and triggers Discord send)
           await startTimer(id);
         } catch (err) {
           console.error('⚠️ Error during mark dead transaction:', err);
@@ -1931,37 +2026,39 @@
         }
         return;
       }
+
       if (action === 'set') {
         openTimeModal(id);
       }
     });
-  function formatShortDateTime(ms) {
-  const jstDate = toJSTDate(ms);
-  return jstDate.toLocaleString('en-US', {
-    timeZone: 'Asia/Tokyo',
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  }) + ' JST';
-  }
+
+    // Safer, locale-aware short datetime formatter
+    function formatShortDateTime(ms) {
+      const d = new Date(ms);
+      const options = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+      const formatted = d.toLocaleString('en-US', options);
+      return formatted.replace(/\s{2,}/g, ' ').replace(/\s*,\s*/g, ', ').trim();
+    }
+
     function addOrUpdateTimerElement(bossId) {
       const boss = BOSSES.find(b => b.id === bossId);
       if (!boss) return;
+
       const info = timers[bossId];
       if (!info || !info.endTime) {
         return;
       }
+
       const existing = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
       const remainingSec = Math.max(0, Math.round((info.endTime - Date.now()) / 1000));
       const spawnStr = formatShortDateTime(info.endTime);
+
       if (existing) {
         existing.dataset.remaining = String(remainingSec);
         const nameEl = existing.querySelector('.timer-name');
         const remainEl = existing.querySelector('.timer-remaining');
         const spawnEl = existing.querySelector('.timer-spawn');
+
         if (nameEl) nameEl.textContent = boss.name;
         if (remainEl) remainEl.textContent = formatSec(remainingSec);
         if (spawnEl) spawnEl.textContent = spawnStr;
@@ -1985,6 +2082,8 @@
         `;
         if (remainingSec === 0) node.classList.add('ready');
         timersEl.appendChild(node);
+
+        // attach clear handler specifically for this timer's clear button
         node.querySelectorAll('.clear-timer-btn').forEach(btn => {
           btn.addEventListener('click', async (e) => {
             const bid = e.currentTarget.getAttribute('data-id');
@@ -1993,10 +2092,12 @@
         });
       }
     }
+
     function removeTimerElement(bossId) {
       const el = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
       if (el) el.remove();
     }
+
     function rebuildTimersPanel() {
       timersEl.innerHTML = '';
       const entries = Object.entries(timers)
@@ -2006,16 +2107,22 @@
       for (const e of entries) addOrUpdateTimerElement(e.id);
       console.log('🔁 rebuildTimersPanel: timers rendered.');
     }
+
+    // -------------------------
+    // Compute next boss helper
+    // -------------------------
     function computeNextBoss() {
       const upcoming = Object.entries(timers)
         .map(([id, info]) => ({ id, endTime: info.endTime, boss: BOSSES.find(b => b.id === id) }))
         .filter(x => x.boss)
         .sort((a, b) => a.endTime - b.endTime);
+
       if (upcoming.length === 0) {
         nextBossNameEl.textContent = 'Next Boss: —';
         nextTimeEl.textContent = '—';
         return;
       }
+
       const soon = upcoming[0];
       const now = Date.now();
       const remainingMs = Math.max(0, soon.endTime - now);
@@ -2023,79 +2130,80 @@
       const hours = Math.floor(totalSeconds / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = Math.floor(totalSeconds % 60);
+
       nextBossNameEl.textContent = `${soon.boss.name}`;
       nextTimeEl.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
-  async function tickUpdate() {
-  const now = Date.now();
-  const savePromises = [];
-  for (const [id, info] of Object.entries(timers)) {
-    const boss = BOSSES.find(b => b.id === id);
-    if (!boss) continue;
-    const remainingMs = info.endTime - now;
-    if (remainingMs <= 5 * 60 * 1000 && remainingMs > 0 && !info.notifiedSoon) {
-    console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
-    info.notifiedSoon = true;
-    savePromises.push(saveTimerToFirestoreOnce(id));
-    savePromises.push((async () => await sendDiscordEmbedOnce('soon', boss))());
+
+    // Main periodic update logic (tick)
+    async function tickUpdate() {
+      const now = Date.now();
+      const savePromises = [];
+
+      for (const [id, info] of Object.entries(timers)) {
+        const boss = BOSSES.find(b => b.id === id);
+        if (!boss) continue;
+
+        const remainingMs = info.endTime - now;
+
+        // "Soon" warning (5 min before respawn)
+        if (remainingMs <= 5 * 60 * 1000 && !info.notifiedSoon) {
+          console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
+          info.notifiedSoon = true;
+          // deduped write + deduped send
+          savePromises.push(saveTimerToFirestoreOnce(id));
+          savePromises.push((async () => await sendDiscordEmbedOnce('soon', boss))());
+          continue;
+        }
+
+        // Spawn announcement
+        if (remainingMs <= 0 && !info.spawnAnnounced) {
+          console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+          info.spawnAnnounced = true;
+          savePromises.push(saveTimerToFirestoreOnce(id));
+          savePromises.push((async () => await sendDiscordEmbedOnce('spawn', boss))());
+          continue;
+        }
+
+        // Advance timer to next cycle when expired (after spawn handling)
+        if (remainingMs <= 0) {
+          let nextTime;
+          if (boss.weeklyRespawns) {
+            nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+            while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
+          } else {
+            nextTime = now + boss.respawn * 1000;
+          }
+
+          timers[id] = {
+            endTime: nextTime,
+            startedAt: now,
+            weekly: !!boss.weeklyRespawns,
+            notifiedSoon: false,
+            spawnAnnounced: false
+          };
+
+          savePromises.push(saveTimerToFirestoreOnce(id));
+          addOrUpdateTimerElement(id);
+          continue;
+        }
+      }
+
+      if (savePromises.length) {
+        try {
+          await Promise.all(savePromises);
+          console.log(`💾 tickUpdate: completed ${savePromises.length} save/send ops`);
+        } catch (e) {
+          console.warn('⚠️ tickUpdate savePromises error', e);
+        }
+      }
+
+      // UI updates
+      computeNextBoss();
+      sortActiveTimersSmoothly();
     }
-    if (remainingMs <= 0 && !info.spawnAnnounced) {
-    console.log(`🎉 spawn: ${id} reached spawn, announcing`);
-    info.spawnAnnounced = true;
-    savePromises.push(saveTimerToFirestoreOnce(id));
-    savePromises.push((async () => await sendDiscordEmbedOnce('spawn', boss))());
-    }
-    if (remainingMs <= 0 && !info.spawnWindowUntil) {
-    info.spawnWindowUntil = Date.now() + 5 * 60 * 1000; 
-    console.log(`⏳ ${boss.name} entering 5-minute spawn window until ${new Date(info.spawnWindowUntil).toLocaleTimeString()}`);
-    const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
-    if (bossCard) {
-      bossCard.classList.remove('dead');
-      bossCard.style.opacity = '0.3';
-    }
-    document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(btn => (btn.disabled = true));
-    savePromises.push(saveTimerToFirestoreOnce(id));
-    continue;
-    }
-    if (info.spawnWindowUntil && info.spawnWindowUntil <= now) {
-    console.log(`✅ ${boss.name} 5-minute spawn window ended. Respawning...`);
-    const nowLater = Date.now();
-    let nextTime;
-    if (boss.weeklyRespawns) {
-      nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, nowLater + 1);
-      while (nextTime <= nowLater)
-      nextTime += 7 * 24 * 60 * 60 * 1000;
-    } else {
-      nextTime = nowLater + boss.respawn * 1000;
-    }
-    timers[id] = {
-      endTime: nextTime,
-      startedAt: nowLater,
-      weekly: !!boss.weeklyRespawns,
-      notifiedSoon: false,
-      spawnAnnounced: false
-    };
-    await saveTimerToFirestoreOnce(id);
-    addOrUpdateTimerElement(id);
-    renderBossList();
-    const bossCardLater = document.querySelector(`.boss[data-id="${id}"]`);
-    if (bossCardLater) bossCardLater.style.opacity = '1';
-    document.querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`).forEach(btn => (btn.disabled = false));
-    console.log(`🔁 ${boss.name} timer restarted after 5-minute delay.`);
-    continue;
-    }
-  }
-  if (savePromises.length) {
-    try {
-    await Promise.all(savePromises);
-    console.log(`💾 tickUpdate: completed ${savePromises.length} save/send ops`);
-    } catch (e) {
-    console.warn('⚠️ tickUpdate savePromises error', e);
-    }
-  }
-  computeNextBoss();
-  sortActiveTimersSmoothly();
-  }
+
+    // Optional lightweight visual update every second (no Firestore writes)
     function updateCountdownDisplay() {
       const now = Date.now();
       for (const [bossId, info] of Object.entries(timers)) {
@@ -2108,33 +2216,47 @@
         if (remainingSec === 0) el.classList.add('ready'); else el.classList.remove('ready');
       }
     }
+
+    // fast visual refresh (every 1s, no Firestore writes)
     setInterval(updateCountdownDisplay, 1000);
+
+    // slower background sync + notifications (every 1s)
     setInterval(() => { if (firebaseLoaded) tickUpdate(); }, 1000);
     setTimeout(() => justLoaded = false, 5000);
+
+    // -------------------------
+    // UI wiring
+    // -------------------------
     searchInput.addEventListener('input', () => {
       renderBossList();
       document.querySelector('.search-wrapper')?.classList.toggle('has-text', !!searchInput.value);
       clearSearch.style.display = !!searchInput.value ? 'inline' : 'none';
     });
+
     clearSearch.addEventListener('click', () => {
       searchInput.value = '';
       document.querySelector('.search-wrapper')?.classList.remove('has-text');
       clearSearch.style.display = 'none';
       renderBossList();
     });
+
+    // === SETTINGS BUTTON + MENU TOGGLE (Animated Connected Mode) ===
     settingsBtn.addEventListener('click', (ev) => {
       ev.stopPropagation();
       const isActive = settingsMenu.classList.toggle('active');
       settingsBtn.classList.toggle('active', isActive);
       console.log(`⚙️ settings toggled -> active=${isActive}`);
     });
+
     document.addEventListener('click', (ev) => {
       if (!settingsMenu.contains(ev.target) && ev.target !== settingsBtn) {
         settingsMenu.classList.remove('active');
         settingsBtn.classList.remove('active');
       }
     });
+
     settingsMenu.addEventListener('click', (ev) => ev.stopPropagation());
+
     discordWebhookBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       settingsMenu.classList.remove('active');
@@ -2143,10 +2265,13 @@
       webhookBackdrop.style.display = 'flex';
       console.log('🔧 open webhook modal');
     });
+
     webhookBackdrop.addEventListener('click', (ev) => { if (ev.target === webhookBackdrop) webhookBackdrop.style.display = 'none'; });
+
     const exportBtn = document.getElementById('exportBtn');
     const importBtn = document.getElementById('importBtn');
     const resetBtn = document.getElementById('resetBtn');
+
     exportBtn.addEventListener('click', () => {
       try {
         const blob = new Blob([JSON.stringify(timers, null, 2)], { type: 'application/json' });
@@ -2164,6 +2289,7 @@
         alert('❌ Failed to export timers.');
       }
     });
+
     importBtn.addEventListener('click', () => {
       const input = document.createElement('input');
       input.type = 'file';
@@ -2188,19 +2314,26 @@
       };
       input.click();
     });
+
     resetBtn.addEventListener('click', () => { if (confirm('Are you sure you want to reset all timers?')) resetAll(); });
+
+    // ✅ Firestore document for lock management
     const deadLockRef = doc(db, 'meta', 'deadLocks');
     onSnapshot(deadLockRef, (snapshot) => {
       const data = snapshot.data() || {};
       deadLocks = data;
       const now = Date.now();
+
       document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
         const bossId = btn.getAttribute('data-id');
         const lockedUntil = deadLocks[bossId] || 0;
         btn.disabled = now < lockedUntil;
       });
+
       console.log('🔔 deadLocks updated from Firestore:', deadLocks);
     });
+
+    // Periodically re-check (every 10s)
     setInterval(() => {
       const now = Date.now();
       document.querySelectorAll('.kbtn[data-action="mark"]').forEach(btn => {
@@ -2209,52 +2342,73 @@
         btn.disabled = now < lockedUntil;
       });
     }, 10000);
+
     webhookSave.addEventListener('click', async () => {
       const url = webhookInput.value.trim();
       if (!url) { alert('Please paste a webhook URL'); return; }
       await saveWebhookToFirestore(url);
     });
+
     webhookTest.addEventListener('click', async () => {
       if (!cachedWebhookUrl) await loadWebhookFromFirestore();
       await testWebhook();
     });
+
     webhookClear.addEventListener('click', async () => {
       if (!confirm('Clear webhook from Firestore?')) return;
       await clearWebhookInFirestore();
     });
+
+    // -------------------------
+    // Init sequence
+    // -------------------------
     async function init() {
       loadingOverlay.style.display = 'flex';
+
+      // ✅ Wait until the DOM is fully loaded
       await new Promise(resolve => {
         if (document.readyState === 'complete' || document.readyState === 'interactive') resolve();
         else document.addEventListener('DOMContentLoaded', resolve, { once: true });
       });
+
       bossListEl.innerHTML = '';
       timersEl.innerHTML = '';
       nextBossNameEl.textContent = '';
       nextTimeEl.textContent = '';
+
       try {
+        // ✅ Firestore real-time listener
         const docRef = doc(db, 'timers', 'global');
         onSnapshot(docRef, async (snap) => {
+          // ✅ Auto-create if the timers document doesn’t exist
           if (!snap.exists()) {
             console.log('ℹ️ No Firestore timers document found. Creating empty one...');
             await setDoc(docRef, { timers: {} }, { merge: true });
             return;
           }
+
+          // ✅ Sync local state with Firestore data
           const newTimers = snap.data().timers || {};
           timers = newTimers;
+
           rebuildTimersPanel();
           renderBossList();
           computeNextBoss();
+
           console.log('🔄 Timers auto-updated from Firestore:', timers);
         });
       } catch (e) {
         console.warn('Firestore load failed', e);
       }
+
+      // ✅ Normalize expired timers so everything is forward-looking
       const now = Date.now();
       let timersChanged = false;
+
       for (const [id, info] of Object.entries(timers)) {
         const boss = BOSSES.find(b => b.id === id);
         if (!boss || !info || !info.endTime) continue;
+
         if (info.endTime <= now) {
           if (boss.weeklyRespawns) {
             const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
@@ -2280,6 +2434,8 @@
           }
         }
       }
+
+      // ✅ Save normalized timers if any changed
       if (timersChanged) {
         try {
           await saveTimers();
@@ -2288,23 +2444,30 @@
           console.error('❌ Failed to save normalized timers:', err);
         }
       }
+
+      // ✅ Ensure Discord webhook is ready before any future notification
       await autoLoadWebhook();
+
       firebaseLoaded = true;
       renderBossList();
       rebuildTimersPanel();
       computeNextBoss();
       loadingOverlay.style.display = 'none';
+
       console.log('✅ init completed successfully.');
     }
+
     window.addEventListener('load', () => init());
+
+    // Auto-refresh the page every 5 minutes
     setTimeout(() => {
       location.reload();
-    }, 300000); </script>
-<div class="online-users" id="onlineUsers">
-	<span id="onlineCount">
-		0
-	</span>
-	online
-</div>
+    }, 300000); // 300,000 ms = 5 minutes
+
+  </script>
+  <div id="onlineUsers" class="online-users">
+    <span id="onlineCount">0</span> online
+  </div>
 </body>
+
 </html>
