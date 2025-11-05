@@ -95,85 +95,84 @@
 			transform: scale(1.05);
 		}
 
-/* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
-.main-title {
-  font-size: 16px;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 1.3px;
-  color: #00f6ff;
-  background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow:
-    0 0 4px rgba(0, 255, 255, 0.3),
-    0 0 8px rgba(0, 255, 255, 0.15);
-  animation:
-    titleScan 6s linear infinite,
-    flicker 8s ease-in-out infinite;
-  position: relative;
-  display: block;          /* aligns perfectly with warning text */
-  margin-left: 1px;        /* matches left start with warning-text */
-  line-height: 1.1;
-  overflow: hidden;        /* prevents bleed outside */
-  z-index: 1;
-}
+		/* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
+		.main-title {
+			font-size: 16px;
+			font-family: 'Orbitron', sans-serif;
+			font-weight: 900;
+			text-transform: uppercase;
+			letter-spacing: 1.3px;
+			color: #00f6ff;
+			background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
+			background-size: 200% auto;
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			text-shadow:
+				0 0 4px rgba(0, 255, 255, 0.3),
+				0 0 8px rgba(0, 255, 255, 0.15);
+			animation:
+				titleScan 6s linear infinite,
+				flicker 8s ease-in-out infinite;
+			position: relative;
+			display: block;          /* aligns perfectly with warning text */
+			margin-left: 1px;        /* matches left start with warning-text */
+			line-height: 1.1;
+			overflow: hidden;        /* prevents bleed outside */
+			z-index: 1;
+		}
 
-/* Smooth moving gradient shimmer */
-@keyframes titleScan {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
-}
+		/* Smooth moving gradient shimmer */
+		@keyframes titleScan {
+			0% { background-position: 0% center; }
+			100% { background-position: 200% center; }
+		}
 
-/* Softer flicker for digital realism */
-@keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-  20%, 24%, 55% { opacity: 0.9; }
-}
+		/* Softer flicker for digital realism */
+		@keyframes flicker {
+			0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+			20%, 24%, 55% { opacity: 0.9; }
+		}
 
-/* Continuous underline scan line (non-looping bounce) */
-.main-title::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background: linear-gradient(90deg, rgba(0,255,255,0.6), transparent);
-  background-size: 200% auto;
-  animation: scanLineContinuous 5s linear infinite;
-  border-radius: 1px;
-  opacity: 0.4;
-}
+		/* Continuous underline scan line (non-looping bounce) */
+		.main-title::after {
+			content: "";
+			position: absolute;
+			bottom: -1px;
+			left: 0;
+			height: 2px;
+			width: 100%;
+			background: linear-gradient(90deg, rgba(0,255,255,0.6), transparent);
+			background-size: 200% auto;
+			animation: scanLineContinuous 5s linear infinite;
+			border-radius: 1px;
+			opacity: 0.4;
+		}
 
-@keyframes scanLineContinuous {
-  0% { background-position-x: 0%; }
-  100% { background-position-x: 200%; }
-}
+		@keyframes scanLineContinuous {
+			0% { background-position-x: 0%; }
+			100% { background-position-x: 200%; }
+		}
 
-/* === WARNING TEXT (aligned, modern subtle glow gradient) === */
-.warning-text {
-  font-size: 11px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
-  background-size: 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientMove 4s linear infinite;
-  text-shadow: 0 0 3px rgba(255, 120, 0, 0.35);
-  margin-left: 1px;      /* aligns with title */
-  margin-top: 2px;
-  line-height: 1.1;
-  vertical-align: middle;
-}
+		/* === WARNING TEXT (aligned, modern subtle glow gradient) === */
+		.warning-text {
+			font-size: 11px;
+			font-weight: 700;
+			background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
+			background-size: 200%;
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			animation: gradientMove 4s linear infinite;
+			text-shadow: 0 0 3px rgba(255, 120, 0, 0.35);
+			margin-left: 1px;      /* aligns with title */
+			margin-top: 2px;
+			line-height: 1.1;
+			vertical-align: middle;
+		}
 
-@keyframes gradientMove {
-  0% { background-position: 0%; }
-  100% { background-position: 200%; }
-}
-
+		@keyframes gradientMove {
+			0% { background-position: 0%; }
+			100% { background-position: 200%; }
+		}
 
     .header-controls {
       display: flex;
