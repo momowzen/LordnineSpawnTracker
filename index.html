@@ -1364,104 +1364,40 @@
       // Data + constants (FULL BOSSES)
       // -------------------------
       const BOSSES = [
-        { id: "Venatus", name: "Venatus", respawn: 60 * 60 * 10 },
-        { id: "Viorent", name: "Viorent", respawn: 60 * 60 * 10 },
-        { id: "Ego", name: "Ego", respawn: 60 * 60 * 21 },
-        {
-          id: "Clemantis",
-          name: "Clemantis",
-          weeklyRespawns: [
-            { day: 1, hour: 12, minute: 30 },
-            { day: 4, hour: 20, minute: 0 },
-          ],
-        },
-        { id: "Livera", name: "Livera", respawn: 60 * 60 * 24 },
-        { id: "Araneo", name: "Araneo", respawn: 60 * 60 * 24 },
-        { id: "Undomiel", name: "Undomiel", respawn: 60 * 60 * 24 },
-        {
-          id: "Saphirus",
-          name: "Saphirus",
-          weeklyRespawns: [
-            { day: 0, hour: 18, minute: 0 },
-            { day: 2, hour: 12, minute: 30 },
-          ],
-        },
-        {
-          id: "Neutro",
-          name: "Neutro",
-          weeklyRespawns: [
-            { day: 2, hour: 20, minute: 0 },
-            { day: 4, hour: 12, minute: 30 },
-          ],
-        },
-        { id: "Lady Dalia", name: "Lady Dalia", respawn: 60 * 60 * 18 },
-        {
-          id: "General Aquleus",
-          name: "General Aquleus",
-          respawn: 60 * 60 * 29,
-        },
-        {
-          id: "Thymele",
-          name: "Thymele",
-          weeklyRespawns: [
-            { day: 1, hour: 20, minute: 0 },
-            { day: 3, hour: 12, minute: 30 },
-          ],
-        },
-        { id: "Amentis", name: "Amentis", respawn: 60 * 60 * 29 },
-        {
-          id: "Baron Braudmore",
-          name: "Baron Braudmore",
-          respawn: 60 * 60 * 32,
-        },
-        {
-          id: "Milavy",
-          name: "Milavy",
-          weeklyRespawns: [{ day: 6, hour: 16, minute: 0 }],
-        },
-        { id: "Wannitas", name: "Wannitas", respawn: 60 * 60 * 48 },
-        { id: "Metus", name: "Metus", respawn: 60 * 60 * 48 },
-        { id: "Duplican", name: "Duplican", respawn: 60 * 60 * 48 },
-        { id: "Shuliar", name: "Shuliar", respawn: 60 * 60 * 35 },
-        {
-          id: "Ringor",
-          name: "Ringor",
-          weeklyRespawns: [{ day: 6, hour: 18, minute: 0 }],
-        },
-        {
-          id: "Roderick",
-          name: "Roderick",
-          weeklyRespawns: [{ day: 5, hour: 20, minute: 0 }],
-        },
-        { id: "Gareth", name: "Gareth", respawn: 60 * 60 * 32 },
-        { id: "Titore", name: "Titore", respawn: 60 * 60 * 37 },
-        { id: "Larba", name: "Larba", respawn: 60 * 60 * 35 },
-        { id: "Catena", name: "Catena", respawn: 60 * 60 * 35 },
-        {
-          id: "Auraq",
-          name: "Auraq",
-          weeklyRespawns: [
-            { day: 5, hour: 23, minute: 0 },
-            { day: 3, hour: 22, minute: 0 },
-          ],
-        },
-        { id: "Secreta", name: "Secreta", respawn: 60 * 60 * 62 },
-        { id: "Ordo", name: "Ordo", respawn: 60 * 60 * 62 },
-        { id: "Asta", name: "Asta", respawn: 60 * 60 * 62 },
-        { id: "Supore", name: "Supore", respawn: 60 * 60 * 62 },
-        {
-          id: "Chaiflock",
-          name: "Chaiflock",
-          weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }],
-        },
-        {
-          id: "Benji",
-          name: "Benji",
-          weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }],
-        },
-        { id: "Test Boss", name: "Test Boss", respawn: 60 * 5 + 10 },
-      ];
-
+		  { id: "Venatus", name: "Venatus", respawn: 60 * 60 * 10 },
+		  { id: "Viorent", name: "Viorent", respawn: 60 * 60 * 10 },
+		  { id: "Ego", name: "Ego", respawn: 60 * 60 * 21 },
+		  { id: "Clemantis", name: "Clemantis", weeklyRespawns: [{ day: 1, hour: 12, minute: 30 }, { day: 4, hour: 20, minute: 0 }] },
+		  { id: "Livera", name: "Livera", respawn: 60 * 60 * 24 },
+		  { id: "Araneo", name: "Araneo", respawn: 60 * 60 * 24 },
+		  { id: "Undomiel", name: "Undomiel", respawn: 60 * 60 * 24 },
+		  { id: "Saphirus", name: "Saphirus", weeklyRespawns: [{ day: 0, hour: 18, minute: 0 }, { day: 2, hour: 12, minute: 30 }] },
+		  { id: "Neutro", name: "Neutro", weeklyRespawns: [{ day: 2, hour: 20, minute: 0 }, { day: 4, hour: 12, minute: 30 }] },
+		  { id: "Lady Dalia", name: "Lady Dalia", respawn: 60 * 60 * 18 },
+		  { id: "General Aquleus", name: "General Aquleus", respawn: 60 * 60 * 29 },
+		  { id: "Thymele", name: "Thymele", weeklyRespawns: [{ day: 1, hour: 20, minute: 0 }, { day: 3, hour: 12, minute: 30 }] },
+		  { id: "Amentis", name: "Amentis", respawn: 60 * 60 * 29 },
+		  { id: "Baron Braudmore", name: "Baron Braudmore", respawn: 60 * 60 * 32 },
+		  { id: "Milavy", name: "Milavy", weeklyRespawns: [{ day: 6, hour: 16, minute: 0 }] },
+		  { id: "Wannitas", name: "Wannitas", respawn: 60 * 60 * 48 },
+		  { id: "Metus", name: "Metus", respawn: 60 * 60 * 48 },
+		  { id: "Duplican", name: "Duplican", respawn: 60 * 60 * 48 },
+		  { id: "Shuliar", name: "Shuliar", respawn: 60 * 60 * 35 },
+		  { id: "Ringor", name: "Ringor", weeklyRespawns: [{ day: 6, hour: 18, minute: 0 }] },
+		  { id: "Roderick", name: "Roderick", weeklyRespawns: [{ day: 5, hour: 20, minute: 0 }] },
+		  { id: "Gareth", name: "Gareth", respawn: 60 * 60 * 32 },
+		  { id: "Titore", name: "Titore", respawn: 60 * 60 * 37 },
+		  { id: "Larba", name: "Larba", respawn: 60 * 60 * 35 },
+		  { id: "Catena", name: "Catena", respawn: 60 * 60 * 35 },
+		  { id: "Auraq", name: "Auraq", weeklyRespawns: [{ day: 5, hour: 23, minute: 0 }, { day: 3, hour: 22, minute: 0 }] },
+		  { id: "Secreta", name: "Secreta", respawn: 60 * 60 * 62 },
+		  { id: "Ordo", name: "Ordo", respawn: 60 * 60 * 62 },
+		  { id: "Asta", name: "Asta", respawn: 60 * 60 * 62 },
+		  { id: "Supore", name: "Supore", respawn: 60 * 60 * 62 },
+		  { id: "Chaiflock", name: "Chaiflock", weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }] },
+		  { id: "Benji", name: "Benji", weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }] },
+		  //{ id: "Test Boss", name: "Test Boss", respawn: 60 * 5 + 10 },
+		];
       // -------------------------
       // DOM refs
       // -------------------------
