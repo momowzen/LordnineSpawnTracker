@@ -1385,36 +1385,26 @@
 			return new Date(new Date(timestamp).toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
 		}
 
-		/* === FIXED TIMEZONE WEEKLY RESPAWN (ASIA/TOKYO) === */
+		// --- FIXED TIMEZONE WEEKLY RESPAWN (ASIA/TOKYO) ---
 		function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-			const tz = 'Asia/Tokyo';
-
-			// Convert current time to Japan Standard Time regardless of client timezone
-			const nowJST = new Date(new Date(fromTime).toLocaleString('en-US', { timeZone: tz }));
-
+			// Always start in Japan Standard Time
+			const nowJST = toJSTDate(fromTime);
 			let soonest = null;
 
 			for (const { day, hour, minute } of respawns) {
-				// Create a base JST date
-				const target = new Date(nowJST);
-
-				// Calculate days until next respawn (0 = Sunday)
+				const t = toJSTDate(nowJST.getTime());
 				const delta = (day + 7 - nowJST.getDay()) % 7;
-				target.setDate(nowJST.getDate() + delta);
-				target.setHours(hour, minute, 0, 0);
 
-				// If the calculated time already passed this week, move to next week
-				if (target <= nowJST) {
-					target.setDate(target.getDate() + 7);
-				}
+				// Calculate target date/time purely in JST
+				t.setDate(nowJST.getDate() + delta);
+				t.setHours(hour, minute, 0, 0);
 
-				// Normalize to actual JST timestamp (important for consistent epoch)
-				const targetJST = new Date(target.toLocaleString('en-US', { timeZone: tz }));
+				if (t <= nowJST) t.setDate(t.getDate() + 7);
 
-				if (!soonest || targetJST < soonest) soonest = targetJST;
+				const tJST = toJSTDate(t.getTime());
+				if (!soonest || tJST < soonest) soonest = tJST;
 			}
 
-			// Fallback to now (rare)
 			return soonest ? soonest.getTime() : nowJST.getTime();
 		}
 
@@ -1636,65 +1626,53 @@
 					const key = `${boss.id}_${type}`;
 					const now = Date.now();
 
-					// Local dedupe guard first (fast path)
+					// Local dedupe guard (fast path)
 					const localWindow = 2 * 60 * 1000; // 2 minutes
-					if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
+					if (localNotifCache[key] && now - localNotifCache[key] < localWindow) {
 						console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
 						return;
 					}
 
-					// Reserve locally right away to prevent double local sends
 					localNotifCache[key] = now;
 					console.log(`🔒 Local reserve set for ${key}`);
 
 					const ref = doc(db, 'notifications', key);
-					const thresholdMs = 2 * 60 * 1000; // 2-minute dedupe window (server side)
+					const thresholdMs = 2 * 60 * 1000;
 
-					// Firestore transaction ensures only one client writes lastSent
+					// === Firestore transaction ===
 					const txResult = await runTransaction(db, async (tx) => {
 						const snap = await tx.get(ref);
 						const data = snap.exists() ? snap.data() : {};
 						let lastSentMs = 0;
 
-						if (data.lastSent && typeof data.lastSent.toMillis === 'function') {
-							lastSentMs = data.lastSent.toMillis();
-						} else if (typeof data.lastSent === 'number') {
-							lastSentMs = data.lastSent;
-						} else if (typeof data.lastSent === 'string') {
+						if (data.lastSent?.toMillis) lastSentMs = data.lastSent.toMillis();
+						else if (typeof data.lastSent === 'number') lastSentMs = data.lastSent;
+						else if (typeof data.lastSent === 'string') {
 							const parsed = Date.parse(data.lastSent);
 							if (!isNaN(parsed)) lastSentMs = parsed;
 						}
 
 						const nowMs = Date.now();
 						if (nowMs - lastSentMs < thresholdMs) {
-							console.log(
-								`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${toJSTDate(
-									lastSentMs
-								).toISOString()})`
-							);
-							return false; // signal: skip send
+							console.log(`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${toJSTDate(lastSentMs).toISOString()})`);
+							return false;
 						}
 
-						// Write Firestore server timestamp
 						tx.set(ref, { lastSent: serverTimestamp(), type }, { merge: true });
-
 						const endTimeMs = timers[boss.id]?.endTime || Date.now();
 						return { endTimeMs };
 					});
 
-					// If transaction returned false => recent send, so skip gracefully
 					if (!txResult) {
-						console.log(
-							`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
-						);
+						console.log(`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`);
 						return;
 					}
 
 					const tz = 'Asia/Tokyo';
 					const endTimeMs = txResult.endTimeMs || timers[boss.id]?.endTime || Date.now();
 
-					// ✅ Use toJSTDate() to ensure consistent time zone conversion
-					const utcStr = toJSTDate(endTimeMs)
+					// ✅ Display timestamps cleanly
+					const utcStr = new Date(endTimeMs)
 						.toISOString()
 						.replace('T', ' ')
 						.replace('Z', ' UTC');
@@ -1710,7 +1688,7 @@
 							minute: '2-digit',
 						}) + ' JST';
 
-					// Build embed by type with both timezones displayed
+					// === Build Discord embed ===
 					let title, color, desc;
 					switch (type) {
 						case 'killed':
@@ -1816,14 +1794,14 @@
 				const boss = BOSSES.find(b => b.id === bossId);
 				if (!boss) return;
 
-				// Convert the client's current time to JST, ensuring all players share same reference
+				// ✅ Correct JST timestamp conversion (timezone-safe)
+				// Using raw offset math to ensure consistency even if system timeZone APIs behave differently
 				const nowJST = toJSTDate(Date.now());
 				const now = nowJST.getTime();
-
 				let endTime;
 
 				if (boss.weeklyRespawns) {
-					// Use JST-based weekly respawn calculation
+					// ✅ Use JST-based weekly respawn calculation
 					endTime = getNextWeeklyRespawn(boss.weeklyRespawns, now);
 					timers[bossId] = {
 						endTime,
@@ -1833,7 +1811,7 @@
 						spawnAnnounced: false
 					};
 				} else {
-					// Fixed respawn timer (seconds → ms)
+					// ✅ Fixed respawn timer (seconds → ms)
 					endTime = now + boss.respawn * 1000;
 					timers[bossId] = {
 						endTime,
@@ -1850,7 +1828,10 @@
 				addOrUpdateTimerElement(bossId);
 				renderBossList();
 
-				console.log(`🕹️ startTimer: started ${bossId} -> ${toJSTDate(timers[bossId].endTime).toISOString()} (JST: ${toJSTDate(timers[bossId].endTime).toLocaleString('en-US', { timeZone: tz })})`);
+				const endTimeJST = toJSTDate(timers[bossId].endTime);
+				console.log(
+					`🕹️ startTimer: started ${bossId} -> ${endTimeJST.toISOString()} (JST: ${endTimeJST.toLocaleString('en-US', { timeZone: tz })})`
+				);
 
 				// === Send "killed" embed (deduped) ===
 				await sendDiscordEmbedOnce('killed', boss);
@@ -1929,22 +1910,20 @@
 				currentBossForTime = null;
 			}
 
-			cancelTimeBtn.addEventListener('click', closeTimeModal);
-
+				cancelTimeBtn.addEventListener('click', closeTimeModal);
 				saveTimeBtn.addEventListener('click', async () => { 
 					const input = killTimeInput.value;
 					if (!input || !currentBossForTime) return;
 
 					/* === Parse manual input as Asia/Tokyo time === */
-					const tz = 'Asia/Tokyo';
 					const manualLocal = new Date(input);
 					if (isNaN(manualLocal)) {
 						alert('Invalid date format.');
 						return;
 					}
 
-					// Convert input to Japan Standard Time
-					const manualTime = new Date(manualLocal.toLocaleString('en-US', { timeZone: tz }));
+					// ✅ Safe JST normalization (no double parsing)
+					const manualTime = toJSTDate(manualLocal.getTime());
 					const killedAt = manualTime.getTime();
 
 					const boss = currentBossForTime;
@@ -2621,30 +2600,6 @@
   </div>
   <!-- === PATCHES APPLIED: JST timezone enforcement, dedupe-safe Discord notifications, weekly respawn === -->
   <script>
-   // --- JST ENFORCED PATCHES ---
-	// getNextWeeklyRespawn with Asia/Tokyo timezone enforcement
-	function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-		// Always start in Japan Standard Time
-		const nowJST = toJSTDate(fromTime);
-		let soonest = null;
-
-		for (const { day, hour, minute } of respawns) {
-			const t = toJSTDate(nowJST);
-			const delta = (day + 7 - nowJST.getDay()) % 7;
-
-			// Calculate target date/time purely in JST
-			t.setDate(nowJST.getDate() + delta);
-			t.setHours(hour, minute, 0, 0);
-
-			if (t <= nowJST) t.setDate(t.getDate() + 7);
-
-			const tJST = toJSTDate(t);
-			if (!soonest || tJST < soonest) soonest = tJST;
-		}
-
-		return soonest ? soonest.getTime() : nowJST.getTime();
-	}
-
 
 // --- Manual killTimeInput patch ---
 document.getElementById('saveTimeBtn')?.addEventListener('click', async () => {
