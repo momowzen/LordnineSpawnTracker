@@ -1432,7 +1432,6 @@
       storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
       messagingSenderId: "644000692891",
       appId: "1:644000692891:web:224bca1478655a43c0243e",
-      databaseURL: "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
     };
 
     const app = initializeApp(firebaseConfig);
@@ -1607,91 +1606,135 @@
       }
     }
 
-    // === patched sendDiscordEmbedOnce: safe-handling when transaction returns false ===
-    async function sendDiscordEmbedOnce(type, boss) {
-      try {
-        if (!boss || !type) return;
+		// === patched sendDiscordEmbedOnce: normalized key + endTimeMs dedupe ===
+		async function sendDiscordEmbedOnce(type, boss) {
+			try {
+				if (!boss || !type) return;
 
-        const key = `${boss.id}_${type}`;
-        const now = Date.now();
+				// 🔹 Normalize Firestore key (handles spaces, punctuation)
+				const safeId = encodeURIComponent(boss.id.trim());
+				const key = `${safeId}_${type}`;
 
-        // Local dedupe guard first (fast path)
-        const localWindow = 2 * 60 * 1000; // 2 minutes
-        if (localNotifCache[key] && (now - localNotifCache[key] < localWindow)) {
-          console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
-          return;
-        }
+				const now = Date.now();
+				const localWindow = 2 * 60 * 1000; // 2 min client dedupe
 
-        // Reserve locally right away to prevent double local sends
-        localNotifCache[key] = now;
-        console.log(`🔒 Local reserve set for ${key}`);
+				// 🔹 Local dedupe guard (fast path)
+				if (localNotifCache[key] && now - localNotifCache[key] < localWindow) {
+					console.log(`🛑 Locally skipped duplicate ${type} notification for ${boss.name}`);
+					return;
+				}
 
-        const ref = doc(db, 'notifications', key);
-        const thresholdMs = 2 * 60 * 1000; // 2-minute dedupe window (server side)
+				// 🔒 Reserve locally
+				localNotifCache[key] = now;
+				console.log(`🔒 Local reserve set for ${key}`);
 
-        // Firestore transaction ensures only one client writes lastSent
-        const txResult = await runTransaction(db, async (tx) => {
-          const snap = await tx.get(ref);
-          const data = snap.exists() ? snap.data() : {};
-          // support Firestore Timestamp (.toMillis), numeric ms, or ISO string
-          let lastSentMs = 0;
-          if (data.lastSent && typeof data.lastSent.toMillis === 'function') {
-            lastSentMs = data.lastSent.toMillis();
-          } else if (typeof data.lastSent === 'number') {
-            lastSentMs = data.lastSent;
-          } else if (typeof data.lastSent === 'string') {
-            const parsed = Date.parse(data.lastSent);
-            if (!isNaN(parsed)) lastSentMs = parsed;
-          }
+				const ref = doc(db, "notifications", key);
+				const thresholdMs = 2 * 60 * 1000; // server dedupe window
 
-          const nowMs = Date.now();
-          if (nowMs - lastSentMs < thresholdMs) {
-            console.log(`⏸️ Firestore indicates recent send for ${key}, skipping (lastSent=${new Date(lastSentMs).toISOString()})`);
-            return false; // signal: skip send
-          }
+				const txResult = await runTransaction(db, async (tx) => {
+					const snap = await tx.get(ref);
+					const data = snap.exists() ? snap.data() : {};
 
-          // write Firestore server timestamp
-          tx.set(ref, { lastSent: serverTimestamp() }, { merge: true });
-          const endTimeMs = timers[boss.id]?.endTime || Date.now();
-          return { endTimeMs };
-        });
+					// Normalize timestamp formats
+					let lastSentMs = 0;
+					if (data.lastSent && typeof data.lastSent.toMillis === "function") {
+						lastSentMs = data.lastSent.toMillis();
+					} else if (typeof data.lastSent === "number") {
+						lastSentMs = data.lastSent;
+					} else if (typeof data.lastSent === "string") {
+						const parsed = Date.parse(data.lastSent);
+						if (!isNaN(parsed)) lastSentMs = parsed;
+					}
 
-        // If transaction returned false => recent send, so skip gracefully
-        if (!txResult) {
-          console.log(`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`);
-          return;
-        }
+					const lastEndTimeMs = data.lastEndTimeMs || 0;
+					const thisEndTimeMs = timers[boss.id]?.endTime || 0;
+					const nowMs = Date.now();
 
-        const formattedTime = formatShortDateTime(txResult.endTimeMs || (timers[boss.id]?.endTime || Date.now()));
+					// 🔹 Only skip if (a) last send < 2min ago AND (b) same spawn cycle
+					const recentlySent =
+						nowMs - lastSentMs < thresholdMs && lastEndTimeMs === thisEndTimeMs;
 
-        // Build embed by type
-        let embed;
-        switch (type) {
-          case 'killed':
-            embed = buildEmbed(`💀 ${boss.name} defeated!`, `Next respawn: ${formattedTime}`, 0xff3333);
-            break;
-          case 'soon':
-            embed = buildEmbed(`⚠️ ${boss.name} will respawn within 5 minutes!`, `Next respawn: ${formattedTime}`, 0xffcc00);
-            break;
-          case 'spawn':
-            embed = buildEmbed(`⚔️ ${boss.name} has spawned!`, `It’s time to hunt!`, 0xb266ff);
-            break;
-          case 'manual':
-            embed = buildEmbed(`⏰ ${boss.name} manual time set`, `Next respawn: ${formattedTime}`, 0x3399ff);
-            break;
-          default:
-            console.warn(`⚠️ Unknown notification type: ${type}`);
-            return;
-        }
+					if (recentlySent) {
+						console.log(
+							`⏸️ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
+						);
+						return false;
+					}
 
-        // Final send
-        await sendDiscordEmbed(embed);
-        console.log(`✅ Sent ${type} notification for ${boss.name}`);
-      } catch (e) {
-        if (e?.code === 'ABORTED') { console.warn('ℹ️ Transaction aborted (expected):', e); return; }
-        console.warn('⚠️ sendDiscordEmbedOnce error:', e);
-      }
-    }
+					// 🔹 Write both lastSent + lastEndTimeMs atomically
+					tx.set(
+						ref,
+						{
+							lastSent: serverTimestamp(),
+							lastEndTimeMs: thisEndTimeMs,
+							bossId: boss.id,
+							type,
+						},
+						{ merge: true }
+					);
+
+					return { endTimeMs: thisEndTimeMs };
+				});
+
+				if (!txResult) {
+					console.log(
+						`⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
+					);
+					return;
+				}
+
+				const formattedTime = formatShortDateTime(
+					txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()
+				);
+
+				// 🔹 Build appropriate embed
+				let embed;
+				switch (type) {
+					case "killed":
+						embed = buildEmbed(
+							`💀 ${boss.name} has been defeated!`,
+							`Next respawn: ${formattedTime}`,
+							0xff3333
+						);
+						break;
+					case "soon":
+						embed = buildEmbed(
+							`⚠️ ${boss.name} will respawn soon!`,
+							`Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
+							0xffcc00
+						);
+						break;
+					case "spawn":
+						embed = buildEmbed(
+							`⚔️ ${boss.name} has spawned!`,
+							`It’s time to hunt!`,
+							0xb266ff
+						);
+						break;
+					case "manual":
+						embed = buildEmbed(
+							`⏰ ${boss.name} manual time set`,
+							`Next respawn: ${formattedTime}`,
+							0x3399ff
+						);
+						break;
+					default:
+						console.warn(`⚠️ Unknown notification type: ${type}`);
+						return;
+				}
+
+				// 🔹 Final Discord send
+				await sendDiscordEmbed(embed);
+				console.log(`✅ Sent ${type} notification for ${boss.name}`);
+			} catch (e) {
+				if (e?.code === "ABORTED") {
+					console.warn("ℹ️ Transaction aborted (expected):", e);
+					return;
+				}
+				console.warn("⚠️ sendDiscordEmbedOnce error:", e);
+				delete localNotifCache[key]; // allow retry if failed
+			}
+		}
 
     function buildEmbed(title, description, colorHex) {
       return {
@@ -2469,5 +2512,4 @@
     <span id="onlineCount">0</span> online
   </div>
 </body>
-
 </html>
