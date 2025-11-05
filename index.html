@@ -1938,12 +1938,9 @@
 				node.setAttribute('data-id', b.id);
 
 				// === VISUAL STATES ===
-				// Active timer → SPAWNING effect
-				// Cooldown → no glow + dimmed card
-				// Default → normal bright accent
+				// Only show SPAWNING effect when timer is active (not cooldown)
 				let nameClass = 'name';
-				if (hasActiveTimer) nameClass += ' dead';
-				node.style.opacity = inCooldown ? '0.3' : '1';
+				if (hasActiveTimer && !inCooldown) nameClass += ' dead';
 
 				node.innerHTML = `
 					<div class="meta">
@@ -1961,7 +1958,7 @@
 				bossListEl.appendChild(node);
 			}
 
-			// Rebind action buttons after rebuild
+			// Rebind buttons after rebuild
 			bossListEl.querySelectorAll('.kbtn').forEach(btn => {
 				btn.addEventListener('click', e => {
 					const id = e.currentTarget.dataset.id;
