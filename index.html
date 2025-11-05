@@ -2452,79 +2452,133 @@
         ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
       }
 
-      // Main periodic update logic (tick)
-      async function tickUpdate() {
-        const now = Date.now();
-        const savePromises = [];
+			// == MAIN TICKUPDATE == //
+			async function tickUpdate() {
+				const now = Date.now();
+				const savePromises = [];
 
-        for (const [id, info] of Object.entries(timers)) {
-          const boss = BOSSES.find((b) => b.id === id);
-          if (!boss) continue;
+				for (const [id, info] of Object.entries(timers)) {
+					const boss = BOSSES.find((b) => b.id === id);
+					if (!boss) continue;
 
-          const remainingMs = info.endTime - now;
+					// 👇 Determine current phase (active timer vs cooldown)
+					const activeEndTime = info.cooldownUntil || info.endTime;
+					const remainingMs = activeEndTime - now;
 
-          // "Soon" warning (5 min before respawn)
-          if (remainingMs <= 5 * 60 * 1000 && !info.notifiedSoon) {
-            console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
-            info.notifiedSoon = true;
-            // deduped write + deduped send
-            savePromises.push(saveTimerToFirestoreOnce(id));
-            savePromises.push(
-              (async () => await sendDiscordEmbedOnce("soon", boss))()
-            );
-            continue;
-          }
+					const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
+					const nameElem = bossCard?.querySelector(".name");
 
-          // Spawn announcement
-          if (remainingMs <= 0 && !info.spawnAnnounced) {
-            console.log(`🎉 spawn: ${id} reached spawn, announcing`);
-            info.spawnAnnounced = true;
-            savePromises.push(saveTimerToFirestoreOnce(id));
-            savePromises.push(
-              (async () => await sendDiscordEmbedOnce("spawn", boss))()
-            );
-            continue;
-          }
+					// --- (0) Handle cooldown visuals & skip logic during cooldown ---
+					if (info.cooldownUntil && now < info.cooldownUntil) {
+						// Ensure boss name shows alive look (no .dead)
+						if (nameElem && nameElem.classList.contains("dead")) {
+							nameElem.classList.remove("dead");
+						}
+						continue; // Skip further processing while cooldown active
+					}
 
-          // Advance timer to next cycle when expired (after spawn handling)
-          if (remainingMs <= 0) {
-            let nextTime;
-            if (boss.weeklyRespawns) {
-              nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-              while (nextTime <= now) nextTime += 7 * 24 * 60 * 60 * 1000;
-            } else {
-              nextTime = now + boss.respawn * 1000;
-            }
+					// --- (1) Apply .dead automatically when timer is running ---
+					if (remainingMs > 0 && !info.cooldownUntil) {
+						if (nameElem && !nameElem.classList.contains("dead")) {
+							nameElem.classList.add("dead");
+						}
+					}
 
-            timers[id] = {
-              endTime: nextTime,
-              startedAt: now,
-              weekly: !!boss.weeklyRespawns,
-              notifiedSoon: false,
-              spawnAnnounced: false,
-            };
+					// --- (2) Soon warning (5 minutes before spawn) ---
+					if (
+						remainingMs <= 5 * 60 * 1000 &&
+						remainingMs > 0 &&
+						!info.notifiedSoon &&
+						!info.cooldownUntil
+					) {
+						console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
+						info.notifiedSoon = true;
+						savePromises.push(saveTimerToFirestoreOnce(id));
+						savePromises.push(
+							(async () => await sendDiscordEmbedOnce("soon", boss))()
+						);
+					}
 
-            savePromises.push(saveTimerToFirestoreOnce(id));
-            addOrUpdateTimerElement(id);
-            continue;
-          }
-        }
+					// --- (3) Spawn announcement when timer reaches 0 ---
+					if (remainingMs <= 0 && !info.spawnAnnounced && !info.cooldownUntil) {
+						console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+						info.spawnAnnounced = true;
+						savePromises.push(saveTimerToFirestoreOnce(id));
+						savePromises.push(
+							(async () => await sendDiscordEmbedOnce("spawn", boss))()
+						);
+					}
 
-        if (savePromises.length) {
-          try {
-            await Promise.all(savePromises);
-            console.log(
-              `💾 tickUpdate: completed ${savePromises.length} save/send ops`
-            );
-          } catch (e) {
-            console.warn("⚠️ tickUpdate savePromises error", e);
-          }
-        }
+					// --- (4) Start 5-minute cooldown when reaching 0 ---
+					if (remainingMs <= 0 && !info.cooldownUntil) {
+						info.cooldownUntil = now + 5 * 60 * 1000;
+						console.log(
+							`⏳ ${boss.name} entering 5-minute cooldown until ${new Date(
+								info.cooldownUntil
+							).toLocaleTimeString()}`
+						);
 
-        // UI updates
-        computeNextBoss();
-        sortActiveTimersSmoothly();
-      }
+						// 🟢 Visual: back to normal white glow during cooldown
+						if (nameElem) nameElem.classList.remove("dead");
+
+						// 💾 Save cooldown state to Firestore
+						savePromises.push(saveTimerToFirestoreOnce(id));
+						continue;
+					}
+
+					// --- (5) Cooldown ended — restart timer automatically ---
+					if (info.cooldownUntil && now >= info.cooldownUntil) {
+						console.log(`✅ ${boss.name} cooldown ended — restarting cycle...`);
+
+						const nowLater = Date.now();
+						let nextTime;
+
+						if (boss.weeklyRespawns) {
+							nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, nowLater + 1);
+							while (nextTime <= nowLater)
+								nextTime += 7 * 24 * 60 * 60 * 1000;
+						} else {
+							nextTime = nowLater + boss.respawn * 1000;
+						}
+
+						// ♻️ Reset timer and clear cooldown
+						timers[id] = {
+							endTime: nextTime,
+							startedAt: nowLater,
+							weekly: !!boss.weeklyRespawns,
+							notifiedSoon: false,
+							spawnAnnounced: false,
+							cooldownUntil: null,
+						};
+
+						// Apply .dead class again (timer active)
+						if (nameElem && !nameElem.classList.contains("dead")) {
+							nameElem.classList.add("dead");
+						}
+
+						await saveTimerToFirestoreOnce(id);
+						addOrUpdateTimerElement(id);
+						renderBossList();
+
+						console.log(`🔁 ${boss.name} timer restarted after cooldown.`);
+						continue;
+					}
+				}
+
+				// --- (6) Commit pending Firestore writes ---
+				if (savePromises.length) {
+					try {
+						await Promise.all(savePromises);
+						console.log(`💾 tickUpdate: completed ${savePromises.length} save ops`);
+					} catch (e) {
+						console.warn("⚠️ tickUpdate savePromises error", e);
+					}
+				}
+
+				// --- (7) Update UI layout ---
+				computeNextBoss();
+				sortActiveTimersSmoothly();
+			}
 
       // Optional lightweight visual update every second (no Firestore writes)
       function updateCountdownDisplay() {
@@ -2708,112 +2762,142 @@
         await clearWebhookInFirestore();
       });
 
-      // -------------------------
-      // Init sequence
-      // -------------------------
-      async function init() {
-        loadingOverlay.style.display = "flex";
+			// -------------------------
+			// Init sequence
+			// -------------------------
+			async function init() {
+				loadingOverlay.style.display = "flex";
 
-        // ✅ Wait until the DOM is fully loaded
-        await new Promise((resolve) => {
-          if (
-            document.readyState === "complete" ||
-            document.readyState === "interactive"
-          )
-            resolve();
-          else
-            document.addEventListener("DOMContentLoaded", resolve, {
-              once: true,
-            });
-        });
+				// ✅ Wait until the DOM is fully loaded
+				await new Promise((resolve) => {
+					if (
+						document.readyState === "complete" ||
+						document.readyState === "interactive"
+					)
+						resolve();
+					else
+						document.addEventListener("DOMContentLoaded", resolve, { once: true });
+				});
 
-        bossListEl.innerHTML = "";
-        timersEl.innerHTML = "";
-        nextBossNameEl.textContent = "";
-        nextTimeEl.textContent = "";
+				bossListEl.innerHTML = "";
+				timersEl.innerHTML = "";
+				nextBossNameEl.textContent = "";
+				nextTimeEl.textContent = "";
 
-        try {
-          // ✅ Firestore real-time listener
-          const docRef = doc(db, "timers", "global");
-          onSnapshot(docRef, async (snap) => {
-            // ✅ Auto-create if the timers document doesn’t exist
-            if (!snap.exists()) {
-              console.log(
-                "ℹ️ No Firestore timers document found. Creating empty one..."
-              );
-              await setDoc(docRef, { timers: {} }, { merge: true });
-              return;
-            }
+				try {
+					// ✅ Firestore real-time listener (safe merge that respects cooldowns)
+					const docRef = doc(db, "timers", "global");
+					onSnapshot(docRef, async (snap) => {
+						// ✅ Auto-create if the timers document doesn’t exist
+						if (!snap.exists()) {
+							console.log("ℹ️ No Firestore timers document found. Creating empty one...");
+							await setDoc(docRef, { timers: {} }, { merge: true });
+							return;
+						}
 
-            // ✅ Sync local state with Firestore data
-            const newTimers = snap.data().timers || {};
-            timers = newTimers;
+						const remoteTimers = snap.data().timers || {};
+						const now = Date.now();
 
-            rebuildTimersPanel();
-            renderBossList();
-            computeNextBoss();
+						// 🔒 Merge remote timers into local safely
+						for (const [id, remoteInfo] of Object.entries(remoteTimers)) {
+							const localInfo = timers[id] || {};
+							const boss = BOSSES.find((b) => b.id === id);
+							if (!boss) continue;
 
-            console.log("🔄 Timers auto-updated from Firestore:", timers);
-          });
-        } catch (e) {
-          console.warn("Firestore load failed", e);
-        }
+							// ✅ If local cooldown is active, keep it — don’t overwrite
+							if (localInfo.cooldownUntil && localInfo.cooldownUntil > now) {
+								console.log(`⏸️ ${boss.name} in local cooldown — preserving local timer.`);
+								remoteTimers[id] = {
+									...remoteInfo,
+									cooldownUntil: localInfo.cooldownUntil,
+								};
+								continue;
+							}
 
-        // ✅ Normalize expired timers so everything is forward-looking
-        const now = Date.now();
-        let timersChanged = false;
+							// ✅ If remote has cooldown, preserve it too
+							if (remoteInfo.cooldownUntil && remoteInfo.cooldownUntil > now) {
+								console.log(`💾 ${boss.name} cooldown synced from Firestore.`);
+							}
+						}
 
-        for (const [id, info] of Object.entries(timers)) {
-          const boss = BOSSES.find((b) => b.id === id);
-          if (!boss || !info || !info.endTime) continue;
+						timers = remoteTimers;
 
-          if (info.endTime <= now) {
-            if (boss.weeklyRespawns) {
-              const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-              timers[id] = {
-                endTime: next,
-                startedAt: now,
-                weekly: true,
-                notifiedSoon: false,
-                spawnAnnounced: false,
-              };
-              timersChanged = true;
-            } else if (boss.respawn) {
-              const respMs = boss.respawn * 1000;
-              const cycles = Math.floor((now - info.endTime) / respMs) + 1;
-              const newEnd = info.endTime + cycles * respMs;
-              timers[id] = {
-                endTime: newEnd,
-                startedAt: now,
-                notifiedSoon: false,
-                spawnAnnounced: false,
-              };
-              timersChanged = true;
-            }
-          }
-        }
+						rebuildTimersPanel();
+						renderBossList();
+						computeNextBoss();
 
-        // ✅ Save normalized timers if any changed
-        if (timersChanged) {
-          try {
-            await saveTimers();
-            console.log("🔁 Timers normalized and saved after init.");
-          } catch (err) {
-            console.error("❌ Failed to save normalized timers:", err);
-          }
-        }
+						console.log("🔄 Timers merged from Firestore:", timers);
+					});
+				} catch (e) {
+					console.warn("Firestore load failed", e);
+				}
 
-        // ✅ Ensure Discord webhook is ready before any future notification
-        await autoLoadWebhook();
+				// ✅ Normalize expired timers so everything is forward-looking (safe version)
+				const now = Date.now();
+				let timersChanged = false;
 
-        firebaseLoaded = true;
-        renderBossList();
-        rebuildTimersPanel();
-        computeNextBoss();
-        loadingOverlay.style.display = "none";
+				for (const [id, info] of Object.entries(timers)) {
+					const boss = BOSSES.find((b) => b.id === id);
+					if (!boss || !info || !info.endTime) continue;
 
-        console.log("✅ init completed successfully.");
-      }
+					// 🚫 Skip normalization if cooldown is active
+					if (info.cooldownUntil && info.cooldownUntil > now) {
+						console.log(`⏸️ ${boss.name} still in cooldown — skipping normalization.`);
+						continue;
+					}
+
+					// 🧭 Normal advance logic for expired timers only
+					if (info.endTime <= now) {
+						if (boss.weeklyRespawns) {
+							const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+							timers[id] = {
+								endTime: next,
+								startedAt: now,
+								weekly: true,
+								notifiedSoon: false,
+								spawnAnnounced: false,
+								cooldownUntil: null,
+							};
+							timersChanged = true;
+							console.log(`🧭 ${boss.name} normalized to next weekly cycle.`);
+						} else if (boss.respawn) {
+							const respMs = boss.respawn * 1000;
+							const cycles = Math.floor((now - info.endTime) / respMs) + 1;
+							const newEnd = info.endTime + cycles * respMs;
+							timers[id] = {
+								endTime: newEnd,
+								startedAt: now,
+								notifiedSoon: false,
+								spawnAnnounced: false,
+								cooldownUntil: null,
+							};
+							timersChanged = true;
+							console.log(`🧭 ${boss.name} normalized to next respawn cycle.`);
+						}
+					}
+				}
+
+				// ✅ Save normalized timers if any changed
+				if (timersChanged) {
+					try {
+						await saveTimers();
+						console.log("🔁 Timers normalized and saved after init.");
+					} catch (err) {
+						console.error("❌ Failed to save normalized timers:", err);
+					}
+				}
+
+				// ✅ Ensure Discord webhook is ready before any future notification
+				await autoLoadWebhook();
+
+				firebaseLoaded = true;
+				renderBossList();
+				rebuildTimersPanel();
+				computeNextBoss();
+				loadingOverlay.style.display = "none";
+
+				console.log("✅ init completed successfully.");
+			}
 
       window.addEventListener("load", () => init());
 
