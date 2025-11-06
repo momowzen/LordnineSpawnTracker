@@ -1195,42 +1195,313 @@
         scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
       }
 
-      /* --- Online Users Indicator --- */
-      .online-users {
-        position: fixed;
-        bottom: 14px;
-        right: 16px;
-        padding: 6px 10px;
-        font-family: Consolas, monospace;
-        font-size: 12px;
-        color: var(--accent);
-        background: rgba(0, 240, 255, 0.06);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 8px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        animation: fadeInUsers 0.5s ease-out;
-        z-index: 3000;
-      }
+			/* --- Online Users Indicator --- */
+			.online-users {
+				position: fixed;
+				bottom: 14px;
+				right: 16px;
+				padding: 6px 10px;
+				font-family: Consolas, monospace;
+				font-size: 12px;
+				color: var(--accent);
+				background: rgba(0, 240, 255, 0.06);
+				border: 1px solid rgba(0, 240, 255, 0.2);
+				border-radius: 8px;
+				backdrop-filter: blur(8px);
+				box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+				text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+				transition: opacity 0.3s ease, transform 0.3s ease;
+				animation: fadeInUsers 0.5s ease-out;
+				z-index: 3000;
+				display: inline-flex;
+				align-items: center;
+				gap: 4px;
+			}
 
-      @keyframes fadeInUsers {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
+			/* 🟢 Default icon */
+			.online-users::before {
+				content: "🟢";
+				margin-right: 4px;
+				transition: transform 0.3s ease, opacity 0.3s ease;
+			}
 
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+			/* 💬 replaces 🟢 when there’s a new chat message */
+			.online-users.notify::before {
+				content: "💬";
+				color: #ff4d4d;
+				text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
+					0 0 12px rgba(255, 0, 0, 0.7),
+					0 0 18px rgba(255, 0, 0, 0.5);
+				animation: pulseNotify 1.4s infinite ease-in-out;
+			}
 
-      .online-users:hover {
-        box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
-        transform: translateY(-1px);
-      }
+			/* Count text (only number updates via JS) */
+			.online-users .count {
+				font-weight: 600;
+			}
+
+			/* Hover effect */
+			.online-users:hover {
+				box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+				transform: translateY(-1px);
+			}
+
+			/* Fade-in animation */
+			@keyframes fadeInUsers {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			/* 💬 red pulse animation */
+			@keyframes pulseNotify {
+				0%, 100% {
+					transform: scale(1);
+					opacity: 0.9;
+					text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
+						0 0 12px rgba(255, 0, 0, 0.7),
+						0 0 18px rgba(255, 0, 0, 0.5);
+				}
+				50% {
+					transform: scale(1.3);
+					opacity: 1;
+					text-shadow: 0 0 10px rgba(255, 100, 100, 1),
+						0 0 20px rgba(255, 0, 0, 0.8),
+						0 0 30px rgba(255, 0, 0, 0.5);
+				}
+			}
+
+			/* --- Tooltip: Softer Red Chat Bubble --- */
+			.online-users::after {
+				content: "";
+				position: absolute;
+				top: -36px; /* slightly higher */
+				right: 50%;
+				transform: translateX(50%);
+				background: transparent;
+				color: #fff;
+				font-size: 11px;
+				font-family: Consolas, monospace;
+				padding: 0;
+				border-radius: 0;
+				opacity: 0;
+				pointer-events: none;
+				transition: opacity 0.3s ease, transform 0.3s ease;
+			}
+
+			/* Show tooltip when new message arrives */
+			.online-users.notify::after {
+				content: "New message";
+				position: absolute;
+				top: -36px;
+				right: 50%;
+				transform: translateX(50%) translateY(-3px);
+				background: rgba(255, 70, 70, 0.25); /* ✨ translucent red */
+				border: 1px solid rgba(255, 90, 90, 0.4);
+				backdrop-filter: blur(6px);
+				padding: 4px 9px;
+				border-radius: 14px;
+				box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
+							0 0 20px rgba(255, 0, 0, 0.2);
+				opacity: 1;
+				animation: tooltipPulse 1.4s infinite ease-in-out;
+			}
+
+			/* Chat bubble tail (now visible and glowy) */
+			.online-users.notify::after::before {
+				content: "";
+				position: absolute;
+				bottom: -6px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 0;
+				height: 0;
+				border-left: 6px solid transparent;
+				border-right: 6px solid transparent;
+				border-top: 6px solid rgba(255, 90, 90, 0.4);
+				filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.5));
+			}
+
+			/* Tooltip glow animation */
+			@keyframes tooltipPulse {
+				0%, 100% {
+					box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
+								0 0 18px rgba(255, 0, 0, 0.25);
+				}
+				50% {
+					box-shadow: 0 0 14px rgba(255, 100, 100, 0.5),
+								0 0 26px rgba(255, 0, 0, 0.35);
+				}
+			}
+		
+			/* --- Chat Box Styling --- */
+			.chat-box {
+				position: fixed;
+				bottom: 50px;
+				right: 16px;
+				width: 300px;
+				height: 350px;
+				background: rgba(0, 10, 20, 0.95);
+				border: 1px solid rgba(0, 240, 255, 0.25);
+				border-radius: 10px;
+				box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
+				transform: translateY(120%);
+				opacity: 0;
+				transition: all 0.4s ease-in-out;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+				z-index: 4000;
+				backdrop-filter: blur(8px);
+			}
+
+			/* Open animation */
+			.chat-box.active {
+				transform: translateY(0);
+				opacity: 1;
+				box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+			}
+
+			/* Fully hidden (when minimized) */
+			.chat-box.hidden {
+				transform: translateY(160%);
+				opacity: 0;
+				pointer-events: none;
+				transition: all 0.5s ease-in-out;
+			}
+
+			/* --- Chat Header --- */
+			.chat-header {
+				position: relative;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-family: "Orbitron", sans-serif;
+				background: rgba(0, 240, 255, 0.1);
+				color: var(--accent);
+				padding: 8px 10px;
+				text-align: center;
+				font-size: 14px;
+				letter-spacing: 1px;
+				border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+				text-shadow: 0 0 6px rgba(0, 240, 255, 0.5);
+				box-shadow: 0 2px 8px rgba(0, 240, 255, 0.1);
+			}
+
+			/* --- Minimize Button --- */
+			.chat-minimize-btn {
+				position: absolute;
+				right: 8px;
+				top: 4px;
+				background: rgba(0, 240, 255, 0.05);
+				border: 1px solid rgba(0, 240, 255, 0.25);
+				color: var(--accent);
+				font-size: 16px;
+				line-height: 1;
+				cursor: pointer;
+				padding: 2px 6px;
+				border-radius: 6px;
+				transition: all 0.25s ease;
+				text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+				box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+				backdrop-filter: blur(6px);
+			}
+
+			.chat-minimize-btn:hover {
+				color: #fff;
+				background: rgba(0, 240, 255, 0.15);
+				box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+				transform: scale(1.1);
+			}
+
+			/* --- Messages --- */
+			.chat-messages {
+				flex: 1;
+				padding: 8px;
+				overflow-y: auto;
+				font-size: 12px;
+				line-height: 1.4;
+				color: var(--text);
+				scrollbar-width: thin;
+				scrollbar-color: rgba(0, 240, 255, 0.3) rgba(0, 240, 255, 0.05);
+			}
+
+			/* Custom scrollbar (Chrome / Edge / Safari) */
+			.chat-messages::-webkit-scrollbar {
+				width: 8px;
+			}
+			.chat-messages::-webkit-scrollbar-track {
+				background: rgba(0, 240, 255, 0.05);
+				border-radius: 10px;
+			}
+			.chat-messages::-webkit-scrollbar-thumb {
+				background: linear-gradient(180deg, rgba(0, 240, 255, 0.5), rgba(0, 180, 255, 0.8));
+				border-radius: 10px;
+				box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+				transition: background 0.3s ease, box-shadow 0.3s ease;
+			}
+			.chat-messages::-webkit-scrollbar-thumb:hover {
+				background: linear-gradient(180deg, rgba(0, 255, 255, 0.8), rgba(0, 200, 255, 1));
+				box-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+			}
+
+			/* --- Each Message --- */
+			.chat-message {
+				margin-bottom: 6px;
+				word-wrap: break-word;
+			}
+
+			/* --- Input Area --- */
+			.chat-input-area {
+				display: flex;
+				padding: 6px;
+				gap: 6px;
+				border-top: 1px solid rgba(0, 240, 255, 0.2);
+				background: rgba(0, 240, 255, 0.03);
+				backdrop-filter: blur(6px);
+			}
+
+			/* Input field */
+			.chat-input-area input {
+				flex: 1;
+				padding: 6px 8px;
+				background: rgba(0, 240, 255, 0.05);
+				border: 1px solid rgba(0, 240, 255, 0.2);
+				border-radius: 6px;
+				color: var(--text);
+				outline: none;
+				transition: all 0.3s ease;
+			}
+			.chat-input-area input:focus {
+				border-color: rgba(0, 240, 255, 0.6);
+				box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+				background: rgba(0, 240, 255, 0.08);
+			}
+
+			/* Send button */
+			.chat-input-area button {
+				background: rgba(0, 240, 255, 0.15);
+				border: 1px solid rgba(0, 240, 255, 0.4);
+				color: var(--accent);
+				border-radius: 6px;
+				cursor: pointer;
+				padding: 0 10px;
+				font-weight: 600;
+				text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+				transition: all 0.25s ease;
+			}
+			.chat-input-area button:hover {
+				background: rgba(0, 240, 255, 0.3);
+				box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+				color: #fff;
+				transform: translateY(-1px);
+			}
+
     </style>
   </head>
 
@@ -1541,26 +1812,6 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const rtdb = getDatabase(app);
-
-      // === Presence & Global Sync Management ===
-
-      // ✅ Online presence tracking (Realtime Database)
-      const presenceRef = ref(rtdb, "presence");
-      const myConnection = push(presenceRef);
-      set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
-      onDisconnect(myConnection).remove();
-
-      onValue(presenceRef, (snap) => {
-        const count = snap.size || snap.numChildren();
-        let el = document.getElementById("onlineCount");
-        if (!el) {
-          el = document.createElement("div");
-          el.id = "onlineCount";
-          el.className = "online-users";
-          document.body.appendChild(el);
-        }
-        el.textContent = `🟢 ${count}`;
-      });
 
       // ✅ Firestore-based Global Synchronization
       let lastTriggeredBySelf = null;
@@ -2837,13 +3088,229 @@
 
       window.addEventListener("load", () => init());
 
+			// ✅ Online presence tracking (Realtime Database)
+			const presenceRef = ref(rtdb, "presence");
+			const myConnection = push(presenceRef);
+			set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
+			onDisconnect(myConnection).remove();
+
+			// ✅ Create or update the online users badge (🟢 icon now handled by CSS)
+			onValue(presenceRef, (snap) => {
+				const count = snap.size || snap.numChildren();
+				let el = document.getElementById("onlineCount");
+
+				if (!el) {
+					el = document.createElement("div");
+					el.id = "onlineCount";
+					el.classList.add("online-users");
+					// 🟢 icon handled via CSS ::before — only insert count span here
+					el.innerHTML = `<span class="count">${count}</span>`;
+					document.body.appendChild(el);
+				} else {
+					const countSpan = el.querySelector(".count");
+					if (countSpan && countSpan.textContent !== String(count)) {
+						countSpan.textContent = count;
+					}
+				}
+			});
+
+			// === GLOBAL CHAT FUNCTIONALITY ===
+			import {
+				ref as dbRef,
+				push as dbPush,
+				onChildAdded,
+				get as dbGet,
+			} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+			const chatBox = document.getElementById("chatBox");
+			const chatMessages = document.getElementById("chatMessages");
+			const chatInput = document.getElementById("chatInput");
+			const chatSend = document.getElementById("chatSend");
+			const chatMinimize = document.getElementById("chatMinimize");
+
+			let lastSeenTimestamp = 0; // used to detect truly new messages
+			let initialLoadComplete = false;
+
+			// 🧠 Generate random boss-based username (new each reload)
+			function generateRandomUsername() {
+				const prefixes = [
+					"The", "Dark", "Crimson", "Iron", "Shadow", "Arcane", "Silent", "Ancient",
+					"Eternal", "Solar", "Lunar", "Neon", "Fallen", "Cyber", "Storm", "Infernal",
+					"Frozen", "Radiant", "Cursed", "Sacred", "Phantom", "Celestial", "Venomous",
+					"Emerald", "Golden", "Azure", "Scarlet", "Mystic", "Quantum", "Obsidian",
+					"Violet", "Titan", "Echo", "Prime", "Nova", "Omega", "Spectral", "Astral",
+					"Dire", "Eclipse", "Wraith", "Void", "Ironclad", "Lucent", "Abyssal",
+				];
+
+				const boss = BOSSES[Math.floor(Math.random() * BOSSES.length)];
+				const prefix =
+					Math.random() < 0.8
+						? prefixes[Math.floor(Math.random() * prefixes.length)] + " "
+						: "";
+
+				return prefix + boss.name;
+			}
+
+			const localUserName = generateRandomUsername();
+
+			// ✅ Wait until #onlineCount exists (created dynamically by Firebase)
+			function attachChatToggle() {
+				const onlineUsers = document.getElementById("onlineCount");
+				if (!onlineUsers) return setTimeout(attachChatToggle, 300);
+
+				onlineUsers.style.cursor = "pointer";
+
+				// Clicking the online counter toggles chat open/close
+				onlineUsers.addEventListener("click", () => {
+					// If hidden (minimized), show it again
+					if (chatBox.classList.contains("hidden")) {
+						chatBox.classList.remove("hidden");
+						chatBox.classList.add("active");
+						return;
+					}
+
+					chatBox.classList.toggle("active");
+
+					// 🔕 Clear notification + tooltip when chat opens
+					if (chatBox.classList.contains("active")) {
+						onlineUsers.classList.remove("notify");
+						lastSeenTimestamp = Date.now();
+						onlineUsers.style.transition = "all 0.3s ease";
+					}
+				});
+			}
+			attachChatToggle();
+
+			// === Minimize Button Functionality ===
+			if (chatMinimize) {
+				chatMinimize.addEventListener("click", () => {
+					chatBox.classList.add("hidden");
+					chatBox.classList.remove("active");
+				});
+			}
+
+			// Reference to chat messages in Firebase
+			const chatRef = dbRef(rtdb, "globalChat");
+
+			// ✉️ Send message
+			chatSend.addEventListener("click", sendMessage);
+			chatInput.addEventListener("keydown", (e) => {
+				if (e.key === "Enter") sendMessage();
+			});
+
+			function sendMessage() {
+				const text = chatInput.value.trim();
+				if (!text) return;
+
+				dbPush(chatRef, { name: localUserName, text, timestamp: Date.now() });
+				chatInput.value = "";
+
+				// Update last seen when user sends (so they don’t get notified of their own)
+				lastSeenTimestamp = Date.now();
+			}
+
+			// 🎨 Generate a consistent glowing color per username
+			function getUserColor(name) {
+				if (name === localUserName) return "hsl(180, 80%, 70%)"; // your color: cyan-blue glow
+				let hash = 0;
+				for (let i = 0; i < name.length; i++) {
+					hash = name.charCodeAt(i) + ((hash << 5) - hash);
+				}
+				const hue = Math.abs(hash) % 360;
+				return `hsl(${hue}, 70%, 70%)`; // others: soft rainbow hues
+			}
+
+			// 💬 Detect last message before user loads (to prevent false notifications)
+			dbGet(chatRef).then((snapshot) => {
+				if (snapshot.exists()) {
+					let latest = 0;
+					snapshot.forEach((child) => {
+						const data = child.val();
+						if (data.timestamp > latest) latest = data.timestamp;
+					});
+					lastSeenTimestamp = latest;
+				}
+				initialLoadComplete = true;
+			});
+
+			// 💬 Listen for incoming messages
+			onChildAdded(chatRef, (snapshot) => {
+				const data = snapshot.val();
+				const msgEl = document.createElement("div");
+				msgEl.className = "chat-message";
+
+				const userColor = getUserColor(data.name);
+				const time = new Date(data.timestamp).toLocaleTimeString([], {
+					hour: "2-digit",
+					minute: "2-digit",
+				});
+
+				msgEl.innerHTML = `
+					<strong style="
+						color: ${userColor};
+						text-shadow: 0 0 8px ${userColor};
+					">${data.name}</strong>
+					<small style="opacity: 0.7;">[${time}]</small>:
+					<span style="
+						color: ${userColor};
+						text-shadow: 0 0 6px ${userColor};
+					">${data.text}</span>
+				`;
+
+				chatMessages.appendChild(msgEl);
+				chatMessages.scrollTop = chatMessages.scrollHeight;
+
+				// Ignore notifications before initial load
+				if (!initialLoadComplete) return;
+
+				// Only notify for messages newer than last seen
+				if (data.timestamp <= lastSeenTimestamp) return;
+
+				// 🔔 Show visual notification & tooltip if chat is closed
+				const onlineUsers = document.getElementById("onlineCount");
+				if (onlineUsers && !chatBox.classList.contains("active")) {
+					if (!onlineUsers.classList.contains("notify")) {
+						onlineUsers.classList.add("notify");
+
+						// small bounce animation
+						onlineUsers.animate(
+							[
+								{ transform: "translateY(0)" },
+								{ transform: "translateY(-4px)" },
+								{ transform: "translateY(0)" },
+							],
+							{ duration: 300, easing: "ease-out" }
+						);
+					}
+				}
+			});
+
       // Auto-refresh the page every 5 minutes
       setTimeout(() => {
         location.reload();
       }, 300000); // 300,000 ms = 5 minutes
     </script>
-    <div id="onlineUsers" class="online-users">
-      <span id="onlineCount">0</span>
-    </div>
+		
+		<!-- Online Users Badge -->
+		<div id="onlineCount" class="online-users">
+			<span class="count">0</span>
+		</div>
+
+		<!-- Chat Box (hidden by default) -->
+		<!-- Chat Box (hidden by default) -->
+		<div id="chatBox" class="chat-box">
+			<div class="chat-header">
+				SERVER CHAT
+				<button id="chatMinimize" class="chat-minimize-btn">−</button>
+			</div>
+
+			<div id="chatMessages" class="chat-messages"></div>
+
+			<div class="chat-input-area">
+				<input id="chatInput" type="text" placeholder="Type a message..." />
+				<button id="chatSend">Send</button>
+			</div>
+		</div>
+
   </body>
 </html>
