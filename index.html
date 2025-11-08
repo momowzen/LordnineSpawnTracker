@@ -569,72 +569,99 @@
 				box-shadow: 0 0 8px rgba(255, 60, 60, 0.3);
 			}
 
-      @media (max-width: 720px) {
-        .main {
-          display: flex;
-          flex-direction: column;
-        }
+			@media (max-width: 900px) {
+				html, body {
+					height: 100% !important;
+					overflow: hidden !important;
+				}
 
-        #nextBoss {
-          order: 1;
-          flex: 0 0 auto;
-        }
-				
-			/* === Harmonize Active Timers Panel to Boss List visual style === */
-			#timersPanel {
-				background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.05));
-				border: 1px solid var(--glass-border);
-				border-radius: var(--radius);
-				box-shadow: var(--shadow);
+				.container {
+					height: 100%;
+					display: flex;
+					flex-direction: column;
+				}
+
+				.main {
+					display: flex !important;
+					flex-direction: column !important;
+					flex: 1 1 auto;
+					height: 100%;
+					overflow: hidden !important;
+					gap: 5;                /* remove all spacing */
+				}
+
+				/* Stacking order */
+				#nextBoss {
+					order: 1;
+					flex: 0 0 auto;
+					width: 100%;
+				}
+
+				/* Active timers — taller and directly “touching” boss list */
+				#timersPanel {
+					order: 2;
+					flex: 0 0 68%;         /* fill more height */
+					width: 100%;
+					display: flex;
+					flex-direction: column;
+					overflow: hidden;
+					margin: 0;
+					padding-bottom: 0;
+					border-bottom: none;   /* remove border line between panels */
+					border-bottom-left-radius: 0;
+					border-bottom-right-radius: 0;
+					box-shadow: none;      /* neutralize glow that makes a gap */
+				}
+
+				/* Boss list — directly attached to timers */
+				#bossListPanel {
+					order: 3;
+					flex: 1 1 auto;
+					width: 100%;
+					display: flex;
+					flex-direction: column;
+					overflow: hidden;
+					margin: 0;
+					padding-top: 0;
+					border-top-left-radius: 0;
+					border-top-right-radius: 0;
+					box-shadow: none;
+				}
+
+				/* Keep both panels the same background for seamless look */
+				#timersPanel, #bossListPanel {
+					background: linear-gradient(
+						180deg,
+						rgba(255,255,255,0.015),
+						rgba(0,0,0,0.05)
+					);
+					border: 1px solid var(--glass-border);
+				}
+
+				/* Only the inner lists scroll */
+				#timers, #bossList {
+					flex: 1 1 auto;
+					overflow-y: auto;
+					-webkit-overflow-scrolling: touch;
+					padding: 6px 4px;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					gap: 8px;
+				}
+
+				/* Scrollbar */
+				#bossList::-webkit-scrollbar,
+				#timers::-webkit-scrollbar {
+					width: 8px;
+				}
+
+				#bossList::-webkit-scrollbar-thumb,
+				#timers::-webkit-scrollbar-thumb {
+					background: rgba(0,240,255,0.3);
+					border-radius: 8px;
+				}
 			}
-
-			#timersPanel .card-header {
-				color: var(--accent);
-				text-shadow: 0 0 5px rgba(0,240,255,0.4), 0 0 10px rgba(0,240,255,0.2);
-				background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-				border-bottom: 1px solid rgba(0,240,255,0.12);
-				backdrop-filter: blur(4px);
-			}
-
-			/* Timers list area — same spacing and scroll behavior as boss list */
-			#timers {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 8px;
-				padding: 6px 4px;
-				scroll-behavior: smooth;
-			}
-
-			/* Individual timer cards — adopt the same hover and glow effects as .boss */
-			.timer {
-				width: 95%;
-				padding: 8px 10px;
-				border-radius: 8px;
-				background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
-				border: 1px solid rgba(255,255,255,0.02);
-				font-size: 13px;
-				transition: transform 0.2s ease, box-shadow 0.25s ease;
-			}
-
-			.timer:hover {
-				transform: translateY(-2px) scale(1.02);
-				border-color: rgba(0,240,255,0.3);
-				background: linear-gradient(90deg, rgba(0,240,255,0.05), rgba(125,211,252,0.05));
-				box-shadow: 0 0 10px rgba(0,240,255,0.15);
-			}
-
-        #bossListPanel {
-          order: 3;
-          flex: 1 1 auto;
-          min-height: 0;
-        }
-
-        #bossList,
-        #timers {
-          overflow-y: auto;
-        }
-      }
 
       .settings-menu {
         position: absolute;
@@ -3446,6 +3473,7 @@
 			<span class="count">0</span>
 		</div>
 
+		<!-- Chat Box (hidden by default) -->
 		<!-- Chat Box (hidden by default) -->
 		<div id="chatBox" class="chat-box">
 			<div class="chat-header">
