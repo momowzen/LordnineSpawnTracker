@@ -11,12 +11,6 @@
     <link
       href="assets/images/logo5.png"
       rel="icon"
-      sizes="32x32"
-      type="image/png"
-    />
-    <link
-      href="assets/images/logo5.png"
-      rel="icon"
       sizes="64x64"
       type="image/png"
     />
@@ -59,23 +53,70 @@
         gap: 12px;
       }
 
-      /* === HEADER CONTAINER === */
+      /* === HEADER CONTAINER - CYBER THEME === */
       header.app-header {
         flex: 0 0 auto;
         display: flex;
-        align-items: center; /* centers everything vertically */
+        align-items: center;
         justify-content: space-between;
         background: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.02),
-          rgba(0, 0, 0, 0.06)
+          135deg,
+          rgba(0, 30, 50, 0.8),
+          rgba(0, 15, 25, 0.9)
         );
-        border: 1px solid var(--glass-border);
-        padding: 10px 16px; /* slightly increased for balanced top/bottom margin */
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        border-top: 2px solid rgba(0, 240, 255, 0.5);
+        padding: 10px 16px;
         border-radius: 8px;
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(6px);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.15),
+          inset 0 0 40px rgba(0, 240, 255, 0.03);
+        backdrop-filter: blur(10px);
         box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Animated scan line across header */
+      header.app-header::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          rgba(0, 240, 255, 0.8),
+          transparent
+        );
+        animation: headerScan 5s linear infinite;
+      }
+
+      @keyframes headerScan {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      /* Corner accents */
+      header.app-header::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(
+          circle at top right,
+          rgba(0, 240, 255, 0.1),
+          transparent 70%
+        );
+        pointer-events: none;
       }
 
       /* === APP TITLE GROUP (logo + text) === */
@@ -90,24 +131,32 @@
       /* === LOGO WRAPPER === */
       .logo {
         display: flex;
-        align-items: center; /* centers the logo vertically inside wrapper */
+        align-items: center;
         justify-content: center;
+        position: relative;
       }
 
-      /* === LOGO IMAGE === */
-      .logo-img {
-        height: 40px;
-        width: auto;
-        border-radius: 25%; /* rounded corners only */
-        display: block;
-        object-fit: contain;
-        transition: transform 0.3s ease;
-        margin: 0;
-      }
+			/* === LOGO IMAGE === */
+			.logo-img {
+				height: 44px;
+				width: auto;
+				border-radius: 50%;
+				display: block;
+				object-fit: contain;
+				transition: transform 0.4s ease; /* keep smooth scaling if you hover */
+				margin: 0;
+				border: none; /* remove border */
+				box-shadow: none; /* remove glow/shadow */
+				position: relative;
+				z-index: 1;
+			}
 
-      /* === Hover effect (simple scale-up) === */
+      /* === Hover effect === */
       .logo-img:hover {
-        transform: scale(1.05);
+        transform: scale(1.08) rotate(5deg);
+        box-shadow: 0 0 25px rgba(0, 240, 255, 0.6),
+          inset 0 0 15px rgba(0, 240, 255, 0.2);
+        border-color: var(--accent);
       }
 
       /* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
@@ -216,63 +265,114 @@
         gap: 8px;
         align-items: center;
         position: relative;
+        z-index: 2;
       }
 
       .search {
         width: 200px;
-        background: transparent;
-        border: 1px solid var(--glass-border);
+        background: linear-gradient(
+          135deg,
+          rgba(0, 20, 40, 0.6),
+          rgba(0, 10, 20, 0.8)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.3);
         padding: 6px 10px;
         border-radius: 8px;
         color: var(--text);
         font-size: 13px;
+        box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .search:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
+          inset 0 0 20px rgba(0, 240, 255, 0.1);
+      }
+
+      .search::placeholder {
+        color: rgba(154, 166, 178, 0.6);
       }
 
       .settings {
-        width: 36px;
-        height: 36px;
-        border: 1px solid rgba(0, 240, 255, 0.3);
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(0, 240, 255, 0.4);
         border-radius: 8px;
         background: linear-gradient(
-          180deg,
-          rgba(10, 20, 30, 0.98),
-          rgba(0, 10, 20, 0.96)
+          135deg,
+          rgba(0, 30, 50, 0.9),
+          rgba(0, 15, 25, 0.95)
         );
         color: var(--accent);
         cursor: pointer;
         display: grid;
         place-items: center;
         transition: all 0.3s ease;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.15),
-          inset 0 0 4px rgba(0, 240, 255, 0.05);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.2),
+          inset 0 0 15px rgba(0, 240, 255, 0.05);
         backdrop-filter: blur(6px);
         position: relative;
         z-index: 10001;
       }
 
-      .settings:hover {
-        transform: translateY(-1px);
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.1),
-          rgba(10, 20, 30, 0.95)
+      .settings::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        background: conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(0, 240, 255, 0.3),
+          transparent 60%
         );
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.3),
-          inset 0 0 8px rgba(0, 240, 255, 0.15);
-        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        animation: settingsRotate 3s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes settingsRotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .settings:hover {
+        transform: translateY(-2px) rotate(90deg);
+        background: linear-gradient(
+          135deg,
+          rgba(0, 240, 255, 0.2),
+          rgba(0, 50, 80, 0.9)
+        );
+        box-shadow: 0 0 25px rgba(0, 240, 255, 0.5),
+          inset 0 0 20px rgba(0, 240, 255, 0.15);
         color: #fff;
+      }
+
+      .settings:hover::before {
+        opacity: 1;
       }
 
       .settings.active {
         background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.2),
-          rgba(10, 20, 30, 0.9)
+          135deg,
+          rgba(0, 240, 255, 0.25),
+          rgba(0, 60, 100, 0.9)
         );
-        box-shadow: 0 2px 0 rgba(0, 240, 255, 0.25),
-          0 0 18px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2);
-        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.6),
+          inset 0 0 25px rgba(0, 240, 255, 0.2);
+        transform: rotate(180deg);
         color: #fff;
+      }
+
+      .settings.active::before {
+        opacity: 1;
       }
 
       .main {
@@ -286,16 +386,44 @@
       .card {
         background: linear-gradient(
           180deg,
-          rgba(255, 255, 255, 0.015),
-          rgba(0, 0, 0, 0.05)
+          rgba(0, 20, 30, 0.4),
+          rgba(0, 5, 10, 0.6)
         );
-        border: 1px solid var(--glass-border);
+        border: 1px solid rgba(0, 240, 255, 0.2);
         border-radius: var(--radius);
         padding: 10px;
-        box-shadow: var(--shadow);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.08),
+          inset 0 0 30px rgba(0, 240, 255, 0.02);
         display: flex;
         flex-direction: column;
         min-height: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        animation: cardScanLine 4s linear infinite;
+      }
+
+      @keyframes cardScanLine {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
       }
 
       .right-column {
@@ -311,9 +439,6 @@
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         min-height: 0;
-      }
-
-      #bossList {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -323,35 +448,62 @@
         scroll-behavior: smooth;
       }
 
-			/* === BOSS LIST GLOW (same look as Active Timers, original height preserved) === */
+			/* === BOSS LIST CYBER THEME === */
 			.boss {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				width: 95%;
-				padding: 8px 10px; /* same as before */
+				padding: 8px 10px;
 				border-radius: 8px;
 				background: linear-gradient(
-					90deg,
-					rgba(255, 255, 255, 0.01),
-					rgba(0, 0, 0, 0.04)
+					135deg,
+					rgba(0, 20, 40, 0.6),
+					rgba(0, 10, 20, 0.4)
 				);
-				border: 1px solid rgba(0, 240, 255, 0.08);
+				border: 1px solid rgba(0, 240, 255, 0.15);
+				border-left: 3px solid rgba(0, 240, 255, 0.3);
 				font-size: 13px;
-				box-shadow: 0 0 8px rgba(0, 240, 255, 0.05); /* subtle glow without changing height */
-				transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+				box-shadow: 0 0 15px rgba(0, 240, 255, 0.1),
+					inset 0 0 20px rgba(0, 240, 255, 0.03);
+				transition: all 0.3s ease;
 				box-sizing: border-box;
+				position: relative;
+			}
+
+			.boss::after {
+				content: "";
+				position: absolute;
+				right: 0;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 4px;
+				height: 60%;
+				background: linear-gradient(
+					180deg,
+					transparent,
+					var(--accent),
+					transparent
+				);
+				opacity: 0;
+				transition: opacity 0.3s ease;
 			}
 
 			.boss:hover {
-				transform: translateY(-2px) scale(1.02);
-				border-color: rgba(0, 240, 255, 0.25);
+				transform: translateX(4px);
+				border-color: rgba(0, 240, 255, 0.4);
+				border-left-color: var(--accent);
 				background: linear-gradient(
-					90deg,
-					rgba(0, 240, 255, 0.05),
-					rgba(125, 211, 252, 0.05)
+					135deg,
+					rgba(0, 240, 255, 0.12),
+					rgba(0, 100, 150, 0.08)
 				);
-				box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+				box-shadow: 0 0 25px rgba(0, 240, 255, 0.25),
+					inset 0 0 30px rgba(0, 240, 255, 0.08);
+			}
+
+			.boss:hover::after {
+				opacity: 0.6;
 			}
 
       .boss .meta {
@@ -361,12 +513,21 @@
       }
 
       /* Normal (alive / cooldown) */
-      .boss .name {
-        color: #ffffff; /* pure white text */
-        font-weight: 800;
-        text-shadow: 0 0 6px rgba(255, 255, 255, 0.7),
-          0 0 12px rgba(255, 255, 255, 0.4); /* subtle glowing white effect */
-      }
+			.boss .name {
+				font-family: "Orbitron", sans-serif;
+				color: #ffffff;
+				font-weight: 900;
+				font-size: 0.95rem;
+				letter-spacing: 1px;
+				text-transform: uppercase;
+				text-shadow: 0 0 10px rgba(0, 240, 255, 0.5),
+										 0 0 20px rgba(0, 240, 255, 0.3);
+				transition: all 0.3s ease;
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				position: relative;
+			}
 
       .boss .sub {
         font-size: 11px;
@@ -397,48 +558,145 @@
         transform: translateY(-1px);
       }
 
-      /* === NEXT BOSS - GAMER CYBER THEME === */
+      /* Smaller delete button in active timers */
+      .clear-timer-btn {
+        padding: 4px 6px;
+        font-size: 10px;
+        border-radius: 4px;
+        opacity: 0.8;
+      }
+
+      .clear-timer-btn:hover {
+        opacity: 1;
+      }
+
+      /* === NEXT BOSS - CYBER HEXAGON THEME === */
       #nextBoss {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         text-align: center;
-        padding: 16px 12px;
+        padding: 24px 16px;
         border-radius: 10px;
-        border: 1px solid rgba(0, 240, 255, 0.15);
+        border: 2px solid rgba(0, 240, 255, 0.3);
         background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.05),
-          rgba(0, 0, 0, 0.25)
+          135deg,
+          rgba(0, 40, 60, 0.6),
+          rgba(0, 20, 30, 0.8)
         );
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.08);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.2),
+          inset 0 0 50px rgba(0, 240, 255, 0.05);
         font-family: "Orbitron", sans-serif;
         text-transform: uppercase;
         letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
       }
 
-      /* === NEXT BOSS NAME: NEON RED GLOW (NO EFFECTS) === */
+      #nextBoss::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -100%;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        animation: nextBossScan 3s linear infinite;
+      }
+
+      @keyframes nextBossScan {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      #nextBoss::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        padding: 2px;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(0, 240, 255, 0.1) 50%,
+          transparent 70%
+        );
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        animation: borderRotate 4s linear infinite;
+        pointer-events: none;
+      }
+
+      @keyframes borderRotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* === NEXT BOSS NAME: NEON RED GLOW WITH PULSE === */
       #nextBoss .boss-name {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         font-weight: 900;
         color: #ff4d4d;
-        /* bright neon red */
         text-transform: uppercase;
-        letter-spacing: 1.5px;
+        letter-spacing: 2px;
         display: inline-block;
         position: relative;
-        text-shadow: 0 0 8px rgba(255, 80, 80, 0.8),
-          /* bright soft halo */ 0 0 16px rgba(255, 0, 0, 0.5),
-          0 0 24px rgba(255, 0, 0, 0.3);
+        text-shadow: 0 0 15px rgba(255, 80, 80, 1),
+          0 0 30px rgba(255, 0, 0, 0.6),
+          0 0 45px rgba(255, 0, 0, 0.4);
+        animation: bossNamePulse 2s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes bossNamePulse {
+        0%, 100% {
+          text-shadow: 0 0 15px rgba(255, 80, 80, 1),
+            0 0 30px rgba(255, 0, 0, 0.6),
+            0 0 45px rgba(255, 0, 0, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          text-shadow: 0 0 20px rgba(255, 80, 80, 1),
+            0 0 40px rgba(255, 0, 0, 0.8),
+            0 0 60px rgba(255, 0, 0, 0.5);
+          transform: scale(1.02);
+        }
       }
 
       #nextBoss .time-remaining {
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 700;
-        color: var(--accent-2);
-        text-shadow: 0 0 6px rgba(125, 211, 252, 0.7),
-          0 0 12px rgba(125, 211, 252, 0.5);
+        color: var(--accent);
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.8),
+          0 0 20px rgba(0, 240, 255, 0.5);
+        margin-top: 8px;
+        animation: timeGlow 2s ease-in-out infinite;
+        z-index: 1;
+      }
+
+      @keyframes timeGlow {
+        0%, 100% {
+          opacity: 0.9;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
       @keyframes bossGlow {
@@ -454,104 +712,158 @@
         }
       }
 
-			#timers {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 8px;
-				overflow-y: auto;
-				padding: 6px 4px;
-				max-height: 100%;
-				scroll-behavior: smooth;
-			}
-
-			/* === ACTIVE TIMER CARD — smaller, balanced, aligned === */
+			/* === ACTIVE TIMER CARD — CYBER THEME === */
 			.timer {
 				position: relative;
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
 				width: 95%;
-				padding: 8px 12px; /* reduced padding */
+				padding: 8px 12px;
 				border-radius: 8px;
 				background: linear-gradient(
-					90deg,
-					rgba(255, 255, 255, 0.02),
-					rgba(0, 0, 0, 0.06)
+					135deg,
+					rgba(0, 30, 50, 0.5),
+					rgba(0, 15, 25, 0.3)
 				);
-				border: 1px solid rgba(0, 240, 255, 0.08);
-				font-size: 11px; /* slightly smaller base font */
-				box-shadow: 0 2px 8px rgba(0, 240, 255, 0.05);
-				transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+				border: 1px solid rgba(0, 240, 255, 0.2);
+				border-right: 3px solid rgba(0, 240, 255, 0.3);
+				font-size: 11px;
+				box-shadow: 0 0 15px rgba(0, 240, 255, 0.12),
+					inset 0 0 25px rgba(0, 240, 255, 0.04);
+				transition: all 0.3s ease;
 				overflow: hidden;
 				height: auto;
-				min-height: 48px; /* compact but still stable */
+				min-height: 48px;
 			}
 
-			/* Glow state */
-			.timer.ready {
-				border-color: rgba(0, 240, 255, 0.25);
-				box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+			.timer::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 3px;
+				height: 70%;
 				background: linear-gradient(
-					90deg,
-					rgba(0, 240, 255, 0.07),
-					rgba(125, 211, 252, 0.07)
+					180deg,
+					transparent,
+					rgba(0, 240, 255, 0.5),
+					transparent
 				);
+				opacity: 0;
+				transition: opacity 0.3s ease;
 			}
 
-			/* Left text block */
-			.timer .meta {
+			.timer:hover::before {
+				opacity: 1;
+			}
+
+			/* Glow state — Ready to respawn */
+			.timer.ready {
+				border-color: rgba(0, 255, 100, 0.4);
+				border-right-color: rgba(0, 255, 100, 0.6);
+				box-shadow: 0 0 25px rgba(0, 255, 100, 0.3),
+					inset 0 0 35px rgba(0, 255, 100, 0.1);
+				background: linear-gradient(
+					135deg,
+					rgba(0, 255, 100, 0.15),
+					rgba(0, 150, 80, 0.1)
+				);
+				animation: timerReadyPulse 2s ease-in-out infinite;
+			}
+
+			@keyframes timerReadyPulse {
+				0%, 100% {
+					box-shadow: 0 0 20px rgba(0, 255, 100, 0.25),
+						inset 0 0 30px rgba(0, 255, 100, 0.08);
+				}
+				50% {
+					box-shadow: 0 0 35px rgba(0, 255, 100, 0.4),
+						inset 0 0 45px rgba(0, 255, 100, 0.15);
+				}
+			}
+
+			/* Timer layout */
+			.timer-left {
 				display: flex;
 				flex-direction: column;
-				align-items: flex-start;
-				gap: 1px;
+				gap: 2px;
+				min-width: 0;
+				flex: 1;
 			}
 
-			/* Text sizes — further reduced */
+			.timer-right {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				gap: 6px;
+				min-width: 100px;
+			}
+
+			.timer-actions {
+				display: flex;
+				gap: 6px;
+			}
+
+			/* === TIMER TEXT - CYBER THEME === */
 			.timer .timer-name {
-				font-weight: 700;
+				font-family: "Orbitron", sans-serif;
+				font-weight: 900;
 				font-size: 12px;
-				color: var(--text);
+				color: #fff;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				text-shadow: 0 0 6px rgba(0, 240, 255, 0.4),
+					0 0 12px rgba(0, 240, 255, 0.2);
 			}
 
 			.timer .timer-spawn {
 				font-size: 9px;
-				color: var(--muted);
+				color: var(--accent);
+				opacity: 0.7;
+				font-weight: 600;
+				letter-spacing: 0.3px;
 			}
 
 			.timer .timer-remaining {
-				font-weight: 500;
-				font-size: 10px;
+				font-family: "Orbitron", sans-serif;
+				font-weight: 800;
+				font-size: 13px;
 				color: var(--accent);
+				text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
+					0 0 15px rgba(0, 240, 255, 0.3);
+				letter-spacing: 1px;
+			}
+
+			/* Ready state - green glow */
+			.timer.ready .timer-remaining {
+				color: #00ff88;
+				text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
+					0 0 20px rgba(0, 255, 136, 0.5);
+				animation: readyBlink 1s ease-in-out infinite;
+			}
+
+			@keyframes readyBlink {
+				0%, 100% {
+					opacity: 1;
+				}
+				50% {
+					opacity: 0.7;
+				}
 			}
 
 			/* Hover glow */
 			.timer:hover {
-				transform: translateY(-2px) scale(1.02);
-				border-color: rgba(0, 240, 255, 0.25);
-				box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
-				background: linear-gradient(
-					90deg,
-					rgba(0, 240, 255, 0.05),
-					rgba(125, 211, 252, 0.05)
-				);
+				transform: translateX(3px);
+				border-color: rgba(0, 240, 255, 0.4);
+				box-shadow: 0 0 20px rgba(0, 240, 255, 0.25),
+					inset 0 0 30px rgba(0, 240, 255, 0.08);
 			}
 
-			/* === Red-themed action button (fits cyber theme) === */
-			.timer .kbtn {
-				margin-left: auto;
-				font-size: 10px;
-				padding: 4px 7px;
-				border-radius: 6px;
-				border: 1px solid rgba(255, 80, 80, 0.4);
-				background: rgba(255, 60, 60, 0.05);
-				color: #ff8080;
-				font-weight: 700;
-				cursor: pointer;
-				text-transform: uppercase;
-				letter-spacing: 0.5px;
-				transition: all 0.25s ease;
-				box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
+			.timer:hover .timer-name {
+				text-shadow: 0 0 10px rgba(0, 240, 255, 0.7),
+					0 0 20px rgba(0, 240, 255, 0.4);
 			}
 
 			/* Hover — bright neon red glow */
@@ -663,91 +975,76 @@
 				}
 			}
 
-      .settings-menu {
-        position: absolute;
-        top: calc(100% + 4px);
-        right: 0;
-        background: linear-gradient(
-          180deg,
-          rgba(10, 20, 30, 0.98),
-          rgba(0, 10, 20, 0.95)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.2),
-          0 0 25px rgba(0, 240, 255, 0.1), inset 0 0 6px rgba(0, 240, 255, 0.05);
-        display: inline-flex;
-        flex-direction: column;
+      /* === SETTINGS MODAL === */
+      .settings-modal {
         width: auto;
-        min-width: fit-content;
-        max-width: max-content;
-        max-height: 260px;
-        overflow-y: auto;
-        font-size: 8px;
-        opacity: 0;
-        transform: translateY(-8px) scale(0.98);
-        pointer-events: none;
-        transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-        z-index: 10000;
-        backdrop-filter: blur(8px);
-        white-space: nowrap;
+        min-width: 280px;
+        max-width: 90%;
+        padding: 20px;
       }
 
-      .settings-menu.active {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        pointer-events: auto;
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.3),
-          0 0 30px rgba(0, 240, 255, 0.15);
+      .settings-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 16px;
+        border: 1px solid rgba(0, 240, 255, 0.15);
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.3);
       }
 
-      /* === MENU ITEM STYLING === */
-      .menu-item {
-        position: relative;
-        background: black;
-        color: var(--accent);
-        padding: 8px 14px;
-        font-size: 8px;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        cursor: pointer;
+      .settings-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.4),
+          rgba(0, 10, 20, 0.5)
+        );
         border: none;
-        text-align: right;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+        cursor: pointer;
         transition: all 0.25s ease;
-        line-height: 0.5;
+        font-family: "Orbitron", sans-serif;
+        text-align: left;
       }
 
-      .menu-item:hover {
-        color: #fff;
+      .settings-item:last-child {
+        border-bottom: none;
+      }
+
+      .settings-item:hover {
         background: linear-gradient(
           90deg,
-          rgba(0, 240, 255, 0.18),
-          rgba(125, 211, 252, 0.08)
+          rgba(0, 240, 255, 0.15),
+          rgba(0, 150, 200, 0.1)
         );
+        border-left: 3px solid var(--accent);
+        padding-left: 13px;
+        box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.1);
+      }
+
+      .settings-item .icon {
+        font-size: 20px;
+        flex-shrink: 0;
+        filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
+      }
+
+      .settings-item .label {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        color: var(--accent);
+        text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
+        flex: 1;
+      }
+
+      .settings-item:hover .label {
+        color: #fff;
         text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
-        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.25);
-      }
-
-      /* Optional: active menu item highlight */
-      .menu-item.active {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.25),
-          rgba(125, 211, 252, 0.15)
-        );
-        box-shadow: inset 0 0 8px rgba(0, 240, 255, 0.25);
-        color: #fff;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
-      }
-
-      .settings.active + .settings-menu {
-        top: calc(100% + 1px);
-        margin-top: 0;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        box-shadow: 0 -2px 10px rgba(0, 240, 255, 0.25),
-          0 0 18px rgba(0, 240, 255, 0.15),
-          inset 0 0 6px rgba(0, 240, 255, 0.05);
       }
 
       /* --- Compact Cyber Modal (Webhook window) --- */
@@ -862,7 +1159,7 @@
       }
 
       /* --- Webhook Modal Buttons (SAVE, TEST, CLEAR) --- */
-      #webhookModalBackdrop .actions {
+      #webhookModalBackdrop .modal-actions {
         display: flex;
         justify-content: center;
         gap: 10px;
@@ -947,25 +1244,247 @@
         color: var(--muted);
       }
 
-      .loader-text {
-        color: var(--accent);
-        font-size: 1.3rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-shadow: 0 0 10px var(--accent);
-        animation: pulseText 1.5s infinite;
+      /* === LOADING OVERLAY === */
+      .loading-overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(12px);
+        background: radial-gradient(
+          circle at center,
+          rgba(0, 10, 20, 0.98) 0%,
+          rgba(0, 0, 0, 0.99) 100%
+        );
       }
 
-      @keyframes pulseText {
-        0%,
-        100% {
-          opacity: 0.7;
-          text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-        }
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
 
+      .loading-hexagon {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .hex-spinner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .hex-layer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 3px solid transparent;
+        border-radius: 50%;
+        animation: spinHex 3s linear infinite;
+      }
+
+      .hex-1 {
+        border-top-color: var(--accent);
+        border-right-color: var(--accent);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        animation-duration: 2s;
+      }
+
+      .hex-2 {
+        border-bottom-color: var(--accent-2);
+        border-left-color: var(--accent-2);
+        box-shadow: 0 0 20px rgba(125, 211, 252, 0.3);
+        animation-duration: 3s;
+        animation-direction: reverse;
+        width: 75%;
+        height: 75%;
+        top: 12.5%;
+        left: 12.5%;
+      }
+
+      .hex-3 {
+        border-top-color: #fff;
+        border-right-color: #fff;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        animation-duration: 4s;
+        width: 50%;
+        height: 50%;
+        top: 25%;
+        left: 25%;
+      }
+
+      @keyframes spinHex {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-core {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        z-index: 1;
+      }
+
+      .core-icon {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.8));
+        animation: corePulse 2s ease-in-out infinite;
+      }
+
+      .core-ring {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 2;
+        opacity: 0.6;
+        animation: ringGlow 2s ease-in-out infinite;
+      }
+
+      .core-pulse {
+        fill: none;
+        stroke: var(--accent-2);
+        stroke-width: 2;
+        opacity: 0.8;
+        animation: ringPulse 2s ease-in-out infinite;
+      }
+
+      .core-center {
+        fill: var(--accent);
+        animation: centerGlow 1.5s ease-in-out infinite;
+      }
+
+      @keyframes corePulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      @keyframes ringGlow {
+        0%, 100% {
+          stroke-width: 2;
+          opacity: 0.6;
+        }
+        50% {
+          stroke-width: 3;
+          opacity: 1;
+        }
+      }
+
+      @keyframes ringPulse {
+        0%, 100% {
+          r: 25;
+          opacity: 0.8;
+        }
+        50% {
+          r: 28;
+          opacity: 1;
+        }
+      }
+
+      @keyframes centerGlow {
+        0%, 100% {
+          opacity: 0.8;
+          filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+        }
         50% {
           opacity: 1;
-          text-shadow: 0 0 14px rgba(0, 240, 255, 1);
+          filter: drop-shadow(0 0 15px rgba(0, 240, 255, 1));
+        }
+      }
+
+      .loader-text {
+        font-family: "Orbitron", sans-serif;
+        font-size: 2rem;
+        font-weight: 900;
+        letter-spacing: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .loading-word {
+        color: var(--accent);
+        text-shadow: 0 0 20px rgba(0, 240, 255, 0.8),
+          0 0 40px rgba(0, 240, 255, 0.4);
+        animation: textGlow 2s ease-in-out infinite;
+      }
+
+      @keyframes textGlow {
+        0%, 100% {
+          text-shadow: 0 0 15px rgba(0, 240, 255, 0.6),
+            0 0 30px rgba(0, 240, 255, 0.3);
+        }
+        50% {
+          text-shadow: 0 0 25px rgba(0, 240, 255, 1),
+            0 0 50px rgba(0, 240, 255, 0.6);
+        }
+      }
+
+      .loading-dots {
+        display: flex;
+        gap: 2px;
+      }
+
+      .loading-dots span {
+        color: var(--accent);
+        animation: dotBounce 1.5s ease-in-out infinite;
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+      }
+
+      .loading-dots span:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .loading-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .loading-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes dotBounce {
+        0%, 100% {
+          opacity: 0.3;
+          transform: translateY(0);
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(-8px);
+        }
+      }
+
+      .loading-subtitle {
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        opacity: 0.7;
+        animation: subtitleFade 2s ease-in-out infinite;
+      }
+
+      @keyframes subtitleFade {
+        0%, 100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 0.9;
         }
       }
 
@@ -1144,49 +1663,141 @@
         transition: none !important;
       }
 
-      /* === DEAD BOSS STYLE — aligned baseline for name + SPAWNING tag === */
-      .boss .name.dead {
-        color: #8b8b8b;
-        font-weight: 800;
-        text-shadow: 0 0 6px rgba(255, 40, 40, 0.5),
-          0 0 12px rgba(255, 0, 0, 0.3);
-        transition: color 0.4s ease, text-shadow 0.4s ease;
-        display: inline-flex;
-        align-items: baseline;
-        /* <-- align text baselines */
-        gap: 8px;
-        font-size: 1rem;
-        /* explicit base size for alignment */
-      }
-
-			/* === Animated Respawn Ring Indicator (Slower Version) === */
-			.boss .name.dead::after {
-				content: "";
-				display: inline-block;
-				width: 12px;
-				height: 12px;
-				margin-left: 6px;
-				border: 2px solid rgba(255, 80, 80, 0.3);
-				border-top-color: rgba(255, 80, 80, 1);
-				border-radius: 50%;
-				vertical-align: middle;
-				animation: spinRespawn 3s linear infinite, glowRespawn 3s ease-in-out infinite;
-				box-shadow: 0 0 6px rgba(255, 80, 80, 0.5);
+      /* === DEAD BOSS - ENHANCED CARD DESIGN === */
+			/* Entire boss card gets different styling when dead */
+			.boss:has(.name.dead) {
+				background: linear-gradient(
+					135deg,
+					rgba(0, 20, 40, 0.6),
+					rgba(0, 10, 20, 0.4)
+				); /* same neutral background as alive bosses */
+				border-color: rgba(255, 68, 68, 0.4);
+				border-left-color: rgba(255, 0, 0, 0.6);
+				box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
+					inset 0 0 30px rgba(255, 68, 68, 0.05);
+				animation: deadCardPulse 3s ease-in-out infinite;
 			}
 
-			/* Continuous slow rotation */
-			@keyframes spinRespawn {
-				0% { transform: rotate(0deg); }
-				100% { transform: rotate(360deg); }
+			.boss:has(.name.dead)::after {
+				background: linear-gradient(
+					180deg,
+					transparent,
+					rgba(255, 68, 68, 0.4),
+					transparent
+				);
+				opacity: 0.8;
 			}
 
-			/* Gentle pulse glow effect */
-			@keyframes glowRespawn {
+			@keyframes deadCardPulse {
 				0%, 100% {
-					box-shadow: 0 0 6px rgba(255, 80, 80, 0.4);
+					box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
+						inset 0 0 30px rgba(255, 68, 68, 0.05);
 				}
 				50% {
-					box-shadow: 0 0 14px rgba(255, 100, 100, 0.8);
+					box-shadow: 0 0 30px rgba(255, 68, 68, 0.25),
+						inset 0 0 40px rgba(255, 68, 68, 0.1);
+				}
+			}
+
+			.boss:has(.name.dead):hover {
+				background: linear-gradient(
+					135deg,
+					rgba(60, 0, 0, 0.8),
+					rgba(30, 0, 15, 0.6)
+				);
+				border-color: rgba(255, 68, 68, 0.6);
+				box-shadow: 0 0 35px rgba(255, 68, 68, 0.3),
+					inset 0 0 45px rgba(255, 68, 68, 0.12);
+			}
+
+			/* Dead boss portrait gets red tint */
+			.boss:has(.name.dead) .boss-portrait {
+				border-color: rgba(255, 68, 68, 0.5);
+				filter: sepia(0.3) hue-rotate(-20deg) saturate(1.5);
+				box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+			}
+
+			/* Dead boss name styling */
+      .boss .name.dead {
+        font-family: "Orbitron", sans-serif;
+        color: #ff5555;
+        font-weight: 900;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        text-shadow: 0 0 12px rgba(255, 68, 68, 0.8),
+          0 0 24px rgba(255, 0, 0, 0.5),
+          0 0 36px rgba(255, 0, 0, 0.3);
+        transition: all 0.4s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+      }
+
+			/* Status badge */
+			.boss .name.dead::before {
+				content: "⚠ RESPAWNING"; /* non-breaking space after ⚠ */
+				position: absolute;
+				top: -18px;
+				left: 0;
+				display: inline-flex;
+				align-items: center;
+				white-space: nowrap; /* ensures symbol + text stay together */
+				font-size: 8px;
+				font-weight: 700;
+				letter-spacing: 1.5px;
+				color: #ff8888;
+				background: rgba(255, 0, 0, 0.15);
+				padding: 2px 6px;
+				border-radius: 3px;
+				border: 1px solid rgba(255, 68, 68, 0.4);
+				box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+				animation: badgeBlink 2s ease-in-out infinite;
+			}
+
+			@keyframes badgeBlink {
+				0%, 100% { opacity: 0.8; }
+				50% { opacity: 1; }
+			}
+
+			/* === Cyber Hexagonal Timer Indicator === */
+			.boss .name.dead::after {
+				content: "⬢";
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 20px;
+				color: #ff5555;
+				margin-left: 4px;
+				vertical-align: middle;
+				animation: hexPulse 2.5s ease-in-out infinite, hexSpin 8s linear infinite;
+				text-shadow: 0 0 12px rgba(255, 68, 68, 1),
+					0 0 24px rgba(255, 0, 0, 0.7),
+					0 0 36px rgba(255, 0, 0, 0.5);
+				filter: drop-shadow(0 0 10px rgba(255, 68, 68, 0.8));
+				position: relative;
+			}
+
+			/* Hexagon pulsing effect */
+			@keyframes hexPulse {
+				0%, 100% {
+					transform: scale(1);
+					opacity: 1;
+				}
+				50% {
+					transform: scale(1.15);
+					opacity: 0.85;
+				}
+			}
+
+			/* Slow rotation */
+			@keyframes hexSpin {
+				0% { 
+					transform: rotate(0deg);
+				}
+				100% { 
+					transform: rotate(360deg);
 				}
 			}
 
@@ -1601,7 +2212,7 @@
 
 			.portrait-meta {
 				display: flex;
-				align-items: flex-end; /* <-- align text with bottom of image */
+				align-items: flex-end;
 				gap: 10px;
 			}
 
@@ -1626,32 +2237,90 @@
 				margin-top: 6px;
 			}
 
+			/* === ACTION BUTTONS - CYBER THEME === */
 			.action-btn {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
-				gap: 2px;
+				gap: 4px;
 			}
 
 			.icon-btn {
-				background: none;
-				border: none;
+				position: relative;
+				background: linear-gradient(
+					135deg,
+					rgba(0, 30, 50, 0.6),
+					rgba(0, 15, 25, 0.8)
+				);
+				border: 1px solid rgba(0, 240, 255, 0.3);
+				border-radius: 6px;
 				cursor: pointer;
-				padding: 4px;
-				color: inherit;
-				transition: transform 0.15s ease, color 0.15s ease;
+				padding: 8px;
+				color: var(--accent);
+				transition: all 0.3s ease;
+				box-shadow: 0 0 10px rgba(0, 240, 255, 0.1),
+					inset 0 0 15px rgba(0, 240, 255, 0.03);
+				overflow: hidden;
+			}
+
+			.icon-btn::before {
+				content: "";
+				position: absolute;
+				inset: 0;
+				background: linear-gradient(
+					45deg,
+					transparent,
+					rgba(0, 240, 255, 0.1),
+					transparent
+				);
+				transform: translateX(-100%);
+				transition: transform 0.5s ease;
+			}
+
+			.icon-btn:hover::before {
+				transform: translateX(100%);
 			}
 
 			.icon-btn:hover {
-				transform: scale(1.1);
-				color: #ff5555;
+				transform: translateY(-2px) scale(1.05);
+				border-color: var(--accent);
+				box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
+					inset 0 0 20px rgba(0, 240, 255, 0.1);
+				color: #fff;
+			}
+
+			.icon-btn:active {
+				transform: translateY(0) scale(1);
+				box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
+					inset 0 0 25px rgba(0, 240, 255, 0.15);
+			}
+
+			.icon-btn svg {
+				position: relative;
+				z-index: 1;
+				filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.3));
+			}
+
+			.icon-btn:hover svg {
+				filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
 			}
 
 			.icon-label {
-				font-size: 10px;
-				opacity: 0.7;
+				font-family: "Orbitron", sans-serif;
+				font-size: 9px;
+				font-weight: 700;
+				opacity: 0.8;
 				text-transform: uppercase;
-				letter-spacing: 0.5px;
+				letter-spacing: 0.8px;
+				color: var(--accent);
+				text-shadow: 0 0 4px rgba(0, 240, 255, 0.3);
+				transition: all 0.3s ease;
+			}
+
+			.action-btn:hover .icon-label {
+				opacity: 1;
+				text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+				color: #fff;
 			}
 
     </style>
@@ -1696,13 +2365,6 @@
               ></path>
             </svg>
           </button>
-          <div class="settings-menu" id="settingsMenu">
-            <button class="menu-item" id="exportBtn">EXPORT 📤</button>
-            <button class="menu-item" id="importBtn">IMPORT 📥</button>
-            <button class="menu-item" id="resetBtn">RESET 🗑️</button>
-            <button class="menu-item" id="syncBtn">SYNC 🔄</button>
-            <button class="menu-item" id="discordWebhookBtn">WEBHOOK 💬</button>
-          </div>
         </div>
       </header>
       <main class="main">
@@ -1762,24 +2424,63 @@
         </div>
       </div>
     </div>
-    <div
-      id="loadingOverlay"
-      style="
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        backdrop-filter: blur(8px);
-        background: radial-gradient(
-          circle at center,
-          rgba(0, 10, 20, 0.95) 0%,
-          rgba(0, 0, 0, 0.98) 100%
-        );
-      "
-    >
-      <div class="loader-text">Loading...</div>
+
+    <div class="modal-backdrop" id="settingsModalBackdrop">
+      <div
+        aria-labelledby="settingsTitle"
+        aria-modal="true"
+        class="modal cyber-modal settings-modal"
+        role="dialog"
+      >
+        <h3 id="settingsTitle">⚙️ Settings</h3>
+        <div class="settings-list">
+          <button class="settings-item" id="exportBtn">
+            <span class="icon">📤</span>
+            <span class="label">Export JSON</span>
+          </button>
+          <button class="settings-item" id="importBtn">
+            <span class="icon">📥</span>
+            <span class="label">Import JSON</span>
+          </button>
+          <button class="settings-item" id="resetBtn">
+            <span class="icon">🗑️</span>
+            <span class="label">Reset Timers</span>
+          </button>
+          <button class="settings-item" id="syncBtn">
+            <span class="icon">🔄</span>
+            <span class="label">Synchronize Users</span>
+          </button>
+          <button class="settings-item" id="discordWebhookBtn">
+            <span class="icon">💬</span>
+            <span class="label">Discord Webhook URL</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-container">
+        <div class="loading-hexagon">
+          <div class="hex-spinner">
+            <div class="hex-layer hex-1"></div>
+            <div class="hex-layer hex-2"></div>
+            <div class="hex-layer hex-3"></div>
+          </div>
+          <div class="loading-core">
+            <svg viewBox="0 0 100 100" class="core-icon">
+              <circle cx="50" cy="50" r="35" class="core-ring" />
+              <circle cx="50" cy="50" r="25" class="core-pulse" />
+              <circle cx="50" cy="50" r="15" class="core-center" />
+            </svg>
+          </div>
+        </div>
+        <div class="loader-text">
+          <span class="loading-word">LOADING</span>
+          <span class="loading-dots">
+            <span>.</span><span>.</span><span>.</span>
+          </span>
+        </div>
+        <div class="loading-subtitle">Initializing Boss Tracker</div>
+      </div>
     </div>
 
     <script type="module">
@@ -1838,7 +2539,7 @@
       const saveTimeBtn = document.getElementById("saveTimeBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
       const settingsBtn = document.getElementById("settingsBtn");
-      const settingsMenu = document.getElementById("settingsMenu");
+      const settingsModalBackdrop = document.getElementById("settingsModalBackdrop");
       const discordWebhookBtn = document.getElementById("discordWebhookBtn");
       const webhookBackdrop = document.getElementById("webhookModalBackdrop");
       const webhookInput = document.getElementById("webhookInput");
@@ -1946,7 +2647,9 @@
         onValue,
         set,
         push,
-        serverTimestamp as rtdbServerTimestamp, // ✅ rename this one so you don’t clash
+        serverTimestamp as rtdbServerTimestamp,
+        onChildAdded,
+        get, // ✅ rename this one so you don’t clash
       } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
       // ✅ Initialize Firebase app
@@ -1972,6 +2675,7 @@
 
       // --- Trigger Sync ---
       syncBtn.addEventListener("click", async () => {
+        settingsModalBackdrop.style.display = "none";
         if (
           confirm(
             "Synchronize all clients? This will reload every user's page."
@@ -2609,11 +3313,6 @@
         const id = btn.getAttribute("data-id");
         if (!id) return;
 
-        if (action === "clear") {
-          await clearTimer(id);
-          return;
-        }
-
         if (action === "mark") {
           const now = Date.now();
           const lockDuration = 60 * 1000; // 1 minute
@@ -2738,15 +3437,13 @@
           node.dataset.id = bossId;
           node.dataset.remaining = String(remainingSec);
           node.innerHTML = `
-          <div style="min-width:0">
-            <div class="timer-name" style="font-weight:700">${boss.name}</div>
-            <div class="timer-spawn small" style="color:var(--muted);font-size:11px">Spawn: ${spawnStr}</div>
+          <div class="timer-left">
+            <div class="timer-name">${boss.name}</div>
+            <div class="timer-spawn">⬡ SPAWN: ${spawnStr}</div>
           </div>
-          <div style="text-align:right;min-width:86px">
-            <div class="timer-remaining" style="font-weight:800">${formatSec(
-              remainingSec
-            )}</div>
-            <div style="margin-top:6px">
+          <div class="timer-right">
+            <div class="timer-remaining">${formatSec(remainingSec)}</div>
+            <div class="timer-actions">
               <button class="kbtn clear-timer-btn" data-id="${bossId}">Delete</button>
             </div>
           </div>
@@ -2989,27 +3686,21 @@
         renderBossList();
       });
 
-      // === SETTINGS BUTTON + MENU TOGGLE (Animated Connected Mode) ===
+      // === SETTINGS BUTTON + MODAL TOGGLE ===
       settingsBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
-        const isActive = settingsMenu.classList.toggle("active");
-        settingsBtn.classList.toggle("active", isActive);
-        console.log(`⚙️ settings toggled -> active=${isActive}`);
+        settingsModalBackdrop.style.display = "flex";
+        console.log(`⚙️ settings modal opened`);
       });
 
-      document.addEventListener("click", (ev) => {
-        if (!settingsMenu.contains(ev.target) && ev.target !== settingsBtn) {
-          settingsMenu.classList.remove("active");
-          settingsBtn.classList.remove("active");
-        }
+      settingsModalBackdrop.addEventListener("click", (ev) => {
+        if (ev.target === settingsModalBackdrop)
+          settingsModalBackdrop.style.display = "none";
       });
-
-      settingsMenu.addEventListener("click", (ev) => ev.stopPropagation());
 
       discordWebhookBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        settingsMenu.classList.remove("active");
-        settingsBtn.classList.remove("active");
+        settingsModalBackdrop.style.display = "none";
         await loadWebhookFromFirestore();
         webhookBackdrop.style.display = "flex";
         console.log("🔧 open webhook modal");
@@ -3025,6 +3716,7 @@
       const resetBtn = document.getElementById("resetBtn");
 
       exportBtn.addEventListener("click", () => {
+        settingsModalBackdrop.style.display = "none";
         try {
           const blob = new Blob([JSON.stringify(timers, null, 2)], {
             type: "application/json",
@@ -3045,6 +3737,7 @@
       });
 
       importBtn.addEventListener("click", () => {
+        settingsModalBackdrop.style.display = "none";
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "application/json";
@@ -3074,6 +3767,7 @@
       });
 
       resetBtn.addEventListener("click", () => {
+        settingsModalBackdrop.style.display = "none";
         if (confirm("Are you sure you want to reset all timers?")) resetAll();
       });
 
@@ -3292,13 +3986,6 @@
 			});
 
 			// === GLOBAL CHAT FUNCTIONALITY ===
-			import {
-				ref as dbRef,
-				push as dbPush,
-				onChildAdded,
-				get as dbGet,
-			} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-
 			const chatBox = document.getElementById("chatBox");
 			const chatMessages = document.getElementById("chatMessages");
 			const chatInput = document.getElementById("chatInput");
@@ -3367,7 +4054,7 @@
 			}
 
 			// Reference to chat messages in Firebase
-			const chatRef = dbRef(rtdb, "globalChat");
+			const chatRef = ref(rtdb, "globalChat");
 
 			// ✉️ Send message
 			chatSend.addEventListener("click", sendMessage);
@@ -3379,7 +4066,7 @@
 				const text = chatInput.value.trim();
 				if (!text) return;
 
-				dbPush(chatRef, { name: localUserName, text, timestamp: Date.now() });
+				push(chatRef, { name: localUserName, text, timestamp: Date.now() });
 				chatInput.value = "";
 
 				// Update last seen when user sends (so they don’t get notified of their own)
@@ -3398,7 +4085,7 @@
 			}
 
 			// 💬 Detect last message before user loads (to prevent false notifications)
-			dbGet(chatRef).then((snapshot) => {
+			get(chatRef).then((snapshot) => {
 				if (snapshot.exists()) {
 					let latest = 0;
 					snapshot.forEach((child) => {
@@ -3468,12 +4155,6 @@
       }, 300000); // 300,000 ms = 5 minutes
     </script>
 		
-		<!-- Online Users Badge -->
-		<div id="onlineCount" class="online-users">
-			<span class="count">0</span>
-		</div>
-
-		<!-- Chat Box (hidden by default) -->
 		<!-- Chat Box (hidden by default) -->
 		<div id="chatBox" class="chat-box">
 			<div class="chat-header">
