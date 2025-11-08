@@ -1058,46 +1058,36 @@
         /* explicit base size for alignment */
       }
 
-      /* SPAWNING tag sits to the right and aligns on the same baseline */
-      .boss .name.dead::after {
-        content: "SPAWNING";
-        font-weight: 400;
-        font-size: 0.5rem;
-        /* smaller than the name */
-        line-height: 1;
-        /* ensure baseline alignment */
-        display: inline-block;
-        vertical-align: baseline;
-        color: rgba(255, 85, 85, 0.9);
-        letter-spacing: 1px;
-        text-shadow: 0 0 3px rgba(255, 60, 60, 0.5),
-          0 0 6px rgba(255, 0, 0, 0.3);
-        animation: spawningDots 2s infinite;
-        opacity: 0.9;
-      }
+			/* === Animated Respawn Ring Indicator (Slower Version) === */
+			.boss .name.dead::after {
+				content: "";
+				display: inline-block;
+				width: 12px;
+				height: 12px;
+				margin-left: 6px;
+				border: 2px solid rgba(255, 80, 80, 0.3);
+				border-top-color: rgba(255, 80, 80, 1);
+				border-radius: 50%;
+				vertical-align: middle;
+				animation: spinRespawn 3s linear infinite, glowRespawn 3s ease-in-out infinite;
+				box-shadow: 0 0 6px rgba(255, 80, 80, 0.5);
+			}
 
-      /* Animate dots only — brackets/word remain fixed in place visually */
-      @keyframes spawningDots {
-        0% {
-          content: "SPAWNING";
-        }
+			/* Continuous slow rotation */
+			@keyframes spinRespawn {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
 
-        25% {
-          content: "SPAWNING.";
-        }
-
-        50% {
-          content: "SPAWNING..";
-        }
-
-        75% {
-          content: "SPAWNING...";
-        }
-
-        100% {
-          content: "SPAWNING";
-        }
-      }
+			/* Gentle pulse glow effect */
+			@keyframes glowRespawn {
+				0%, 100% {
+					box-shadow: 0 0 6px rgba(255, 80, 80, 0.4);
+				}
+				50% {
+					box-shadow: 0 0 14px rgba(255, 100, 100, 0.8);
+				}
+			}
 
       /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
       .card-header {
@@ -1500,6 +1490,67 @@
 				box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
 				color: #fff;
 				transform: translateY(-1px);
+			}
+			
+			.name-wrapper {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.portrait-meta {
+				display: flex;
+				align-items: flex-end; /* <-- align text with bottom of image */
+				gap: 10px;
+			}
+
+			.boss-portrait {
+				width: 48px;
+				height: 64px;
+				object-fit: cover;
+				border-radius: 6px;
+				border: 1px solid rgba(255,255,255,0.2);
+			}
+
+			.info {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+			.actions {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-top: 6px;
+			}
+
+			.action-btn {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 2px;
+			}
+
+			.icon-btn {
+				background: none;
+				border: none;
+				cursor: pointer;
+				padding: 4px;
+				color: inherit;
+				transition: transform 0.15s ease, color 0.15s ease;
+			}
+
+			.icon-btn:hover {
+				transform: scale(1.1);
+				color: #ff5555;
+			}
+
+			.icon-label {
+				font-size: 10px;
+				opacity: 0.7;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
 			}
 
     </style>
@@ -2376,52 +2427,77 @@
       // -------------------------
       // Render functions
       // -------------------------
-      function renderBossList() {
-        bossListEl.innerHTML = "";
-        const q = (searchInput.value || "").toLowerCase().trim();
+			function renderBossList() {
+				bossListEl.innerHTML = "";
+				const q = (searchInput.value || "").toLowerCase().trim();
 
-        for (const b of BOSSES) {
-          const isWeekly = !!b.weeklyRespawns;
-          const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-          if (q && !b.name.toLowerCase().includes(q)) continue;
+				for (const b of BOSSES) {
+					const isWeekly = !!b.weeklyRespawns;
+					const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
+					if (q && !b.name.toLowerCase().includes(q)) continue;
 
-          const subText = isWeekly
-            ? b.weeklyRespawns
-                .map(
-                  (r) =>
-                    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][r.day] +
-                    " " +
-                    String(r.hour).padStart(2, "0") +
-                    ":" +
-                    String(r.minute).padStart(2, "0")
-                )
-                .join(", ")
-            : b.respawn / 3600 + " hr";
+					const subText = isWeekly
+						? b.weeklyRespawns
+								.map(
+									(r) =>
+										["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][r.day] +
+										" " +
+										String(r.hour).padStart(2, "0") +
+										":" +
+										String(r.minute).padStart(2, "0")
+								)
+								.join(", ")
+						: b.respawn / 3600 + " hr";
 
-          const node = document.createElement("div");
-          node.className = "boss";
+					const node = document.createElement("div");
+					node.className = "boss";
 
-          const nameClass = isActive ? "name dead" : "name";
+					const nameClass = isActive ? "name dead" : "name";
 
-          node.innerHTML = `
-          <div class="meta">
-            <div class="${nameClass}">${b.name}</div>
-            <div class="sub">${subText}</div>
-          </div>
-          <div class="actions">
-            <button class="kbtn" data-action="mark" data-id="${
-              b.id
-            }">Mark Dead</button>
-            ${
-              !isWeekly
-                ? `<button class="kbtn" data-action="set" data-id="${b.id}">Manual</button>`
-                : ""
-            }
-          </div>
-        `;
-          bossListEl.appendChild(node);
-        }
-      }
+					node.innerHTML = `
+						<div class="meta">
+							<div class="portrait-meta">
+								<img class="boss-portrait" src="assets/images/${b.id}.png" alt="${b.name}">
+								<div class="info">
+									<div class="${nameClass}">${b.name}</div>
+									<div class="sub">${subText}</div>
+								</div>
+							</div>
+						</div>
+						<div class="actions">
+							<div class="action-btn">
+								<button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${b.id}">
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+										stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M12 2C7 2 3 6 3 11c0 3 2 6 5 7v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c3-1 5-4 5-7 0-5-4-9-9-9z"></path>
+										<circle cx="9" cy="11" r="1"></circle>
+										<circle cx="15" cy="11" r="1"></circle>
+									</svg>
+								</button>
+								<div class="icon-label">Killed</div>
+							</div>
+
+							${
+								!isWeekly
+									? `
+									<div class="action-btn">
+										<button class="kbtn icon-btn" title="Manual Set" data-action="set" data-id="${b.id}">
+											<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+												stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+												<circle cx="12" cy="12" r="10"></circle>
+												<polyline points="12 6 12 12 16 14"></polyline>
+											</svg>
+										</button>
+										<div class="icon-label">Manual</div>
+									</div>`
+									: ""
+							}
+						</div>
+					`;
+
+					bossListEl.appendChild(node);
+				}
+			}
 
       // === Unified Boss List Click Handler with atomic deadlock attempt ===
       bossListEl.addEventListener("click", async (e) => {
