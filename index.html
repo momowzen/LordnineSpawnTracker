@@ -323,35 +323,36 @@
         scroll-behavior: smooth;
       }
 
-      .boss {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 95%;
-        padding: 8px 10px;
-        border-radius: 8px;
-        background: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0.01),
-          rgba(0, 0, 0, 0.04)
-        );
-        border: 1px solid rgba(255, 255, 255, 0.02);
-        font-size: 13px;
-        transition: transform 0.2s ease, box-shadow 0.25s ease;
-        box-sizing: border-box;
-      }
+			/* === BOSS LIST GLOW (same look as Active Timers, original height preserved) === */
+			.boss {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 95%;
+				padding: 8px 10px; /* same as before */
+				border-radius: 8px;
+				background: linear-gradient(
+					90deg,
+					rgba(255, 255, 255, 0.01),
+					rgba(0, 0, 0, 0.04)
+				);
+				border: 1px solid rgba(0, 240, 255, 0.08);
+				font-size: 13px;
+				box-shadow: 0 0 8px rgba(0, 240, 255, 0.05); /* subtle glow without changing height */
+				transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+				box-sizing: border-box;
+			}
 
-      .boss:hover {
-        transform: translateY(-2px) scale(1.02);
-        border-color: rgba(0, 240, 255, 0.3);
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.05),
-          rgba(125, 211, 252, 0.05)
-        );
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-        transition: all 0.25s ease;
-      }
+			.boss:hover {
+				transform: translateY(-2px) scale(1.02);
+				border-color: rgba(0, 240, 255, 0.25);
+				background: linear-gradient(
+					90deg,
+					rgba(0, 240, 255, 0.05),
+					rgba(125, 211, 252, 0.05)
+				);
+				box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+			}
 
       .boss .meta {
         display: flex;
@@ -453,83 +454,120 @@
         }
       }
 
-      #timers {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        overflow-y: auto;
-        padding: 6px 4px;
-        max-height: 100%;
-        scroll-behavior: smooth;
-      }
+			#timers {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 8px;
+				overflow-y: auto;
+				padding: 6px 4px;
+				max-height: 100%;
+				scroll-behavior: smooth;
+			}
 
-      .timer {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 95%;
-        min-height: 60px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        background: linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0.02),
-          rgba(0, 0, 0, 0.06)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.08);
-        font-size: 13px;
-        box-shadow: 0 2px 10px rgba(0, 240, 255, 0.05);
-        transition: transform 0.25s ease, box-shadow 0.3s ease,
-          border-color 0.3s ease;
-        overflow: hidden;
-      }
+			/* === ACTIVE TIMER CARD — smaller, balanced, aligned === */
+			.timer {
+				position: relative;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: 95%;
+				padding: 8px 12px; /* reduced padding */
+				border-radius: 8px;
+				background: linear-gradient(
+					90deg,
+					rgba(255, 255, 255, 0.02),
+					rgba(0, 0, 0, 0.06)
+				);
+				border: 1px solid rgba(0, 240, 255, 0.08);
+				font-size: 11px; /* slightly smaller base font */
+				box-shadow: 0 2px 8px rgba(0, 240, 255, 0.05);
+				transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+				overflow: hidden;
+				height: auto;
+				min-height: 48px; /* compact but still stable */
+			}
 
-      .timer.ready {
-        border-color: rgba(0, 240, 255, 0.25);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.08),
-          rgba(125, 211, 252, 0.08)
-        );
-      }
+			/* Glow state */
+			.timer.ready {
+				border-color: rgba(0, 240, 255, 0.25);
+				box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+				background: linear-gradient(
+					90deg,
+					rgba(0, 240, 255, 0.07),
+					rgba(125, 211, 252, 0.07)
+				);
+			}
 
-      .timer .timer-name {
-        font-weight: 700;
-        font-size: 14px;
-        color: var(--text);
-        margin-bottom: 2px;
-      }
+			/* Left text block */
+			.timer .meta {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 1px;
+			}
 
-      .timer .timer-spawn {
-        font-size: 11px;
-        color: var(--muted);
-      }
+			/* Text sizes — further reduced */
+			.timer .timer-name {
+				font-weight: 700;
+				font-size: 12px;
+				color: var(--text);
+			}
 
-      .timer .timer-remaining {
-        font-weight: 800;
-        font-size: 13px;
-        color: var(--accent);
-      }
+			.timer .timer-spawn {
+				font-size: 9px;
+				color: var(--muted);
+			}
 
-      .timer:hover {
-        transform: translateY(-2px) scale(1.02);
-        border-color: rgba(0, 240, 255, 0.25);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.05),
-          rgba(125, 211, 252, 0.05)
-        );
-      }
+			.timer .timer-remaining {
+				font-weight: 500;
+				font-size: 10px;
+				color: var(--accent);
+			}
 
-      .timer .kbtn {
-        margin-top: 4px;
-        font-size: 12px;
-        padding: 5px 8px;
-      }
+			/* Hover glow */
+			.timer:hover {
+				transform: translateY(-2px) scale(1.02);
+				border-color: rgba(0, 240, 255, 0.25);
+				box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+				background: linear-gradient(
+					90deg,
+					rgba(0, 240, 255, 0.05),
+					rgba(125, 211, 252, 0.05)
+				);
+			}
+
+			/* === Red-themed action button (fits cyber theme) === */
+			.timer .kbtn {
+				margin-left: auto;
+				font-size: 10px;
+				padding: 4px 7px;
+				border-radius: 6px;
+				border: 1px solid rgba(255, 80, 80, 0.4);
+				background: rgba(255, 60, 60, 0.05);
+				color: #ff8080;
+				font-weight: 700;
+				cursor: pointer;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				transition: all 0.25s ease;
+				box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
+			}
+
+			/* Hover — bright neon red glow */
+			.timer .kbtn:hover {
+				background: rgba(255, 60, 60, 0.15);
+				border-color: rgba(255, 100, 100, 0.6);
+				color: #fff;
+				box-shadow: 0 0 14px rgba(255, 80, 80, 0.5);
+				transform: translateY(-1px);
+			}
+
+			/* Active press effect */
+			.timer .kbtn:active {
+				transform: scale(0.97);
+				box-shadow: 0 0 8px rgba(255, 60, 60, 0.3);
+			}
 
       @media (max-width: 720px) {
         .main {
@@ -541,14 +579,50 @@
           order: 1;
           flex: 0 0 auto;
         }
+				
+			/* === Harmonize Active Timers Panel to Boss List visual style === */
+			#timersPanel {
+				background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.05));
+				border: 1px solid var(--glass-border);
+				border-radius: var(--radius);
+				box-shadow: var(--shadow);
+			}
 
-        #timersPanel {
-          order: 2;
-          flex: 1 1 auto;
-          min-height: 0;
-          position: relative;
-          z-index: 1;
-        }
+			#timersPanel .card-header {
+				color: var(--accent);
+				text-shadow: 0 0 5px rgba(0,240,255,0.4), 0 0 10px rgba(0,240,255,0.2);
+				background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+				border-bottom: 1px solid rgba(0,240,255,0.12);
+				backdrop-filter: blur(4px);
+			}
+
+			/* Timers list area — same spacing and scroll behavior as boss list */
+			#timers {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 8px;
+				padding: 6px 4px;
+				scroll-behavior: smooth;
+			}
+
+			/* Individual timer cards — adopt the same hover and glow effects as .boss */
+			.timer {
+				width: 95%;
+				padding: 8px 10px;
+				border-radius: 8px;
+				background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(0,0,0,0.04));
+				border: 1px solid rgba(255,255,255,0.02);
+				font-size: 13px;
+				transition: transform 0.2s ease, box-shadow 0.25s ease;
+			}
+
+			.timer:hover {
+				transform: translateY(-2px) scale(1.02);
+				border-color: rgba(0,240,255,0.3);
+				background: linear-gradient(90deg, rgba(0,240,255,0.05), rgba(125,211,252,0.05));
+				box-shadow: 0 0 10px rgba(0,240,255,0.15);
+			}
 
         #bossListPanel {
           order: 3;
@@ -3372,7 +3446,6 @@
 			<span class="count">0</span>
 		</div>
 
-		<!-- Chat Box (hidden by default) -->
 		<!-- Chat Box (hidden by default) -->
 		<div id="chatBox" class="chat-box">
 			<div class="chat-header">
