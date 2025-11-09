@@ -140,22 +140,22 @@
 			.logo-img {
 				height: 44px;
 				width: auto;
-				border-radius: 50%;
 				display: block;
 				object-fit: contain;
-				transition: transform 0.4s ease; /* keep smooth scaling if you hover */
 				margin: 0;
-				border: none; /* remove border */
-				box-shadow: none; /* remove glow/shadow */
-				position: relative;
-				z-index: 1;
+				animation: logoPulse 3s ease-in-out infinite;
 			}
 
-      /* === Hover effect === */
-			.logo-img:hover {
-				transform: scale(1.08); /* optional slight zoom */
-				box-shadow: none;
-				border: none;
+      /* === Logo pulse animation === */
+			@keyframes logoPulse {
+				0%, 100% {
+					transform: scale(1);
+					filter: brightness(1);
+				}
+				50% {
+					transform: scale(1.1);
+					filter: brightness(1.3);
+				}
 			}
 
       /* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
@@ -295,83 +295,120 @@
       }
 
       .settings {
-        width: 40px;
-        height: 40px;
-        border: 1px solid rgba(0, 240, 255, 0.4);
-        border-radius: 8px;
+        width: 44px;
+        height: 44px;
+        border: 2px solid rgba(0, 240, 255, 0.5);
+        border-radius: 6px;
         background: linear-gradient(
           135deg,
-          rgba(0, 30, 50, 0.9),
-          rgba(0, 15, 25, 0.95)
+          rgba(0, 20, 40, 0.8),
+          rgba(0, 10, 25, 0.95)
         );
         color: var(--accent);
         cursor: pointer;
         display: grid;
         place-items: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.2),
-          inset 0 0 15px rgba(0, 240, 255, 0.05);
-        backdrop-filter: blur(6px);
+        transition: all 0.25s ease;
+        box-shadow: 
+          0 0 20px rgba(0, 240, 255, 0.25),
+          inset 0 0 20px rgba(0, 240, 255, 0.08),
+          0 0 40px rgba(0, 240, 255, 0.1);
+        backdrop-filter: blur(8px);
         position: relative;
         z-index: 10001;
+        font-size: 20px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
       }
 
       .settings::before {
         content: "";
         position: absolute;
-        inset: -2px;
-        background: conic-gradient(
-          from 0deg,
-          transparent,
-          rgba(0, 240, 255, 0.3),
-          transparent 60%
+        inset: -3px;
+        background: linear-gradient(
+          45deg,
+          rgba(0, 240, 255, 0.4),
+          rgba(125, 211, 252, 0.2),
+          rgba(0, 240, 255, 0.4)
         );
-        border-radius: 8px;
+        background-size: 300% 300%;
+        border-radius: 6px;
         opacity: 0;
-        transition: opacity 0.3s ease;
-        animation: settingsRotate 3s linear infinite;
+        transition: opacity 0.25s ease;
+        animation: settingsGlow 4s ease-in-out infinite;
         z-index: -1;
       }
 
-      @keyframes settingsRotate {
-        0% {
-          transform: rotate(0deg);
+      @keyframes settingsGlow {
+        0%, 100% {
+          box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.05);
+          background-position: 0% 50%;
         }
-        100% {
-          transform: rotate(360deg);
+        50% {
+          box-shadow: 0 0 35px rgba(0, 240, 255, 0.5), inset 0 0 25px rgba(0, 240, 255, 0.1);
+          background-position: 100% 50%;
         }
       }
 
       .settings:hover {
-        transform: translateY(-2px) rotate(90deg);
+        border-color: rgba(0, 240, 255, 0.8);
         background: linear-gradient(
           135deg,
-          rgba(0, 240, 255, 0.2),
-          rgba(0, 50, 80, 0.9)
+          rgba(0, 30, 60, 0.9),
+          rgba(0, 50, 100, 0.95)
         );
-        box-shadow: 0 0 25px rgba(0, 240, 255, 0.5),
-          inset 0 0 20px rgba(0, 240, 255, 0.15);
-        color: #fff;
+        box-shadow: 
+          0 0 30px rgba(0, 240, 255, 0.4),
+          inset 0 0 25px rgba(0, 240, 255, 0.12),
+          0 0 50px rgba(0, 240, 255, 0.2);
+        color: #00ffff;
+        transform: translateY(-3px) scale(1.05);
       }
 
       .settings:hover::before {
         opacity: 1;
       }
 
+      .settings:active {
+        transform: translateY(-1px) scale(0.98);
+        box-shadow: 
+          0 0 20px rgba(0, 240, 255, 0.3),
+          inset 0 0 30px rgba(0, 240, 255, 0.15);
+      }
+
       .settings.active {
+        border-color: rgba(0, 255, 100, 0.7);
         background: linear-gradient(
           135deg,
-          rgba(0, 240, 255, 0.25),
-          rgba(0, 60, 100, 0.9)
+          rgba(0, 255, 100, 0.2),
+          rgba(0, 100, 60, 0.3)
         );
-        box-shadow: 0 0 30px rgba(0, 240, 255, 0.6),
-          inset 0 0 25px rgba(0, 240, 255, 0.2);
-        transform: rotate(180deg);
-        color: #fff;
+        box-shadow: 
+          0 0 40px rgba(0, 255, 100, 0.5),
+          inset 0 0 30px rgba(0, 255, 100, 0.15),
+          0 0 60px rgba(0, 240, 255, 0.2);
+        color: #00ff88;
+        animation: settingsPulse 2s ease-in-out infinite;
       }
 
       .settings.active::before {
         opacity: 1;
+        border-color: rgba(0, 255, 100, 0.5);
+      }
+
+      @keyframes settingsPulse {
+        0%, 100% {
+          box-shadow: 
+            0 0 30px rgba(0, 255, 100, 0.4),
+            inset 0 0 25px rgba(0, 255, 100, 0.1),
+            0 0 50px rgba(0, 240, 255, 0.15);
+        }
+        50% {
+          box-shadow: 
+            0 0 45px rgba(0, 255, 100, 0.6),
+            inset 0 0 35px rgba(0, 255, 100, 0.2),
+            0 0 70px rgba(0, 240, 255, 0.25);
+        }
       }
 
       .main {
@@ -469,6 +506,8 @@
 				box-sizing: border-box;
 				position: relative;
 			}
+
+
 
 			.boss::after {
 				content: "";
@@ -576,14 +615,18 @@
 				align-items: center;
 				justify-content: center;
 				text-align: center;
+				gap: 4px;
 
-				/* ↓ Reduce space inside and outside ↓ */
-				padding: 20px 18px;   /* was 24px 16px — tighter inside */
-				margin: 6px;          /* new: small gap around panel */
+				/* â†“ Reduce space inside and outside â†“ */
+				padding: 8px 12px;
+				margin: 0;
+				width: 100%;           /* match timer width */
+				min-height: 90px;     /* taller panel */
 
 				border-radius: 10px;
 				border: 2px solid rgba(0, 240, 255, 0.3);
-				background: linear-gradient(
+				border-right: 3px solid rgba(0, 240, 255, 0.3);
+			background: linear-gradient(
 					135deg,
 					rgba(0, 40, 60, 0.6),
 					rgba(0, 20, 30, 0.8)
@@ -653,18 +696,21 @@
 
       /* === NEXT BOSS NAME: NEON RED GLOW WITH PULSE === */
       #nextBoss .boss-name {
-        font-size: 1.2rem;
-        font-weight: 900;
-        color: #ff4d4d;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        display: inline-block;
-        position: relative;
-        text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-          0 0 30px rgba(255, 0, 0, 0.6),
-          0 0 45px rgba(255, 0, 0, 0.4);
-        animation: bossNamePulse 2s ease-in-out infinite;
-        z-index: 1;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ff4d4d;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      text-shadow: 0 0 15px rgba(255, 80, 80, 1),
+      0 0 30px rgba(255, 0, 0, 0.6),
+      0 0 45px rgba(255, 0, 0, 0.4);
+      animation: bossNamePulse 2s ease-in-out infinite;
+      z-index: 1;
+      white-space: nowrap;
+      flex-shrink: 0;
       }
 
       @keyframes bossNamePulse {
@@ -683,14 +729,17 @@
       }
 
       #nextBoss .time-remaining {
-        font-size: .7rem;
+        font-size: 0.95rem;
         font-weight: 700;
         color: var(--accent);
         text-shadow: 0 0 10px rgba(0, 240, 255, 0.8),
           0 0 20px rgba(0, 240, 255, 0.5);
-        margin-top: 3px;
+        margin-top: 0;
         animation: timeGlow 2s ease-in-out infinite;
         z-index: 1;
+        white-space: nowrap;
+        flex-shrink: 1;
+        min-width: 0;
       }
 
       @keyframes timeGlow {
@@ -715,7 +764,7 @@
         }
       }
 
-			/* === ACTIVE TIMER CARD — CYBER THEME === */
+			/* === ACTIVE TIMER CARD â€” CYBER THEME === */
 			.timer {
 				position: relative;
 				display: flex;
@@ -762,7 +811,7 @@
 				opacity: 1;
 			}
 
-			/* Glow state — Ready to respawn */
+			/* Glow state â€” Ready to respawn */
 			.timer.ready {
 				border-color: rgba(0, 255, 100, 0.4);
 				border-right-color: rgba(0, 255, 100, 0.6);
@@ -822,7 +871,7 @@
 			}
 
 			.timer .timer-spawn {
-				font-size: 9px;
+				font-size: 7px;
 				color: var(--accent);
 				opacity: 0.7;
 				font-weight: 600;
@@ -869,7 +918,7 @@
 					0 0 20px rgba(0, 240, 255, 0.4);
 			}
 
-			/* Hover — bright neon red glow */
+			/* Hover â€” bright neon red glow */
 			.timer .kbtn:hover {
 				background: rgba(255, 60, 60, 0.15);
 				border-color: rgba(255, 100, 100, 0.6);
@@ -912,7 +961,7 @@
 					width: 100%;
 				}
 
-				/* Active timers — taller and directly “touching” boss list */
+				/* Active timers â€” taller and directly â€œtouchingâ€ boss list */
 				#timersPanel {
 					order: 2;
 					flex: 0 0 68%;         /* fill more height */
@@ -928,7 +977,7 @@
 					box-shadow: none;      /* neutralize glow that makes a gap */
 				}
 
-				/* Boss list — directly attached to timers */
+				/* Boss list â€” directly attached to timers */
 				#bossListPanel {
 					order: 3;
 					flex: 1 1 auto;
@@ -985,6 +1034,11 @@
         max-width: 90%;
         padding: 20px;
       }
+      
+      .settings-modal h3 {
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
 
       .settings-list {
         display: flex;
@@ -1013,6 +1067,7 @@
         transition: all 0.25s ease;
         font-family: "Orbitron", sans-serif;
         text-align: left;
+        text-transform: uppercase;
       }
 
       .settings-item:last-child {
@@ -1043,6 +1098,7 @@
         color: var(--accent);
         text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
         flex: 1;
+        text-transform: uppercase;
       }
 
       .settings-item:hover .label {
@@ -1740,7 +1796,7 @@
 
 			/* Status badge */
 			.boss .name.dead::before {
-				content: "⚠ RESPAWNING"; /* non-breaking space after ⚠ */
+				content: "⚠️  RESPAWNING"; /* non-breaking space after ⚠️  */
 				position: absolute;
 				top: -18px;
 				left: 0;
@@ -1764,45 +1820,7 @@
 				50% { opacity: 1; }
 			}
 
-			/* === Cyber Hexagonal Timer Indicator === */
-			.boss .name.dead::after {
-				content: "⬢";
-				display: inline-flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 20px;
-				color: #ff5555;
-				margin-left: 4px;
-				vertical-align: middle;
-				animation: hexPulse 2.5s ease-in-out infinite, hexSpin 8s linear infinite;
-				text-shadow: 0 0 12px rgba(255, 68, 68, 1),
-					0 0 24px rgba(255, 0, 0, 0.7),
-					0 0 36px rgba(255, 0, 0, 0.5);
-				filter: drop-shadow(0 0 10px rgba(255, 68, 68, 0.8));
-				position: relative;
-			}
 
-			/* Hexagon pulsing effect */
-			@keyframes hexPulse {
-				0%, 100% {
-					transform: scale(1);
-					opacity: 1;
-				}
-				50% {
-					transform: scale(1.15);
-					opacity: 0.85;
-				}
-			}
-
-			/* Slow rotation */
-			@keyframes hexSpin {
-				0% { 
-					transform: rotate(0deg);
-				}
-				100% { 
-					transform: rotate(360deg);
-				}
-			}
 
       /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
       .card-header {
@@ -1930,9 +1948,9 @@
 				transition: transform 0.3s ease, opacity 0.3s ease;
 			}
 
-			/* 💬 replaces 🟢 when there’s a new chat message */
+			/* ðŸ’¬ replaces 🟢 when there's a new chat message */
 			.online-users.notify::before {
-				content: "💬";
+				content: "ðŸ’¬";
 				color: #ff4d4d;
 				text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
 					0 0 12px rgba(255, 0, 0, 0.7),
@@ -1963,7 +1981,7 @@
 				}
 			}
 
-			/* 💬 red pulse animation */
+			/* ðŸ’¬ red pulse animation */
 			@keyframes pulseNotify {
 				0%, 100% {
 					transform: scale(1);
@@ -2006,7 +2024,7 @@
 				top: -36px;
 				right: 50%;
 				transform: translateX(50%) translateY(-3px);
-				background: rgba(255, 70, 70, 0.25); /* ✨ translucent red */
+				background: rgba(255, 70, 70, 0.25); /* âœ¨ translucent red */
 				border: 1px solid rgba(255, 90, 90, 0.4);
 				backdrop-filter: blur(6px);
 				padding: 4px 9px;
@@ -2308,6 +2326,48 @@
 				filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
 			}
 
+			/* Mark Dead Button - Red/Danger Colors */
+			.icon-btn[data-action="mark"]:hover {
+				border-color: rgba(255, 80, 80, 0.6);
+				box-shadow: 0 0 20px rgba(255, 80, 80, 0.4),
+					inset 0 0 20px rgba(255, 80, 80, 0.1);
+				color: #ff8888;
+			}
+
+			.icon-btn[data-action="mark"]:hover svg {
+				filter: drop-shadow(0 0 8px rgba(255, 80, 80, 0.6));
+			}
+
+			.icon-btn[data-action="mark"]::before {
+				background: linear-gradient(
+					45deg,
+					transparent,
+					rgba(255, 80, 80, 0.1),
+					transparent
+				);
+			}
+
+			/* Set Timer Button - Green/Success Colors */
+			.icon-btn[data-action="set"]:hover {
+				border-color: rgba(0, 255, 100, 0.6);
+				box-shadow: 0 0 20px rgba(0, 255, 100, 0.4),
+					inset 0 0 20px rgba(0, 255, 100, 0.1);
+				color: #88ff88;
+			}
+
+			.icon-btn[data-action="set"]:hover svg {
+				filter: drop-shadow(0 0 8px rgba(0, 255, 100, 0.6));
+			}
+
+			.icon-btn[data-action="set"]::before {
+				background: linear-gradient(
+					45deg,
+					transparent,
+					rgba(0, 255, 100, 0.1),
+					transparent
+				);
+			}
+
 			.icon-label {
 				font-family: "Orbitron", sans-serif;
 				font-size: 9px;
@@ -2348,7 +2408,7 @@
               id="bossSearch"
               placeholder="Search boss..."
             />
-            <span class="clear-icon" id="clearSearch"> ✖ </span>
+            <span class="clear-icon" id="clearSearch"> âœ– </span>
           </div>
           <button aria-label="Settings" class="settings" id="settingsBtn">
             <svg
@@ -2378,7 +2438,7 @@
         <aside class="right-column">
           <div class="card" id="nextBoss">
             <div class="boss-name">Next Boss</div>
-            <div class="time-remaining" id="nextTime">— —</div>
+            <div class="time-remaining" id="nextTime">â€” â€”</div>
           </div>
           <section class="card" id="timersPanel">
             <h4 class="card-header">ACTIVE TIMERS</h4>
@@ -2404,7 +2464,7 @@
         </div>
       </div>
     </div>
-    <!-- Webhook modal — compact cyber panel -->
+    <!-- Webhook modal â€” compact cyber panel -->
     <div class="modal-backdrop" id="webhookModalBackdrop">
       <div
         aria-labelledby="webhookTitle"
@@ -2412,7 +2472,7 @@
         class="modal cyber-modal"
         role="dialog"
       >
-        <h3 id="webhookTitle">💬 Discord Webhook</h3>
+        <h3 id="webhookTitle">ðŸ’¬ Discord Webhook</h3>
         <div class="small">Paste your Discord webhook URL below.</div>
         <input
           class="webhook-input"
@@ -2435,7 +2495,7 @@
         class="modal cyber-modal settings-modal"
         role="dialog"
       >
-        <h3 id="settingsTitle">⚙️ Settings</h3>
+        <h3 id="settingsTitle">⚙️ Settings</h3>
         <div class="settings-list">
           <button class="settings-item" id="exportBtn">
             <span class="icon">📤</span>
@@ -2557,7 +2617,6 @@
       let cachedWebhookUrl = null;
       let timers = {}; // { bossId: { endTime, startedAt, weekly?, notifiedSoon?, spawnAnnounced? } }
       let currentBossForTime = null;
-      let justLoaded = true;
       let deadLocks = {}; // in-memory map of boss cooldowns
 
       // Dedup caches
@@ -2652,7 +2711,7 @@
         push,
         serverTimestamp as rtdbServerTimestamp,
         onChildAdded,
-        get, // ✅ rename this one so you don’t clash
+        get, // ✅ rename this one so you donâ€™t clash
       } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
       // ✅ Initialize Firebase app
@@ -2688,7 +2747,7 @@
           lastTriggeredBySelf = now;
           await setDoc(refreshDocRef, { forceRefresh: now });
           alert("✅ Synchronization triggered for all connected users.");
-          console.log("🔁 sync triggered at", new Date(now).toISOString());
+          console.log("ðŸ” sync triggered at", new Date(now).toISOString());
         }
       });
 
@@ -2709,16 +2768,16 @@
         }
         if (lastTriggerMs === lastTriggeredBySelf) return;
 
-        console.log("🔄 Firestore refresh triggered, reloading page.");
+        console.log("ðŸ”„ Firestore refresh triggered, reloading page.");
         location.reload();
       });
 
-      // ✅ Safe Firestore write helper — ensures reliable merges
+      // ✅ Safe Firestore write helper â€” ensures reliable merges
       async function safeWrite(ref, payload) {
         try {
           await updateDoc(ref, payload);
         } catch (err) {
-          console.warn("⚠️ updateDoc failed, retrying with setDoc merge", err);
+          console.warn("⚠️ ï¸ updateDoc failed, retrying with setDoc merge", err);
           await setDoc(ref, payload, { merge: true });
         }
       }
@@ -2733,10 +2792,10 @@
             cachedWebhookUrl = data.url || null;
             console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
           } else {
-            console.warn("⚠️ No webhook found in Firestore config.");
+            console.warn("⚠️ ï¸ No webhook found in Firestore config.");
           }
         } catch (e) {
-          console.error("❌ Failed to auto-load webhook:", e);
+          console.error("âŒ Failed to auto-load webhook:", e);
         }
       }
 
@@ -2756,7 +2815,7 @@
           } else {
             cachedWebhookUrl = null;
             webhookInput.value = "";
-            console.log("ℹ️ No webhook stored in Firestore.");
+            console.log("â„¹ï¸ No webhook stored in Firestore.");
             return null;
           }
         } catch (e) {
@@ -2774,7 +2833,7 @@
           console.log("✅ Webhook saved to Firestore.");
         } catch (e) {
           console.warn("save webhook err", e);
-          alert("❌ Failed to save webhook.");
+          alert("âŒ Failed to save webhook.");
         }
       }
 
@@ -2787,7 +2846,7 @@
           console.log("✅ Webhook cleared from Firestore.");
         } catch (e) {
           console.warn("clear webhook err", e);
-          alert("❌ Failed to clear webhook.");
+          alert("âŒ Failed to clear webhook.");
         }
       }
 
@@ -2801,7 +2860,7 @@
           null;
 
         if (!webhook) {
-          console.warn("⚠️ No Discord webhook configured.");
+          console.warn("⚠️ ï¸ No Discord webhook configured.");
           return;
         }
 
@@ -2821,7 +2880,7 @@
 
           if (!res.ok) {
             console.error(
-              "❌ Discord webhook failed:",
+              "âŒ Discord webhook failed:",
               res.status,
               await res.text()
             );
@@ -2829,7 +2888,7 @@
             console.log("✅ Discord embed sent successfully.");
           }
         } catch (err) {
-          console.error("⚠️ Discord webhook error:", err);
+          console.error("⚠️ ï¸ Discord webhook error:", err);
         }
       }
 
@@ -2838,27 +2897,27 @@
         try {
           if (!boss || !type) return;
 
-          // 🔹 Normalize Firestore key (handles spaces, punctuation)
+          // ðŸ”¹ Normalize Firestore key (handles spaces, punctuation)
           const safeId = encodeURIComponent(boss.id.trim());
           const key = `${safeId}_${type}`;
 
           const now = Date.now();
           const localWindow = 2 * 60 * 1000; // 2 min client dedupe
 
-          // 🔹 Local dedupe guard (fast path)
+          // ðŸ”¹ Local dedupe guard (fast path)
           if (
             localNotifCache[key] &&
             now - localNotifCache[key] < localWindow
           ) {
             console.log(
-              `🛑 Locally skipped duplicate ${type} notification for ${boss.name}`
+              `ðŸ›‘ Locally skipped duplicate ${type} notification for ${boss.name}`
             );
             return;
           }
 
-          // 🔒 Reserve locally
+          // ðŸ”’ Reserve locally
           localNotifCache[key] = now;
-          console.log(`🔒 Local reserve set for ${key}`);
+          console.log(`ðŸ”’ Local reserve set for ${key}`);
 
           const ref = doc(db, "notifications", key);
           const thresholdMs = 2 * 60 * 1000; // server dedupe window
@@ -2882,19 +2941,19 @@
             const thisEndTimeMs = timers[boss.id]?.endTime || 0;
             const nowMs = Date.now();
 
-            // 🔹 Only skip if (a) last send < 2min ago AND (b) same spawn cycle
+            // ðŸ”¹ Only skip if (a) last send < 2min ago AND (b) same spawn cycle
             const recentlySent =
               nowMs - lastSentMs < thresholdMs &&
               lastEndTimeMs === thisEndTimeMs;
 
             if (recentlySent) {
               console.log(
-                `⏸️ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
+                `â¸ï¸ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
               );
               return false;
             }
 
-            // 🔹 Write both lastSent + lastEndTimeMs atomically
+            // ðŸ”¹ Write both lastSent + lastEndTimeMs atomically
             tx.set(
               ref,
               {
@@ -2911,7 +2970,7 @@
 
           if (!txResult) {
             console.log(
-              `⏹️ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
+              `â¹ï¸ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
             );
             return;
           }
@@ -2920,51 +2979,51 @@
             txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()
           );
 
-          // 🔹 Build appropriate embed
+          // ðŸ”¹ Build appropriate embed
           let embed;
           switch (type) {
             case "killed":
               embed = buildEmbed(
-                `💀 ${boss.name} has been defeated!`,
+                `ðŸ’€ ${boss.name} has been defeated!`,
                 `Next respawn: ${formattedTime}`,
                 0xff3333
               );
               break;
             case "soon":
               embed = buildEmbed(
-                `⚠️ ${boss.name} will respawn soon!`,
+                `⚠️ ï¸ ${boss.name} will respawn soon!`,
                 `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
                 0xffcc00
               );
               break;
             case "spawn":
               embed = buildEmbed(
-                `⚔️ ${boss.name} has spawned!`,
-                `It’s time to hunt!`,
+                `âš”ï¸ ${boss.name} has spawned!`,
+                `Itâ€™s time to hunt!`,
                 0xb266ff
               );
               break;
             case "manual":
               embed = buildEmbed(
-                `⏰ ${boss.name} manual time set`,
+                `â° ${boss.name} manual time set`,
                 `Next respawn: ${formattedTime}`,
                 0x3399ff
               );
               break;
             default:
-              console.warn(`⚠️ Unknown notification type: ${type}`);
+              console.warn(`⚠️ ï¸ Unknown notification type: ${type}`);
               return;
           }
 
-          // 🔹 Final Discord send
+          // ðŸ”¹ Final Discord send
           await sendDiscordEmbed(embed);
           console.log(`✅ Sent ${type} notification for ${boss.name}`);
         } catch (e) {
           if (e?.code === "ABORTED") {
-            console.warn("ℹ️ Transaction aborted (expected):", e);
+            console.warn("â„¹ï¸ Transaction aborted (expected):", e);
             return;
           }
-          console.warn("⚠️ sendDiscordEmbedOnce error:", e);
+          console.warn("⚠️ ï¸ sendDiscordEmbedOnce error:", e);
           delete localNotifCache[key]; // allow retry if failed
         }
       }
@@ -2987,7 +3046,7 @@
         if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
         await sendDiscordEmbed(
           buildEmbed(
-            "🧪 Webhook test successful!",
+            "ðŸ§ª Webhook test successful!",
             "This is a test message from Lord Nine Tracker.",
             0x00ff99
           )
@@ -3018,7 +3077,7 @@
           const data = timers[bossId];
           const json = JSON.stringify(data || {});
           if (lastWriteCache[bossId] === json) {
-            console.log(`ℹ️ Skipping redundant write for ${bossId}`);
+            console.log(`â„¹ï¸ Skipping redundant write for ${bossId}`);
             return;
           }
           lastWriteCache[bossId] = json;
@@ -3070,7 +3129,7 @@
         renderBossList();
 
         console.log(
-          `🕹️ startTimer: started ${bossId} -> ${new Date(
+          `ðŸ•¹ï¸ startTimer: started ${bossId} -> ${new Date(
             timers[bossId].endTime
           ).toISOString()}`
         );
@@ -3084,7 +3143,7 @@
         const ref = doc(db, "timers", "global");
 
         if (!timers[bossId]) {
-          console.log(`ℹ️ No timer to clear for ${boss?.name || bossId}.`);
+          console.log(`â„¹ï¸ No timer to clear for ${boss?.name || bossId}.`);
           return;
         }
 
@@ -3095,7 +3154,7 @@
           const snap = await getDoc(ref);
           if (!snap.exists()) {
             console.warn(
-              "⚠️ timers/global did not exist. Creating it first..."
+              "⚠️ ï¸ timers/global did not exist. Creating it first..."
             );
             await setDoc(ref, { timers: {} }, { merge: true });
           }
@@ -3105,7 +3164,7 @@
 
           console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
         } catch (err) {
-          console.error("❌ Firestore delete failed for", bossId, err);
+          console.error("âŒ Firestore delete failed for", bossId, err);
           alert("Failed to clear timer in Firestore. Please retry.");
         }
 
@@ -3114,7 +3173,7 @@
         renderBossList();
 
         console.log(
-          `🧹 Cleared timer for ${boss?.name || bossId} locally and remotely.`
+          `ðŸ§¹ Cleared timer for ${boss?.name || bossId} locally and remotely.`
         );
       }
 
@@ -3132,10 +3191,10 @@
           rebuildTimersPanel();
           renderBossList();
           alert("✅ All non-weekly timers reset (Firestore updated).");
-          console.log("🔁 resetAll: fully reset timers and updated Firestore.");
+          console.log("ðŸ” resetAll: fully reset timers and updated Firestore.");
         } catch (e) {
-          console.warn("❌ resetAll Firestore update failed", e);
-          alert("⚠️ Failed to update Firestore.");
+          console.warn("âŒ resetAll Firestore update failed", e);
+          alert("⚠️ ï¸ Failed to update Firestore.");
         }
       }
 
@@ -3216,18 +3275,18 @@
           // ✅ Send Discord notification (manual entry always sends)
           const formattedTime = formatShortDateTime(endTime);
           const embed = buildEmbed(
-            `⏰ ${boss.name} manual time set`,
+            `â° ${boss.name} manual time set`,
             `Next respawn: ${formattedTime}`,
             0x3399ff
           );
           await sendDiscordEmbedOnce("manual", boss);
 
-          console.log(`📡 Discord notification sent for ${boss.name}.`);
+          console.log(`ðŸ“¡ Discord notification sent for ${boss.name}.`);
           alert(`✅ Manual time saved and synced for ${boss.name}.`);
         } catch (err) {
-          console.error("❌ Failed to record manual time:", err);
+          console.error("âŒ Failed to record manual time:", err);
           alert(
-            "❌ Failed to record manual time to Firestore. Check console for details."
+            "âŒ Failed to record manual time to Firestore. Check console for details."
           );
         }
       });
@@ -3263,16 +3322,16 @@
 					const nameClass = isActive ? "name dead" : "name";
 
 					node.innerHTML = `
-						<div class="meta">
-							<div class="portrait-meta">
-								<img class="boss-portrait" src="assets/images/${b.id}.png" alt="${b.name}">
-								<div class="info">
-									<div class="${nameClass}">${b.name}</div>
-									<div class="sub">${subText}</div>
-								</div>
+					<div class="meta">
+						<div class="portrait-meta">
+							<img class="boss-portrait" src="assets/images/${b.id}.png" alt="${b.name}">
+							<div class="info">
+								<div class="${nameClass}">${b.name}</div>
+								<div class="sub">${subText}</div>
 							</div>
 						</div>
-						<div class="actions">
+					</div>
+					<div class="actions">
 							<div class="action-btn">
 								<button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${b.id}">
 									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -3304,13 +3363,16 @@
 					`;
 
 					bossListEl.appendChild(node);
-				}
 			}
+		}
 
       // === Unified Boss List Click Handler with atomic deadlock attempt ===
       bossListEl.addEventListener("click", async (e) => {
         const btn = e.target.closest(".kbtn");
         if (!btn) return;
+
+        // Prevent click event from bubbling to parent boss card
+        e.stopPropagation();
 
         const action = btn.getAttribute("data-action");
         const id = btn.getAttribute("data-id");
@@ -3324,7 +3386,7 @@
           // Immediate visual disable to give feedback
           btn.disabled = true;
           console.log(
-            `🔘 mark clicked: attempting lock for ${id} (local visual disabled)`
+            `ðŸ”˜ mark clicked: attempting lock for ${id} (local visual disabled)`
           );
 
           try {
@@ -3347,7 +3409,7 @@
             if (!locked) {
               // lock lost to another client: re-enable and warn
               console.warn(
-                `⛔ markDead: failed to acquire lock for ${id} — another user locked it.`
+                `â›” markDead: failed to acquire lock for ${id} â€” another user locked it.`
               );
               // refresh deadLocks on next snapshot will correct disabled state, but re-enable for good UX
               btn.disabled = false;
@@ -3360,7 +3422,7 @@
               .querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`)
               .forEach((b) => (b.disabled = true));
             console.log(
-              `🔒 Acquired lock for ${id} until ${new Date(
+              `ðŸ”’ Acquired lock for ${id} until ${new Date(
                 lockUntil
               ).toISOString()}`
             );
@@ -3379,7 +3441,7 @@
             // Start the timer (this writes timer and triggers Discord send)
             await startTimer(id);
           } catch (err) {
-            console.error("⚠️ Error during mark dead transaction:", err);
+            console.error("⚠️ ï¸ Error during mark dead transaction:", err);
             btn.disabled = false;
           }
           return;
@@ -3442,7 +3504,7 @@
           node.innerHTML = `
           <div class="timer-left">
             <div class="timer-name">${boss.name}</div>
-            <div class="timer-spawn">⬡ SPAWN: ${spawnStr}</div>
+            <div class="timer-spawn">🔄 SPAWN TIME: ${spawnStr}</div>
           </div>
           <div class="timer-right">
             <div class="timer-remaining">${formatSec(remainingSec)}</div>
@@ -3480,7 +3542,7 @@
           .filter((x) => x.boss)
           .sort((a, b) => a.info.endTime - b.info.endTime);
         for (const e of entries) addOrUpdateTimerElement(e.id);
-        console.log("🔁 rebuildTimersPanel: timers rendered.");
+        console.log("ðŸ” rebuildTimersPanel: timers rendered.");
       }
 
       // -------------------------
@@ -3497,8 +3559,8 @@
           .sort((a, b) => a.endTime - b.endTime);
 
         if (upcoming.length === 0) {
-          nextBossNameEl.textContent = "Next Boss: —";
-          nextTimeEl.textContent = "—";
+          nextBossNameEl.textContent = "Next Boss: â€”";
+          nextTimeEl.textContent = "â€”";
           return;
         }
 
@@ -3514,6 +3576,42 @@
         nextTimeEl.textContent = `${String(hours).padStart(2, "0")}:${String(
           minutes
         ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        
+        // Auto-resize next boss name if it overflows
+        adjustNextBossNameSize();
+      }
+      
+      function adjustNextBossNameSize() {
+        const nextBoss = document.getElementById('nextBoss');
+        if (!nextBoss) return;
+        
+        const nameEl = nextBoss.querySelector('.boss-name');
+        if (!nameEl) return;
+        
+        // Reset to default size
+        nameEl.style.fontSize = '1.8rem';
+        nameEl.style.letterSpacing = '1.5px';
+        
+        let fontSize = 1.8;
+        const minFontSize = 0.9;
+        const step = 0.1;
+        
+        // Reduce font size until text fits within the next boss panel
+        while (fontSize > minFontSize) {
+          nameEl.style.fontSize = fontSize + 'rem';
+          
+          // Check if name is overflowing
+          if (nameEl.scrollWidth <= nextBoss.clientWidth - 40) { // 40px padding buffer
+            break;
+          }
+          
+          fontSize -= step;
+        }
+        
+        // If still overflowing, reduce letter-spacing
+        if (fontSize <= minFontSize && nameEl.scrollWidth > nextBoss.clientWidth - 40) {
+          nameEl.style.letterSpacing = '0.5px';
+        }
       }
 
 			// == MAIN TICKUPDATE == //
@@ -3525,7 +3623,7 @@
 					const boss = BOSSES.find((b) => b.id === id);
 					if (!boss) continue;
 
-					// 👇 Determine current phase (active timer vs cooldown)
+					// ðŸ‘‡ Determine current phase (active timer vs cooldown)
 					const activeEndTime = info.cooldownUntil || info.endTime;
 					const remainingMs = activeEndTime - now;
 
@@ -3555,7 +3653,7 @@
 						!info.notifiedSoon &&
 						!info.cooldownUntil
 					) {
-						console.log(`⚠️ soon: ${id} within 5min, preparing notification`);
+						console.log(`⚠️ ï¸ soon: ${id} within 5min, preparing notification`);
 						info.notifiedSoon = true;
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						savePromises.push(
@@ -3565,7 +3663,7 @@
 
 					// --- (3) Spawn announcement when timer reaches 0 ---
 					if (remainingMs <= 0 && !info.spawnAnnounced && !info.cooldownUntil) {
-						console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+						console.log(`ðŸŽ‰ spawn: ${id} reached spawn, announcing`);
 						info.spawnAnnounced = true;
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						savePromises.push(
@@ -3577,7 +3675,7 @@
 					if (remainingMs <= 0 && !info.cooldownUntil) {
 						info.cooldownUntil = now + 5 * 60 * 1000;
 						console.log(
-							`⏳ ${boss.name} entering 5-minute cooldown until ${new Date(
+							`â³ ${boss.name} entering 5-minute cooldown until ${new Date(
 								info.cooldownUntil
 							).toLocaleTimeString()}`
 						);
@@ -3585,14 +3683,14 @@
 						// 🟢 Visual: back to normal white glow during cooldown
 						if (nameElem) nameElem.classList.remove("dead");
 
-						// 💾 Save cooldown state to Firestore
+						// ðŸ’¾ Save cooldown state to Firestore
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						continue;
 					}
 
-					// --- (5) Cooldown ended — restart timer automatically ---
+					// --- (5) Cooldown ended â€” restart timer automatically ---
 					if (info.cooldownUntil && now >= info.cooldownUntil) {
-						console.log(`✅ ${boss.name} cooldown ended — restarting cycle...`);
+						console.log(`✅ ${boss.name} cooldown ended â€” restarting cycle...`);
 
 						const nowLater = Date.now();
 						let nextTime;
@@ -3605,7 +3703,7 @@
 							nextTime = nowLater + boss.respawn * 1000;
 						}
 
-						// ♻️ Reset timer and clear cooldown
+						// â™»ï¸ Reset timer and clear cooldown
 						timers[id] = {
 							endTime: nextTime,
 							startedAt: nowLater,
@@ -3624,7 +3722,7 @@
 						addOrUpdateTimerElement(id);
 						renderBossList();
 
-						console.log(`🔁 ${boss.name} timer restarted after cooldown.`);
+						console.log(`ðŸ” ${boss.name} timer restarted after cooldown.`);
 						continue;
 					}
 				}
@@ -3633,9 +3731,9 @@
 				if (savePromises.length) {
 					try {
 						await Promise.all(savePromises);
-						console.log(`💾 tickUpdate: completed ${savePromises.length} save ops`);
+						console.log(`ðŸ’¾ tickUpdate: completed ${savePromises.length} save ops`);
 					} catch (e) {
-						console.warn("⚠️ tickUpdate savePromises error", e);
+						console.warn("⚠️ ï¸ tickUpdate savePromises error", e);
 					}
 				}
 
@@ -3669,31 +3767,48 @@
       setInterval(() => {
         if (firebaseLoaded) tickUpdate();
       }, 1000);
-      setTimeout(() => (justLoaded = false), 5000);
 
-      // -------------------------
+       // -------------------------
       // UI wiring
       // -------------------------
-      searchInput.addEventListener("input", () => {
-        renderBossList();
+      // Function to update clear button visibility
+      const updateClearButtonVisibility = () => {
+        const hasText = !!searchInput.value;
+        clearSearch.style.display = hasText ? "inline" : "none";
         document
           .querySelector(".search-wrapper")
-          ?.classList.toggle("has-text", !!searchInput.value);
-        clearSearch.style.display = !!searchInput.value ? "inline" : "none";
+          ?.classList.toggle("has-text", hasText);
+      };
+
+      searchInput.addEventListener("input", () => {
+        renderBossList();
+        updateClearButtonVisibility();
+      });
+
+      // Keep clear button visible on focus/blur if text exists
+      searchInput.addEventListener("focus", () => {
+        updateClearButtonVisibility();
+      });
+
+      searchInput.addEventListener("blur", () => {
+        updateClearButtonVisibility();
       });
 
       clearSearch.addEventListener("click", () => {
         searchInput.value = "";
         document.querySelector(".search-wrapper")?.classList.remove("has-text");
-        clearSearch.style.display = "none";
+        updateClearButtonVisibility();
         renderBossList();
       });
+
+      // Initialize on page load
+      updateClearButtonVisibility();
 
       // === SETTINGS BUTTON + MODAL TOGGLE ===
       settingsBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
         settingsModalBackdrop.style.display = "flex";
-        console.log(`⚙️ settings modal opened`);
+        console.log(`⚙️ settings modal opened`);
       });
 
       settingsModalBackdrop.addEventListener("click", (ev) => {
@@ -3706,7 +3821,7 @@
         settingsModalBackdrop.style.display = "none";
         await loadWebhookFromFirestore();
         webhookBackdrop.style.display = "flex";
-        console.log("🔧 open webhook modal");
+        console.log("ðŸ”§ open webhook modal");
       });
 
       webhookBackdrop.addEventListener("click", (ev) => {
@@ -3733,9 +3848,9 @@
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
           alert("✅ Timers exported successfully.");
-          console.log("📤 Exported timers.json");
+          console.log("ðŸ“¤ Exported timers.json");
         } catch (e) {
-          alert("❌ Failed to export timers.");
+          alert("âŒ Failed to export timers.");
         }
       });
 
@@ -3760,10 +3875,10 @@
               rebuildTimersPanel();
               renderBossList();
               alert("✅ Timers imported successfully.");
-              console.log("📥 Imported timers from file.");
+              console.log("ðŸ“¥ Imported timers from file.");
             }
           } catch (e) {
-            alert("❌ Invalid JSON file.");
+            alert("âŒ Invalid JSON file.");
           }
         };
         input.click();
@@ -3789,7 +3904,7 @@
             btn.disabled = now < lockedUntil;
           });
 
-        console.log("🔔 deadLocks updated from Firestore:", deadLocks);
+        console.log("ðŸ”” deadLocks updated from Firestore:", deadLocks);
       });
 
       // Periodically re-check (every 10s)
@@ -3849,9 +3964,9 @@
 					// ✅ Firestore real-time listener (safe merge that respects cooldowns)
 					const docRef = doc(db, "timers", "global");
 					onSnapshot(docRef, async (snap) => {
-						// ✅ Auto-create if the timers document doesn’t exist
+						// ✅ Auto-create if the timers document doesnâ€™t exist
 						if (!snap.exists()) {
-							console.log("ℹ️ No Firestore timers document found. Creating empty one...");
+							console.log("â„¹ï¸ No Firestore timers document found. Creating empty one...");
 							await setDoc(docRef, { timers: {} }, { merge: true });
 							return;
 						}
@@ -3859,15 +3974,15 @@
 						const remoteTimers = snap.data().timers || {};
 						const now = Date.now();
 
-						// 🔒 Merge remote timers into local safely
+						// ðŸ”’ Merge remote timers into local safely
 						for (const [id, remoteInfo] of Object.entries(remoteTimers)) {
 							const localInfo = timers[id] || {};
 							const boss = BOSSES.find((b) => b.id === id);
 							if (!boss) continue;
 
-							// ✅ If local cooldown is active, keep it — don’t overwrite
+							// ✅ If local cooldown is active, keep it â€” donâ€™t overwrite
 							if (localInfo.cooldownUntil && localInfo.cooldownUntil > now) {
-								console.log(`⏸️ ${boss.name} in local cooldown — preserving local timer.`);
+								console.log(`â¸ï¸ ${boss.name} in local cooldown â€” preserving local timer.`);
 								remoteTimers[id] = {
 									...remoteInfo,
 									cooldownUntil: localInfo.cooldownUntil,
@@ -3877,7 +3992,7 @@
 
 							// ✅ If remote has cooldown, preserve it too
 							if (remoteInfo.cooldownUntil && remoteInfo.cooldownUntil > now) {
-								console.log(`💾 ${boss.name} cooldown synced from Firestore.`);
+								console.log(`ðŸ’¾ ${boss.name} cooldown synced from Firestore.`);
 							}
 						}
 
@@ -3887,7 +4002,7 @@
 						renderBossList();
 						computeNextBoss();
 
-						console.log("🔄 Timers merged from Firestore:", timers);
+						console.log("ðŸ”„ Timers merged from Firestore:", timers);
 					});
 				} catch (e) {
 					console.warn("Firestore load failed", e);
@@ -3901,13 +4016,13 @@
 					const boss = BOSSES.find((b) => b.id === id);
 					if (!boss || !info || !info.endTime) continue;
 
-					// 🚫 Skip normalization if cooldown is active
+					// ðŸš« Skip normalization if cooldown is active
 					if (info.cooldownUntil && info.cooldownUntil > now) {
-						console.log(`⏸️ ${boss.name} still in cooldown — skipping normalization.`);
+						console.log(`â¸ï¸ ${boss.name} still in cooldown â€” skipping normalization.`);
 						continue;
 					}
 
-					// 🧭 Normal advance logic for expired timers only
+					// ðŸ§­ Normal advance logic for expired timers only
 					if (info.endTime <= now) {
 						if (boss.weeklyRespawns) {
 							const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
@@ -3920,7 +4035,7 @@
 								cooldownUntil: null,
 							};
 							timersChanged = true;
-							console.log(`🧭 ${boss.name} normalized to next weekly cycle.`);
+							console.log(`ðŸ§­ ${boss.name} normalized to next weekly cycle.`);
 						} else if (boss.respawn) {
 							const respMs = boss.respawn * 1000;
 							const cycles = Math.floor((now - info.endTime) / respMs) + 1;
@@ -3933,7 +4048,7 @@
 								cooldownUntil: null,
 							};
 							timersChanged = true;
-							console.log(`🧭 ${boss.name} normalized to next respawn cycle.`);
+							console.log(`ðŸ§­ ${boss.name} normalized to next respawn cycle.`);
 						}
 					}
 				}
@@ -3942,9 +4057,9 @@
 				if (timersChanged) {
 					try {
 						await saveTimers();
-						console.log("🔁 Timers normalized and saved after init.");
+						console.log("ðŸ” Timers normalized and saved after init.");
 					} catch (err) {
-						console.error("❌ Failed to save normalized timers:", err);
+						console.error("âŒ Failed to save normalized timers:", err);
 					}
 				}
 
@@ -3977,7 +4092,7 @@
 					el = document.createElement("div");
 					el.id = "onlineCount";
 					el.classList.add("online-users");
-					// 🟢 icon handled via CSS ::before — only insert count span here
+					// 🟢 icon handled via CSS ::before â€” only insert count span here
 					el.innerHTML = `<span class="count">${count}</span>`;
 					document.body.appendChild(el);
 				} else {
@@ -3998,7 +4113,7 @@
 			let lastSeenTimestamp = 0; // used to detect truly new messages
 			let initialLoadComplete = false;
 
-			// 🧠 Generate random boss-based username (new each reload)
+			// ðŸ§  Generate random boss-based username (new each reload)
 			function generateRandomUsername() {
 				const prefixes = [
 					"The", "Dark", "Crimson", "Iron", "Shadow", "Arcane", "Silent", "Ancient",
@@ -4038,7 +4153,7 @@
 
 					chatBox.classList.toggle("active");
 
-					// 🔕 Clear notification + tooltip when chat opens
+					// ðŸ”• Clear notification + tooltip when chat opens
 					if (chatBox.classList.contains("active")) {
 						onlineUsers.classList.remove("notify");
 						lastSeenTimestamp = Date.now();
@@ -4059,7 +4174,7 @@
 			// Reference to chat messages in Firebase
 			const chatRef = ref(rtdb, "globalChat");
 
-			// ✉️ Send message
+			// âœ‰ï¸ Send message
 			chatSend.addEventListener("click", sendMessage);
 			chatInput.addEventListener("keydown", (e) => {
 				if (e.key === "Enter") sendMessage();
@@ -4072,11 +4187,11 @@
 				push(chatRef, { name: localUserName, text, timestamp: Date.now() });
 				chatInput.value = "";
 
-				// Update last seen when user sends (so they don’t get notified of their own)
+				// Update last seen when user sends (so they donâ€™t get notified of their own)
 				lastSeenTimestamp = Date.now();
 			}
 
-			// 🎨 Generate a consistent glowing color per username
+			// ðŸŽ¨ Generate a consistent glowing color per username
 			function getUserColor(name) {
 				if (name === localUserName) return "hsl(180, 80%, 70%)"; // your color: cyan-blue glow
 				let hash = 0;
@@ -4087,7 +4202,7 @@
 				return `hsl(${hue}, 70%, 70%)`; // others: soft rainbow hues
 			}
 
-			// 💬 Detect last message before user loads (to prevent false notifications)
+			// ðŸ’¬ Detect last message before user loads (to prevent false notifications)
 			get(chatRef).then((snapshot) => {
 				if (snapshot.exists()) {
 					let latest = 0;
@@ -4100,7 +4215,7 @@
 				initialLoadComplete = true;
 			});
 
-			// 💬 Listen for incoming messages
+			// ðŸ’¬ Listen for incoming messages
 			onChildAdded(chatRef, (snapshot) => {
 				const data = snapshot.val();
 				const msgEl = document.createElement("div");
@@ -4133,7 +4248,7 @@
 				// Only notify for messages newer than last seen
 				if (data.timestamp <= lastSeenTimestamp) return;
 
-				// 🔔 Show visual notification & tooltip if chat is closed
+				// ðŸ”” Show visual notification & tooltip if chat is closed
 				const onlineUsers = document.getElementById("onlineCount");
 				if (onlineUsers && !chatBox.classList.contains("active")) {
 					if (!onlineUsers.classList.contains("notify")) {
@@ -4175,3 +4290,4 @@
 
   </body>
 </html>
+
