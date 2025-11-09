@@ -569,29 +569,33 @@
         opacity: 1;
       }
 
-      /* === NEXT BOSS - CYBER HEXAGON THEME === */
-      #nextBoss {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 24px 16px;
-        border-radius: 10px;
-        border: 2px solid rgba(0, 240, 255, 0.3);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 40, 60, 0.6),
-          rgba(0, 20, 30, 0.8)
-        );
-        box-shadow: 0 0 30px rgba(0, 240, 255, 0.2),
-          inset 0 0 50px rgba(0, 240, 255, 0.05);
-        font-family: "Orbitron", sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        position: relative;
-        overflow: hidden;
-      }
+			/* === NEXT BOSS - CYBER HEXAGON THEME (reduced margins) === */
+			#nextBoss {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+
+				/* ↓ Reduce space inside and outside ↓ */
+				padding: 20px 18px;   /* was 24px 16px — tighter inside */
+				margin: 6px;          /* new: small gap around panel */
+
+				border-radius: 10px;
+				border: 2px solid rgba(0, 240, 255, 0.3);
+				background: linear-gradient(
+					135deg,
+					rgba(0, 40, 60, 0.6),
+					rgba(0, 20, 30, 0.8)
+				);
+				box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
+					inset 0 0 40px rgba(0, 240, 255, 0.05);
+				font-family: "Orbitron", sans-serif;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				position: relative;
+				overflow: hidden;
+			}
 
       #nextBoss::before {
         content: "";
@@ -649,7 +653,7 @@
 
       /* === NEXT BOSS NAME: NEON RED GLOW WITH PULSE === */
       #nextBoss .boss-name {
-        font-size: 1.8rem;
+        font-size: 1.2rem;
         font-weight: 900;
         color: #ff4d4d;
         text-transform: uppercase;
@@ -679,12 +683,12 @@
       }
 
       #nextBoss .time-remaining {
-        font-size: 1rem;
+        font-size: .7rem;
         font-weight: 700;
         color: var(--accent);
         text-shadow: 0 0 10px rgba(0, 240, 255, 0.8),
           0 0 20px rgba(0, 240, 255, 0.5);
-        margin-top: 8px;
+        margin-top: 3px;
         animation: timeGlow 2s ease-in-out infinite;
         z-index: 1;
       }
@@ -827,8 +831,8 @@
 
 			.timer .timer-remaining {
 				font-family: "Orbitron", sans-serif;
-				font-weight: 800;
-				font-size: 13px;
+				font-weight: 500;
+				font-size: 9px;
 				color: var(--accent);
 				text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
 					0 0 15px rgba(0, 240, 255, 0.3);
