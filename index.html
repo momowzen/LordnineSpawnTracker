@@ -2000,7 +2000,7 @@
 				transition: transform 0.3s ease, opacity 0.3s ease;
 			}
 
-			/* ðŸ’¬ replaces 🟢 when there's a new chat message */
+			/* 💬 replaces 🟢 when there's a new chat message */
 			.online-users.notify::before {
 				content: "🗨️";
 				color: #ff4d4d;
@@ -2033,7 +2033,7 @@
 				}
 			}
 
-			/* ðŸ’¬ red pulse animation */
+			/* 💬 red pulse animation */
 			@keyframes pulseNotify {
 				0%, 100% {
 					transform: scale(1);
@@ -2524,7 +2524,7 @@
         class="modal cyber-modal"
         role="dialog"
       >
-        <h3 id="webhookTitle">ðŸ’¬ Discord Webhook</h3>
+        <h3 id="webhookTitle">💬 Discord Webhook</h3>
         <div class="small">Paste your Discord webhook URL below.</div>
         <input
           class="webhook-input"
@@ -2799,7 +2799,7 @@
           lastTriggeredBySelf = now;
           await setDoc(refreshDocRef, { forceRefresh: now });
           alert("✅ Synchronization triggered for all connected users.");
-          console.log("ðŸ” sync triggered at", new Date(now).toISOString());
+          console.log("🔁 sync triggered at", new Date(now).toISOString());
         }
       });
 
@@ -2829,7 +2829,7 @@
         try {
           await updateDoc(ref, payload);
         } catch (err) {
-          console.warn("⚠️ ï¸ updateDoc failed, retrying with setDoc merge", err);
+          console.warn("⚠️  updateDoc failed, retrying with setDoc merge", err);
           await setDoc(ref, payload, { merge: true });
         }
       }
@@ -2844,10 +2844,10 @@
             cachedWebhookUrl = data.url || null;
             console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
           } else {
-            console.warn("⚠️ ï¸ No webhook found in Firestore config.");
+            console.warn("⚠️  No webhook found in Firestore config.");
           }
         } catch (e) {
-          console.error("âŒ Failed to auto-load webhook:", e);
+          console.error("❌ Failed to auto-load webhook:", e);
         }
       }
 
@@ -2867,7 +2867,7 @@
           } else {
             cachedWebhookUrl = null;
             webhookInput.value = "";
-            console.log("â„¹ï¸ No webhook stored in Firestore.");
+            console.log("â„¹ No webhook stored in Firestore.");
             return null;
           }
         } catch (e) {
@@ -2885,7 +2885,7 @@
           console.log("✅ Webhook saved to Firestore.");
         } catch (e) {
           console.warn("save webhook err", e);
-          alert("âŒ Failed to save webhook.");
+          alert("❌ Failed to save webhook.");
         }
       }
 
@@ -2898,7 +2898,7 @@
           console.log("✅ Webhook cleared from Firestore.");
         } catch (e) {
           console.warn("clear webhook err", e);
-          alert("âŒ Failed to clear webhook.");
+          alert("❌ Failed to clear webhook.");
         }
       }
 
@@ -2912,7 +2912,7 @@
           null;
 
         if (!webhook) {
-          console.warn("⚠️ ï¸ No Discord webhook configured.");
+          console.warn("⚠️  No Discord webhook configured.");
           return;
         }
 
@@ -2932,7 +2932,7 @@
 
           if (!res.ok) {
             console.error(
-              "âŒ Discord webhook failed:",
+              "❌ Discord webhook failed:",
               res.status,
               await res.text()
             );
@@ -2940,7 +2940,7 @@
             console.log("✅ Discord embed sent successfully.");
           }
         } catch (err) {
-          console.error("⚠️ ï¸ Discord webhook error:", err);
+          console.error("⚠️  Discord webhook error:", err);
         }
       }
 
@@ -2949,14 +2949,14 @@
         try {
           if (!boss || !type) return;
 
-          // ðŸ”¹ Normalize Firestore key (handles spaces, punctuation)
+          // 🔔 Normalize Firestore key (handles spaces, punctuation)
           const safeId = encodeURIComponent(boss.id.trim());
           const key = `${safeId}_${type}`;
 
           const now = Date.now();
           const localWindow = 2 * 60 * 1000; // 2 min client dedupe
 
-          // ðŸ”¹ Local dedupe guard (fast path)
+          // 🔔 Local dedupe guard (fast path)
           if (
             localNotifCache[key] &&
             now - localNotifCache[key] < localWindow
@@ -2967,9 +2967,9 @@
             return;
           }
 
-          // ðŸ”’ Reserve locally
+          // 🔒 Reserve locally
           localNotifCache[key] = now;
-          console.log(`ðŸ”’ Local reserve set for ${key}`);
+          console.log(`🔒 Local reserve set for ${key}`);
 
           const ref = doc(db, "notifications", key);
           const thresholdMs = 2 * 60 * 1000; // server dedupe window
@@ -2993,19 +2993,19 @@
             const thisEndTimeMs = timers[boss.id]?.endTime || 0;
             const nowMs = Date.now();
 
-            // ðŸ”¹ Only skip if (a) last send < 2min ago AND (b) same spawn cycle
+            // 🔔 Only skip if (a) last send < 2min ago AND (b) same spawn cycle
             const recentlySent =
               nowMs - lastSentMs < thresholdMs &&
               lastEndTimeMs === thisEndTimeMs;
 
             if (recentlySent) {
               console.log(
-                `â¸ï¸ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
+                `⏸️ Firestore dedupe prevented ${type} for ${boss.name} (same spawn cycle)`
               );
               return false;
             }
 
-            // ðŸ”¹ Write both lastSent + lastEndTimeMs atomically
+            // 🔔 Write both lastSent + lastEndTimeMs atomically
             tx.set(
               ref,
               {
@@ -3022,7 +3022,7 @@
 
           if (!txResult) {
             console.log(
-              `â¹ï¸ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
+              `â¹ sendDiscordEmbedOnce: server dedupe prevented sending ${type} for ${boss.name}`
             );
             return;
           }
@@ -3031,7 +3031,7 @@
             txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()
           );
 
-          // ðŸ”¹ Build appropriate embed
+          // 🔔 Build appropriate embed
 						let embed;
 						switch (type) {
 							case "killed":
@@ -3075,27 +3075,38 @@
 								return;
 						}
 						
-          // ðŸ”¹ Final Discord send
+          // 🔔 Final Discord send
           await sendDiscordEmbed(embed);
           console.log(`✅ Sent ${type} notification for ${boss.name}`);
         } catch (e) {
           if (e?.code === "ABORTED") {
-            console.warn("â„¹ï¸ Transaction aborted (expected):", e);
+            console.warn("â„¹ Transaction aborted (expected):", e);
             return;
           }
-          console.warn("⚠️ ï¸ sendDiscordEmbedOnce error:", e);
+          console.warn("⚠️  sendDiscordEmbedOnce error:", e);
           delete localNotifCache[key]; // allow retry if failed
         }
       }
 
-      function buildEmbed(title, description, colorHex) {
-        return {
+      function buildEmbed(title, description, colorHex, boss) {
+        const embed = {
           title,
           description,
           color: colorHex,
           footer: { text: "Lordnine Tracker" },
           timestamp: new Date().toISOString(),
         };
+        
+        // Add boss image if boss object is provided
+        if (boss && boss.id) {
+          embed.thumbnail = {
+            url: `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`,
+            height: 300,
+            width: 300
+          };
+        }
+        
+        return embed;
       }
 
       async function testWebhook() {
@@ -3104,11 +3115,14 @@
           return;
         }
         if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
+        // Use the first boss for test image
+        const testBoss = BOSSES[0] || null;
         await sendDiscordEmbed(
           buildEmbed(
-            "ðŸ§ª Webhook test successful!",
+            "🧪 Webhook test successful!",
             "This is a test message from Lord Nine Tracker.",
-            0x00ff99
+            0x00ff99,
+            testBoss
           )
         );
         alert("Test sent (check your Discord).");
@@ -3137,7 +3151,7 @@
           const data = timers[bossId];
           const json = JSON.stringify(data || {});
           if (lastWriteCache[bossId] === json) {
-            console.log(`â„¹ï¸ Skipping redundant write for ${bossId}`);
+            console.log(`â„¹ Skipping redundant write for ${bossId}`);
             return;
           }
           lastWriteCache[bossId] = json;
@@ -3189,7 +3203,7 @@
         renderBossList();
 
         console.log(
-          `ðŸ•¹ï¸ startTimer: started ${bossId} -> ${new Date(
+          `ðŸ•¹ startTimer: started ${bossId} -> ${new Date(
             timers[bossId].endTime
           ).toISOString()}`
         );
@@ -3203,7 +3217,7 @@
         const ref = doc(db, "timers", "global");
 
         if (!timers[bossId]) {
-          console.log(`â„¹ï¸ No timer to clear for ${boss?.name || bossId}.`);
+          console.log(`â„¹ No timer to clear for ${boss?.name || bossId}.`);
           return;
         }
 
@@ -3214,7 +3228,7 @@
           const snap = await getDoc(ref);
           if (!snap.exists()) {
             console.warn(
-              "⚠️ ï¸ timers/global did not exist. Creating it first..."
+              "⚠️  timers/global did not exist. Creating it first..."
             );
             await setDoc(ref, { timers: {} }, { merge: true });
           }
@@ -3224,7 +3238,7 @@
 
           console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
         } catch (err) {
-          console.error("âŒ Firestore delete failed for", bossId, err);
+          console.error("❌ Firestore delete failed for", bossId, err);
           alert("Failed to clear timer in Firestore. Please retry.");
         }
 
@@ -3251,10 +3265,10 @@
           rebuildTimersPanel();
           renderBossList();
           alert("✅ All non-weekly timers reset (Firestore updated).");
-          console.log("ðŸ” resetAll: fully reset timers and updated Firestore.");
+          console.log("🔁 resetAll: fully reset timers and updated Firestore.");
         } catch (e) {
-          console.warn("âŒ resetAll Firestore update failed", e);
-          alert("⚠️ ï¸ Failed to update Firestore.");
+          console.warn("❌ resetAll Firestore update failed", e);
+          alert("⚠️  Failed to update Firestore.");
         }
       }
 
@@ -3335,18 +3349,19 @@
           // ✅ Send Discord notification (manual entry always sends)
           const formattedTime = formatShortDateTime(endTime);
           const embed = buildEmbed(
-            `â° ${boss.name} manual time set`,
+            `⏰ ${boss.name} manual time set`,
             `Next respawn: ${formattedTime}`,
-            0x3399ff
-          );
+            0x3399ff,
+              boss
+           );
           await sendDiscordEmbedOnce("manual", boss);
 
           console.log(`ðŸ“¡ Discord notification sent for ${boss.name}.`);
           alert(`✅ Manual time saved and synced for ${boss.name}.`);
         } catch (err) {
-          console.error("âŒ Failed to record manual time:", err);
+          console.error("❌ Failed to record manual time:", err);
           alert(
-            "âŒ Failed to record manual time to Firestore. Check console for details."
+            "❌ Failed to record manual time to Firestore. Check console for details."
           );
         }
       });
@@ -3482,7 +3497,7 @@
               .querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`)
               .forEach((b) => (b.disabled = true));
             console.log(
-              `ðŸ”’ Acquired lock for ${id} until ${new Date(
+              `🔒 Acquired lock for ${id} until ${new Date(
                 lockUntil
               ).toISOString()}`
             );
@@ -3501,7 +3516,7 @@
             // Start the timer (this writes timer and triggers Discord send)
             await startTimer(id);
           } catch (err) {
-            console.error("⚠️ ï¸ Error during mark dead transaction:", err);
+            console.error("⚠️  Error during mark dead transaction:", err);
             btn.disabled = false;
           }
           return;
@@ -3602,7 +3617,7 @@
           .filter((x) => x.boss)
           .sort((a, b) => a.info.endTime - b.info.endTime);
         for (const e of entries) addOrUpdateTimerElement(e.id);
-        console.log("ðŸ” rebuildTimersPanel: timers rendered.");
+        console.log("🔁 rebuildTimersPanel: timers rendered.");
       }
 
       // -------------------------
@@ -3713,7 +3728,7 @@
 						!info.notifiedSoon &&
 						!info.cooldownUntil
 					) {
-						console.log(`⚠️ ï¸ soon: ${id} within 5min, preparing notification`);
+						console.log(`⚠️  soon: ${id} within 5min, preparing notification`);
 						info.notifiedSoon = true;
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						savePromises.push(
@@ -3723,7 +3738,7 @@
 
 					// --- (3) Spawn announcement when timer reaches 0 ---
 					if (remainingMs <= 0 && !info.spawnAnnounced && !info.cooldownUntil) {
-						console.log(`ðŸŽ‰ spawn: ${id} reached spawn, announcing`);
+						console.log(`🎉 spawn: ${id} reached spawn, announcing`);
 						info.spawnAnnounced = true;
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						savePromises.push(
@@ -3735,7 +3750,7 @@
 					if (remainingMs <= 0 && !info.cooldownUntil) {
 						info.cooldownUntil = now + 5 * 60 * 1000;
 						console.log(
-							`â³ ${boss.name} entering 5-minute cooldown until ${new Date(
+							`⏳ ${boss.name} entering 5-minute cooldown until ${new Date(
 								info.cooldownUntil
 							).toLocaleTimeString()}`
 						);
@@ -3743,7 +3758,7 @@
 						// 🟢 Visual: back to normal white glow during cooldown
 						if (nameElem) nameElem.classList.remove("dead");
 
-						// ðŸ’¾ Save cooldown state to Firestore
+						// 💾 Save cooldown state to Firestore
 						savePromises.push(saveTimerToFirestoreOnce(id));
 						continue;
 					}
@@ -3763,7 +3778,7 @@
 							nextTime = nowLater + boss.respawn * 1000;
 						}
 
-						// â™»ï¸ Reset timer and clear cooldown
+						// â™» Reset timer and clear cooldown
 						timers[id] = {
 							endTime: nextTime,
 							startedAt: nowLater,
@@ -3782,7 +3797,7 @@
 						addOrUpdateTimerElement(id);
 						renderBossList();
 
-						console.log(`ðŸ” ${boss.name} timer restarted after cooldown.`);
+						console.log(`🔁 ${boss.name} timer restarted after cooldown.`);
 						continue;
 					}
 				}
@@ -3791,9 +3806,9 @@
 				if (savePromises.length) {
 					try {
 						await Promise.all(savePromises);
-						console.log(`ðŸ’¾ tickUpdate: completed ${savePromises.length} save ops`);
+						console.log(`💾 tickUpdate: completed ${savePromises.length} save ops`);
 					} catch (e) {
-						console.warn("⚠️ ï¸ tickUpdate savePromises error", e);
+						console.warn("⚠️  tickUpdate savePromises error", e);
 					}
 				}
 
@@ -3910,7 +3925,7 @@
           alert("✅ Timers exported successfully.");
           console.log("ðŸ“¤ Exported timers.json");
         } catch (e) {
-          alert("âŒ Failed to export timers.");
+          alert("❌ Failed to export timers.");
         }
       });
 
@@ -3938,7 +3953,7 @@
               console.log("ðŸ“¥ Imported timers from file.");
             }
           } catch (e) {
-            alert("âŒ Invalid JSON file.");
+            alert("❌ Invalid JSON file.");
           }
         };
         input.click();
@@ -3964,7 +3979,7 @@
             btn.disabled = now < lockedUntil;
           });
 
-        console.log("ðŸ”” deadLocks updated from Firestore:", deadLocks);
+        console.log("🔔 deadLocks updated from Firestore:", deadLocks);
       });
 
       // Periodically re-check (every 10s)
@@ -4026,7 +4041,7 @@
 					onSnapshot(docRef, async (snap) => {
 						// ✅ Auto-create if the timers document doesnâ€™t exist
 						if (!snap.exists()) {
-							console.log("â„¹ï¸ No Firestore timers document found. Creating empty one...");
+							console.log("â„¹ No Firestore timers document found. Creating empty one...");
 							await setDoc(docRef, { timers: {} }, { merge: true });
 							return;
 						}
@@ -4034,7 +4049,7 @@
 						const remoteTimers = snap.data().timers || {};
 						const now = Date.now();
 
-						// ðŸ”’ Merge remote timers into local safely
+						// 🔒 Merge remote timers into local safely
 						for (const [id, remoteInfo] of Object.entries(remoteTimers)) {
 							const localInfo = timers[id] || {};
 							const boss = BOSSES.find((b) => b.id === id);
@@ -4042,7 +4057,7 @@
 
 							// ✅ If local cooldown is active, keep it â€” donâ€™t overwrite
 							if (localInfo.cooldownUntil && localInfo.cooldownUntil > now) {
-								console.log(`â¸ï¸ ${boss.name} in local cooldown â€” preserving local timer.`);
+								console.log(`⏸️ ${boss.name} in local cooldown â€” preserving local timer.`);
 								remoteTimers[id] = {
 									...remoteInfo,
 									cooldownUntil: localInfo.cooldownUntil,
@@ -4052,7 +4067,7 @@
 
 							// ✅ If remote has cooldown, preserve it too
 							if (remoteInfo.cooldownUntil && remoteInfo.cooldownUntil > now) {
-								console.log(`ðŸ’¾ ${boss.name} cooldown synced from Firestore.`);
+								console.log(`💾 ${boss.name} cooldown synced from Firestore.`);
 							}
 						}
 
@@ -4078,7 +4093,7 @@
 
 					// ðŸš« Skip normalization if cooldown is active
 					if (info.cooldownUntil && info.cooldownUntil > now) {
-						console.log(`â¸ï¸ ${boss.name} still in cooldown â€” skipping normalization.`);
+						console.log(`⏸️ ${boss.name} still in cooldown â€” skipping normalization.`);
 						continue;
 					}
 
@@ -4117,9 +4132,9 @@
 				if (timersChanged) {
 					try {
 						await saveTimers();
-						console.log("ðŸ” Timers normalized and saved after init.");
+						console.log("🔁 Timers normalized and saved after init.");
 					} catch (err) {
-						console.error("âŒ Failed to save normalized timers:", err);
+						console.error("❌ Failed to save normalized timers:", err);
 					}
 				}
 
@@ -4234,7 +4249,7 @@
 			// Reference to chat messages in Firebase
 			const chatRef = ref(rtdb, "globalChat");
 
-			// âœ‰ï¸ Send message
+			// âœ‰ Send message
 			chatSend.addEventListener("click", sendMessage);
 			chatInput.addEventListener("keydown", (e) => {
 				if (e.key === "Enter") sendMessage();
@@ -4251,7 +4266,7 @@
 				lastSeenTimestamp = Date.now();
 			}
 
-			// ðŸŽ¨ Generate a consistent glowing color per username
+			// 🎨 Generate a consistent glowing color per username
 			function getUserColor(name) {
 				if (name === localUserName) return "hsl(180, 80%, 70%)"; // your color: cyan-blue glow
 				let hash = 0;
@@ -4262,7 +4277,7 @@
 				return `hsl(${hue}, 70%, 70%)`; // others: soft rainbow hues
 			}
 
-			// ðŸ’¬ Detect last message before user loads (to prevent false notifications)
+			// 💬 Detect last message before user loads (to prevent false notifications)
 			get(chatRef).then((snapshot) => {
 				if (snapshot.exists()) {
 					let latest = 0;
@@ -4275,7 +4290,7 @@
 				initialLoadComplete = true;
 			});
 
-			// ðŸ’¬ Listen for incoming messages
+			// 💬 Listen for incoming messages
 			onChildAdded(chatRef, (snapshot) => {
 				const data = snapshot.val();
 				const msgEl = document.createElement("div");
@@ -4308,7 +4323,7 @@
 				// Only notify for messages newer than last seen
 				if (data.timestamp <= lastSeenTimestamp) return;
 
-				// ðŸ”” Show visual notification & tooltip if chat is closed
+				// 🔔 Show visual notification & tooltip if chat is closed
 				const onlineUsers = document.getElementById("onlineCount");
 				if (onlineUsers && !chatBox.classList.contains("active")) {
 					if (!onlineUsers.classList.contains("notify")) {
