@@ -2980,8 +2980,8 @@
           );
 
           // ðŸ”¹ Build appropriate embed
-          let embed;
-						switch (status) {
+						let embed;
+						switch (type) {
 							case "killed":
 								embed = buildEmbed(
 									`💀 ${boss.name} has been defeated!`,
@@ -3016,12 +3016,13 @@
 									0x3399ff,
 									boss
 								);
-              break;
-            default:
-              console.warn(`⚠️ ï¸ Unknown notification type: ${type}`);
-              return;
-          }
+								break;
 
+							default:
+								console.warn(`⚠️ Unknown notification type: ${type}`);
+								return;
+						}
+						
           // ðŸ”¹ Final Discord send
           await sendDiscordEmbed(embed);
           console.log(`✅ Sent ${type} notification for ${boss.name}`);
@@ -3035,19 +3036,15 @@
         }
       }
 
-			function buildEmbed(title, description, colorHex, boss) {
-				return {
-					title,
-					description,
-					color: colorHex,
-					footer: { text: "Lordnine Tracker" },
-					timestamp: new Date().toISOString(),
-					thumbnail: {
-						// Left-side image (boss portrait)
-						url: `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`,
-					},
-				};
-			}
+      function buildEmbed(title, description, colorHex) {
+        return {
+          title,
+          description,
+          color: colorHex,
+          footer: { text: "Lordnine Tracker" },
+          timestamp: new Date().toISOString(),
+        };
+      }
 
       async function testWebhook() {
         if (!cachedWebhookUrl && !webhookInput.value.trim()) {
