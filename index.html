@@ -419,6 +419,50 @@
         min-height: 0;
       }
 
+      @media (max-width: 768px) {
+        .main {
+          display: flex;
+          flex-direction: column;
+          grid-template-columns: none;
+          gap: 12px;
+        }
+
+        .right-column {
+          order: -2;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          flex: 0 0 auto;
+        }
+
+        #nextBoss {
+          order: -1;
+          flex: 0 0 auto;
+        }
+
+        #timersPanel {
+          order: 0;
+          flex: 0 0 auto;
+          max-height: 35vh;
+        }
+
+        #timers {
+          max-height: 35vh;
+          flex: 0 0 auto;
+        }
+
+        #bossListPanel {
+          order: 1;
+          flex: 0 0 auto;
+          max-height: 40vh;
+        }
+
+        #bossList {
+          max-height: 40vh;
+          flex: 0 0 auto;
+        }
+      }
+
       .card {
         background: linear-gradient(
           180deg,
@@ -951,7 +995,7 @@
 					flex: 1 1 auto;
 					height: 100%;
 					overflow: hidden !important;
-					gap: 5;                /* remove all spacing */
+					gap: 10px;                /* match right-column gap */
 				}
 
 				/* Stacking order */
@@ -970,7 +1014,7 @@
 					flex-direction: column;
 					overflow: hidden;
 					margin: 0;
-					padding-bottom: 0;
+					padding: 10px 10px 0 10px;
 					border-bottom: none;   /* remove border line between panels */
 					border-bottom-left-radius: 0;
 					border-bottom-right-radius: 0;
@@ -986,7 +1030,7 @@
 					flex-direction: column;
 					overflow: hidden;
 					margin: 0;
-					padding-top: 0;
+					padding: 0 10px 10px 10px;
 					border-top-left-radius: 0;
 					border-top-right-radius: 0;
 					box-shadow: none;
@@ -1000,6 +1044,14 @@
 						rgba(0,0,0,0.05)
 					);
 					border: 1px solid var(--glass-border);
+				}
+
+				/* Compact headers to minimize space */
+				#timersPanel .card-header,
+				#bossListPanel .card-header {
+					min-height: 25px;
+					padding: 4px 0;
+					margin: 0;
 				}
 
 				/* Only the inner lists scroll */
