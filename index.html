@@ -2981,34 +2981,41 @@
 
           // ðŸ”¹ Build appropriate embed
           let embed;
-          switch (type) {
-            case "killed":
-              embed = buildEmbed(
-                `💀 ${boss.name} has been defeated!`,
-                `Next respawn: ${formattedTime}`,
-                0xff3333
-              );
-              break;
-            case "soon":
-              embed = buildEmbed(
-                `⚠️ ${boss.name} will respawn soon!`,
-                `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
-                0xffcc00
-              );
-              break;
-            case "spawn":
-              embed = buildEmbed(
-                `⚔️ ${boss.name} has spawned!`,
-                `Itâ€™s time to hunt!`,
-                0xb266ff
-              );
-              break;
-            case "manual":
-              embed = buildEmbed(
-                `⏰ ${boss.name} manual time set`,
-                `Next respawn: ${formattedTime}`,
-                0x3399ff
-              );
+						switch (status) {
+							case "killed":
+								embed = buildEmbed(
+									`💀 ${boss.name} has been defeated!`,
+									`Next respawn: ${formattedTime}`,
+									0xff3333,
+									boss
+								);
+								break;
+
+							case "soon":
+								embed = buildEmbed(
+									`⚠️ ${boss.name} will respawn soon!`,
+									`Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
+									0xffcc00,
+									boss
+								);
+								break;
+
+							case "spawn":
+								embed = buildEmbed(
+									`⚔️ ${boss.name} has spawned!`,
+									`It’s time to hunt!`,
+									0xb266ff,
+									boss
+								);
+								break;
+
+							case "manual":
+								embed = buildEmbed(
+									`⏰ ${boss.name} manual time set`,
+									`Next respawn: ${formattedTime}`,
+									0x3399ff,
+									boss
+								);
               break;
             default:
               console.warn(`⚠️ ï¸ Unknown notification type: ${type}`);
@@ -3028,15 +3035,19 @@
         }
       }
 
-      function buildEmbed(title, description, colorHex) {
-        return {
-          title,
-          description,
-          color: colorHex,
-          footer: { text: "Lordnine Tracker" },
-          timestamp: new Date().toISOString(),
-        };
-      }
+			function buildEmbed(title, description, colorHex, boss) {
+				return {
+					title,
+					description,
+					color: colorHex,
+					footer: { text: "Lordnine Tracker" },
+					timestamp: new Date().toISOString(),
+					thumbnail: {
+						// Left-side image (boss portrait)
+						url: `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`,
+					},
+				};
+			}
 
       async function testWebhook() {
         if (!cachedWebhookUrl && !webhookInput.value.trim()) {
