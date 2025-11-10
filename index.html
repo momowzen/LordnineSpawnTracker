@@ -76,6 +76,14 @@
         overflow: hidden;
       }
 
+      /* === HEADER TOP ROW (Logo + Title + Settings) === */
+      .header-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+
       /* Animated scan line across header */
       header.app-header::before {
         content: "";
@@ -136,27 +144,28 @@
         position: relative;
       }
 
-			/* === LOGO IMAGE === */
-			.logo-img {
-				height: 44px;
-				width: auto;
-				display: block;
-				object-fit: contain;
-				margin: 0;
-				animation: logoPulse 3s ease-in-out infinite;
-			}
+      /* === LOGO IMAGE === */
+      .logo-img {
+        height: 44px;
+        width: auto;
+        display: block;
+        object-fit: contain;
+        margin: 0;
+        animation: logoPulse 3s ease-in-out infinite;
+      }
 
       /* === Logo pulse animation === */
-			@keyframes logoPulse {
-				0%, 100% {
-					transform: scale(1);
-					filter: brightness(1);
-				}
-				50% {
-					transform: scale(1.1);
-					filter: brightness(1.3);
-				}
-			}
+      @keyframes logoPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+        50% {
+          transform: scale(1.1);
+          filter: brightness(1.3);
+        }
+      }
 
       /* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
       .main-title {
@@ -168,27 +177,19 @@
         color: #00f6ff;
         background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
         background-size: 200% auto;
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-shadow: 0 0 4px rgba(0, 255, 255, 0.3),
           0 0 8px rgba(0, 255, 255, 0.15);
-        animation: titleScan 6s linear infinite, flicker 8s ease-in-out infinite;
+        animation: gradientMove 6s linear infinite,
+          flicker 8s ease-in-out infinite;
         position: relative;
         display: block; /* aligns perfectly with warning text */
         margin-left: 1px; /* matches left start with warning-text */
         line-height: 1.1;
         overflow: hidden; /* prevents bleed outside */
         z-index: 1;
-      }
-
-      /* Smooth moving gradient shimmer */
-      @keyframes titleScan {
-        0% {
-          background-position: 0% center;
-        }
-        100% {
-          background-position: 200% center;
-        }
       }
 
       /* Softer flicker for digital realism */
@@ -240,6 +241,7 @@
         font-weight: 700;
         background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
         background-size: 200%;
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: gradientMove 4s linear infinite;
@@ -250,6 +252,7 @@
         vertical-align: middle;
       }
 
+      /* Unified gradient animation for all gradient-text elements */
       @keyframes gradientMove {
         0% {
           background-position: 0%;
@@ -265,6 +268,8 @@
         align-items: center;
         position: relative;
         z-index: 2;
+        flex-shrink: 0;
+        margin-left: auto;
       }
 
       .search {
@@ -295,120 +300,63 @@
       }
 
       .settings {
-        width: 44px;
-        height: 44px;
-        border: 2px solid rgba(0, 240, 255, 0.5);
-        border-radius: 6px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.8),
-          rgba(0, 10, 25, 0.95)
-        );
+        width: auto;
+        height: auto;
+        border: none;
+        border-radius: 0;
+        background: transparent;
         color: var(--accent);
         cursor: pointer;
-        display: grid;
-        place-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
         transition: all 0.25s ease;
-        box-shadow: 
-          0 0 20px rgba(0, 240, 255, 0.25),
-          inset 0 0 20px rgba(0, 240, 255, 0.08),
-          0 0 40px rgba(0, 240, 255, 0.1);
-        backdrop-filter: blur(8px);
         position: relative;
         z-index: 10001;
-        font-size: 20px;
-        font-weight: bold;
-        letter-spacing: 0.5px;
+        padding: 0;
+      }
+
+      .settings::before,
+      .settings::after {
+        display: none;
       }
 
       .settings::before {
         content: "";
-        position: absolute;
-        inset: -3px;
-        background: linear-gradient(
-          45deg,
-          rgba(0, 240, 255, 0.4),
-          rgba(125, 211, 252, 0.2),
-          rgba(0, 240, 255, 0.4)
-        );
-        background-size: 300% 300%;
-        border-radius: 6px;
-        opacity: 0;
-        transition: opacity 0.25s ease;
-        animation: settingsGlow 4s ease-in-out infinite;
-        z-index: -1;
+        display: block;
+        width: 24px;
+        height: 2px;
+        background-color: var(--accent);
+        border-radius: 1px;
       }
 
-      @keyframes settingsGlow {
-        0%, 100% {
-          box-shadow: 0 0 20px rgba(0, 240, 255, 0.3), inset 0 0 20px rgba(0, 240, 255, 0.05);
-          background-position: 0% 50%;
-        }
-        50% {
-          box-shadow: 0 0 35px rgba(0, 240, 255, 0.5), inset 0 0 25px rgba(0, 240, 255, 0.1);
-          background-position: 100% 50%;
-        }
+      .settings .line {
+        width: 24px;
+        height: 2px;
+        background-color: var(--accent);
+        border-radius: 1px;
+        transition: all 0.25s ease;
       }
 
       .settings:hover {
-        border-color: rgba(0, 240, 255, 0.8);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 60, 0.9),
-          rgba(0, 50, 100, 0.95)
-        );
-        box-shadow: 
-          0 0 30px rgba(0, 240, 255, 0.4),
-          inset 0 0 25px rgba(0, 240, 255, 0.12),
-          0 0 50px rgba(0, 240, 255, 0.2);
         color: #00ffff;
-        transform: translateY(-3px) scale(1.05);
       }
 
-      .settings:hover::before {
-        opacity: 1;
+      .settings:hover .line {
+        background-color: #00ffff;
       }
 
       .settings:active {
-        transform: translateY(-1px) scale(0.98);
-        box-shadow: 
-          0 0 20px rgba(0, 240, 255, 0.3),
-          inset 0 0 30px rgba(0, 240, 255, 0.15);
+        transform: scale(0.95);
       }
 
       .settings.active {
-        border-color: rgba(0, 255, 100, 0.7);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 255, 100, 0.2),
-          rgba(0, 100, 60, 0.3)
-        );
-        box-shadow: 
-          0 0 40px rgba(0, 255, 100, 0.5),
-          inset 0 0 30px rgba(0, 255, 100, 0.15),
-          0 0 60px rgba(0, 240, 255, 0.2);
         color: #00ff88;
-        animation: settingsPulse 2s ease-in-out infinite;
       }
 
-      .settings.active::before {
-        opacity: 1;
-        border-color: rgba(0, 255, 100, 0.5);
-      }
-
-      @keyframes settingsPulse {
-        0%, 100% {
-          box-shadow: 
-            0 0 30px rgba(0, 255, 100, 0.4),
-            inset 0 0 25px rgba(0, 255, 100, 0.1),
-            0 0 50px rgba(0, 240, 255, 0.15);
-        }
-        50% {
-          box-shadow: 
-            0 0 45px rgba(0, 255, 100, 0.6),
-            inset 0 0 35px rgba(0, 255, 100, 0.2),
-            0 0 70px rgba(0, 240, 255, 0.25);
-        }
+      .settings.active .line {
+        background-color: #00ff88;
       }
 
       .main {
@@ -420,12 +368,74 @@
       }
 
       @media (max-width: 768px) {
-      .main {
-      display: grid !important;
-      grid-template-columns: 1fr !important;
-      grid-template-rows: auto auto auto !important;
-      gap: 12px;
-      }
+        /* Mobile Header: Logo+Title on top-left, Settings on top-right, Search below */
+        header.app-header {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          align-items: flex-start;
+        }
+
+        .header-top {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex: 1 0 auto;
+          order: 1;
+        }
+
+        .app-title {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .logo-img {
+          height: 36px !important;
+        }
+
+        .main-title {
+          font-size: clamp(14px, 6vw, 24px) !important;
+          letter-spacing: 0.8px !important;
+          line-height: 1.2;
+        }
+
+        .warning-text {
+          font-size: 9px !important;
+        }
+
+        .header-controls {
+          display: flex;
+          width: 70%;
+          gap: 8px !important;
+          align-items: center;
+          margin-left: 0 !important;
+          flex-basis: 100%;
+          order: 3;
+        }
+
+        .search-wrapper {
+          flex: 1;
+        }
+
+        .search {
+          width: 100%;
+          padding: 6px 8px !important;
+          font-size: 12px !important;
+        }
+
+        #settingsBtn {
+          order: 2;
+          flex-shrink: 0;
+          margin-left: auto;
+        }
+
+        .main {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto auto !important;
+          gap: 12px;
+        }
 
         .right-column {
           display: contents;
@@ -602,65 +612,63 @@
         scroll-behavior: smooth;
       }
 
-			/* === BOSS LIST CYBER THEME === */
-			.boss {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				width: 95%;
-				padding: 4px 6px;
-				border-radius: 6px;
-				background: linear-gradient(
-					135deg,
-					rgba(0, 20, 40, 0.6),
-					rgba(0, 10, 20, 0.4)
-				);
-				border: 1px solid rgba(0, 240, 255, 0.15);
-				border-left: 3px solid rgba(0, 240, 255, 0.3);
-				font-size: 12px;
-				box-shadow: 0 0 15px rgba(0, 240, 255, 0.1),
-					inset 0 0 20px rgba(0, 240, 255, 0.03);
-				transition: all 0.3s ease;
-				box-sizing: border-box;
-				position: relative;
-			}
+      /* === BOSS LIST CYBER THEME === */
+      .boss {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 95%;
+        padding: 4px 6px;
+        border-radius: 6px;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 20, 40, 0.6),
+          rgba(0, 10, 20, 0.4)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.15);
+        border-left: 3px solid rgba(0, 240, 255, 0.3);
+        font-size: 12px;
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.1),
+          inset 0 0 20px rgba(0, 240, 255, 0.03);
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        position: relative;
+      }
 
+      .boss::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 60%;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
+      .boss:hover {
+        transform: translateX(4px);
+        border-color: rgba(0, 240, 255, 0.4);
+        border-left-color: var(--accent);
+        background: linear-gradient(
+          135deg,
+          rgba(0, 240, 255, 0.12),
+          rgba(0, 100, 150, 0.08)
+        );
+        box-shadow: 0 0 25px rgba(0, 240, 255, 0.25),
+          inset 0 0 30px rgba(0, 240, 255, 0.08);
+      }
 
-			.boss::after {
-				content: "";
-				position: absolute;
-				right: 0;
-				top: 50%;
-				transform: translateY(-50%);
-				width: 4px;
-				height: 60%;
-				background: linear-gradient(
-					180deg,
-					transparent,
-					var(--accent),
-					transparent
-				);
-				opacity: 0;
-				transition: opacity 0.3s ease;
-			}
-
-			.boss:hover {
-				transform: translateX(4px);
-				border-color: rgba(0, 240, 255, 0.4);
-				border-left-color: var(--accent);
-				background: linear-gradient(
-					135deg,
-					rgba(0, 240, 255, 0.12),
-					rgba(0, 100, 150, 0.08)
-				);
-				box-shadow: 0 0 25px rgba(0, 240, 255, 0.25),
-					inset 0 0 30px rgba(0, 240, 255, 0.08);
-			}
-
-			.boss:hover::after {
-				opacity: 0.6;
-			}
+      .boss:hover::after {
+        opacity: 0.6;
+      }
 
       .boss .meta {
         display: flex;
@@ -669,21 +677,21 @@
       }
 
       /* Normal (alive / cooldown) */
-			.boss .name {
-				font-family: "Orbitron", sans-serif;
-				color: #ffffff;
-				font-weight: 900;
-				font-size: 0.85rem;
-				letter-spacing: 0.5px;
-				text-transform: uppercase;
-				text-shadow: 0 0 10px rgba(0, 240, 255, 0.5),
-										 0 0 20px rgba(0, 240, 255, 0.3);
-				transition: all 0.3s ease;
-				display: inline-flex;
-				align-items: center;
-				gap: 4px;
-				position: relative;
-			}
+      .boss .name {
+        font-family: "Orbitron", sans-serif;
+        color: #ffffff;
+        font-weight: 900;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.5),
+          0 0 20px rgba(0, 240, 255, 0.3);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        position: relative;
+      }
 
       .boss .sub {
         font-size: 10px;
@@ -726,37 +734,37 @@
         opacity: 1;
       }
 
-			/* === NEXT BOSS - CYBER HEXAGON THEME (reduced margins) === */
-			#nextBoss {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				text-align: center;
-				gap: 4px;
+      /* === NEXT BOSS - CYBER HEXAGON THEME (reduced margins) === */
+      #nextBoss {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 4px;
 
-				/* â†“ Reduce space inside and outside â†“ */
-				padding: 8px 12px;
-				margin: 0;
-				width: 100%;           /* match timer width */
-				min-height: 90px;     /* taller panel */
+        /* â†“ Reduce space inside and outside â†“ */
+        padding: 8px 12px;
+        margin: 0;
+        width: 100%; /* match timer width */
+        min-height: 90px; /* taller panel */
 
-				border-radius: 10px;
-				border: 2px solid rgba(0, 240, 255, 0.3);
-				border-right: 3px solid rgba(0, 240, 255, 0.3);
-			background: linear-gradient(
-					135deg,
-					rgba(0, 40, 60, 0.6),
-					rgba(0, 20, 30, 0.8)
-				);
-				box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
-					inset 0 0 40px rgba(0, 240, 255, 0.05);
-				font-family: "Orbitron", sans-serif;
-				text-transform: uppercase;
-				letter-spacing: 1px;
-				position: relative;
-				overflow: hidden;
-			}
+        border-radius: 10px;
+        border: 2px solid rgba(0, 240, 255, 0.3);
+        border-right: 3px solid rgba(0, 240, 255, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(0, 40, 60, 0.6),
+          rgba(0, 20, 30, 0.8)
+        );
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
+          inset 0 0 40px rgba(0, 240, 255, 0.05);
+        font-family: "Orbitron", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+      }
 
       #nextBoss::before {
         content: "";
@@ -795,7 +803,8 @@
           rgba(0, 240, 255, 0.1) 50%,
           transparent 70%
         );
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
         mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
@@ -814,34 +823,32 @@
 
       /* === NEXT BOSS NAME: NEON RED GLOW WITH PULSE === */
       #nextBoss .boss-name {
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: #ff4d4d;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      display: inline-flex;
-      align-items: center;
-      position: relative;
-      text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-      0 0 30px rgba(255, 0, 0, 0.6),
-      0 0 45px rgba(255, 0, 0, 0.4);
-      animation: bossNamePulse 2s ease-in-out infinite;
-      z-index: 1;
-      white-space: nowrap;
-      flex-shrink: 0;
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: #ff4d4d;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+        text-shadow: 0 0 15px rgba(255, 80, 80, 1),
+          0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
+        animation: bossNamePulse 2s ease-in-out infinite;
+        z-index: 1;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
 
       @keyframes bossNamePulse {
-        0%, 100% {
+        0%,
+        100% {
           text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-            0 0 30px rgba(255, 0, 0, 0.6),
-            0 0 45px rgba(255, 0, 0, 0.4);
+            0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
           transform: scale(1);
         }
         50% {
           text-shadow: 0 0 20px rgba(255, 80, 80, 1),
-            0 0 40px rgba(255, 0, 0, 0.8),
-            0 0 60px rgba(255, 0, 0, 0.5);
+            0 0 40px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.5);
           transform: scale(1.02);
         }
       }
@@ -861,7 +868,8 @@
       }
 
       @keyframes timeGlow {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 0.9;
         }
         50% {
@@ -882,337 +890,371 @@
         }
       }
 
-			/* === ACTIVE TIMER CARD â€” CYBER THEME === */
-			.timer {
-				position: relative;
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				width: 95%;
-				padding: 8px 12px;
-				border-radius: 8px;
-				background: linear-gradient(
-					135deg,
-					rgba(0, 30, 50, 0.5),
-					rgba(0, 15, 25, 0.3)
-				);
-				border: 1px solid rgba(0, 240, 255, 0.2);
-				border-right: 3px solid rgba(0, 240, 255, 0.3);
-				font-size: 11px;
-				box-shadow: 0 0 15px rgba(0, 240, 255, 0.12),
-					inset 0 0 25px rgba(0, 240, 255, 0.04);
-				transition: all 0.3s ease;
-				overflow: hidden;
-				height: auto;
-				min-height: 48px;
-			}
+      /* === ACTIVE TIMER CARD â€” CYBER THEME === */
+      .timer {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 95%;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 30, 50, 0.5),
+          rgba(0, 15, 25, 0.3)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        border-right: 3px solid rgba(0, 240, 255, 0.3);
+        font-size: 11px;
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.12),
+          inset 0 0 25px rgba(0, 240, 255, 0.04);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        height: auto;
+        min-height: 48px;
+      }
 
-			.timer::before {
-				content: "";
-				position: absolute;
-				left: 0;
-				top: 50%;
-				transform: translateY(-50%);
-				width: 3px;
-				height: 70%;
-				background: linear-gradient(
-					180deg,
-					transparent,
-					rgba(0, 240, 255, 0.5),
-					transparent
-				);
-				opacity: 0;
-				transition: opacity 0.3s ease;
-			}
+      .timer::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 70%;
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(0, 240, 255, 0.5),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-			.timer:hover::before {
-				opacity: 1;
-			}
+      .timer:hover::before {
+        opacity: 1;
+      }
 
-			/* Glow state â€” Ready to respawn */
-			.timer.ready {
-				border-color: rgba(0, 255, 100, 0.4);
-				border-right-color: rgba(0, 255, 100, 0.6);
-				box-shadow: 0 0 25px rgba(0, 255, 100, 0.3),
-					inset 0 0 35px rgba(0, 255, 100, 0.1);
-				background: linear-gradient(
-					135deg,
-					rgba(0, 255, 100, 0.15),
-					rgba(0, 150, 80, 0.1)
-				);
-				animation: timerReadyPulse 2s ease-in-out infinite;
-			}
+      /* Glow state â€” Ready to respawn */
+      .timer.ready {
+        border-color: rgba(0, 255, 100, 0.4);
+        border-right-color: rgba(0, 255, 100, 0.6);
+        box-shadow: 0 0 25px rgba(0, 255, 100, 0.3),
+          inset 0 0 35px rgba(0, 255, 100, 0.1);
+        background: linear-gradient(
+          135deg,
+          rgba(0, 255, 100, 0.15),
+          rgba(0, 150, 80, 0.1)
+        );
+        animation: timerReadyPulse 2s ease-in-out infinite;
+      }
 
-			@keyframes timerReadyPulse {
-				0%, 100% {
-					box-shadow: 0 0 20px rgba(0, 255, 100, 0.25),
-						inset 0 0 30px rgba(0, 255, 100, 0.08);
-				}
-				50% {
-					box-shadow: 0 0 35px rgba(0, 255, 100, 0.4),
-						inset 0 0 45px rgba(0, 255, 100, 0.15);
-				}
-			}
+      @keyframes timerReadyPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(0, 255, 100, 0.25),
+            inset 0 0 30px rgba(0, 255, 100, 0.08);
+        }
+        50% {
+          box-shadow: 0 0 35px rgba(0, 255, 100, 0.4),
+            inset 0 0 45px rgba(0, 255, 100, 0.15);
+        }
+      }
 
-			/* Timer layout */
-			.timer-left {
-				display: flex;
-				flex-direction: column;
-				gap: 2px;
-				min-width: 0;
-				flex: 1;
-			}
+      /* Timer layout */
+      .timer-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+      }
 
-			.timer-right {
-				display: flex;
-				flex-direction: column;
-				align-items: flex-end;
-				gap: 6px;
-				min-width: 100px;
-			}
+      .timer-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        min-width: 100px;
+      }
 
-			.timer-actions {
-				display: flex;
-				gap: 6px;
-			}
+      .timer-actions {
+        display: flex;
+        gap: 6px;
+      }
 
-			/* === TIMER TEXT - CYBER THEME === */
-			.timer .timer-name {
-				font-family: "Orbitron", sans-serif;
-				font-weight: 900;
-				font-size: 12px;
-				color: #fff;
-				text-transform: uppercase;
-				letter-spacing: 0.5px;
-				text-shadow: 0 0 6px rgba(0, 240, 255, 0.4),
-					0 0 12px rgba(0, 240, 255, 0.2);
-			}
+      /* === TIMER TEXT - CYBER THEME === */
+      .timer .timer-name {
+        font-family: "Orbitron", sans-serif;
+        font-weight: 900;
+        font-size: 12px;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4),
+          0 0 12px rgba(0, 240, 255, 0.2);
+      }
 
-			.timer .timer-spawn {
-				font-size: 7px;
-				color: var(--accent);
-				opacity: 0.7;
-				font-weight: 600;
-				letter-spacing: 0.3px;
-			}
+      .timer .timer-spawn {
+        font-size: 7px;
+        color: var(--accent);
+        opacity: 0.7;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
 
-			.timer .timer-remaining {
-				font-family: "Orbitron", sans-serif;
-				font-weight: 500;
-				font-size: 9px;
-				color: var(--accent);
-				text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
-					0 0 15px rgba(0, 240, 255, 0.3);
-				letter-spacing: 1px;
-			}
+      .timer .timer-remaining {
+        font-family: "Orbitron", sans-serif;
+        font-weight: 500;
+        font-size: 9px;
+        color: var(--accent);
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
+          0 0 15px rgba(0, 240, 255, 0.3);
+        letter-spacing: 1px;
+      }
 
-			/* Ready state - green glow */
-			.timer.ready .timer-remaining {
-				color: #00ff88;
-				text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
-					0 0 20px rgba(0, 255, 136, 0.5);
-				animation: readyBlink 1s ease-in-out infinite;
-			}
+      /* Ready state - green glow */
+      .timer.ready .timer-remaining {
+        color: #00ff88;
+        text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
+          0 0 20px rgba(0, 255, 136, 0.5);
+        animation: readyBlink 1s ease-in-out infinite;
+      }
 
-			@keyframes readyBlink {
-				0%, 100% {
-					opacity: 1;
-				}
-				50% {
-					opacity: 0.7;
-				}
-			}
+      @keyframes readyBlink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
 
-			/* Hover glow */
-			.timer:hover {
-				transform: translateX(3px);
-				border-color: rgba(0, 240, 255, 0.4);
-				box-shadow: 0 0 20px rgba(0, 240, 255, 0.25),
-					inset 0 0 30px rgba(0, 240, 255, 0.08);
-			}
+      /* Hover glow */
+      .timer:hover {
+        transform: translateX(3px);
+        border-color: rgba(0, 240, 255, 0.4);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.25),
+          inset 0 0 30px rgba(0, 240, 255, 0.08);
+      }
 
-			.timer:hover .timer-name {
-				text-shadow: 0 0 10px rgba(0, 240, 255, 0.7),
-					0 0 20px rgba(0, 240, 255, 0.4);
-			}
+      .timer:hover .timer-name {
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.7),
+          0 0 20px rgba(0, 240, 255, 0.4);
+      }
 
-			/* Hover â€” bright neon red glow */
-			.timer .kbtn:hover {
-				background: rgba(255, 60, 60, 0.15);
-				border-color: rgba(255, 100, 100, 0.6);
-				color: #fff;
-				box-shadow: 0 0 14px rgba(255, 80, 80, 0.5);
-				transform: translateY(-1px);
-			}
+      /* Hover â€” bright neon red glow */
+      .timer .kbtn:hover {
+        background: rgba(255, 60, 60, 0.15);
+        border-color: rgba(255, 100, 100, 0.6);
+        color: #fff;
+        box-shadow: 0 0 14px rgba(255, 80, 80, 0.5);
+        transform: translateY(-1px);
+      }
 
-			/* Active press effect */
-			.timer .kbtn:active {
-				transform: scale(0.97);
-				box-shadow: 0 0 8px rgba(255, 60, 60, 0.3);
-			}
+      /* Active press effect */
+      .timer .kbtn:active {
+        transform: scale(0.97);
+        box-shadow: 0 0 8px rgba(255, 60, 60, 0.3);
+      }
 
-			@media (max-width: 900px) {
-				html, body {
-					height: 100% !important;
-					overflow: hidden !important;
-				}
+      @media (max-width: 900px) {
+        html,
+        body {
+          height: 100% !important;
+          overflow: hidden !important;
+        }
 
-				.container {
-					height: 100%;
-					display: flex;
-					flex-direction: column;
-				}
+        .container {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
 
-				.main {
-					display: flex !important;
-					flex-direction: column !important;
-					flex: 1 1 auto;
-					height: 100%;
-					overflow: hidden !important;
-					gap: 10px;                /* match right-column gap */
-				}
+        .main {
+          display: flex !important;
+          flex-direction: column !important;
+          flex: 1 1 auto;
+          height: 100%;
+          overflow: hidden !important;
+          gap: 10px; /* match right-column gap */
+        }
 
-				.right-column {
-					order: 0 !important;
-					display: flex !important;
-					flex-direction: column !important;
-					gap: 10px;
-					flex: 0 0 auto;
-					width: 100%;
-				}
+        .right-column {
+          order: 0 !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 10px;
+          flex: 0 0 auto;
+          width: 100%;
+        }
 
-				/* Stacking order */
-				#nextBoss {
-					order: 0 !important;
-					flex: 0 0 auto !important;
-					width: 100% !important;
-				}
+        /* Stacking order */
+        #nextBoss {
+          order: 0 !important;
+          flex: 0 0 auto !important;
+          width: 100% !important;
+        }
 
-				/* Active timers â€” taller and directly â€œtouchingâ€ boss list */
-				#timersPanel {
-				display: flex;
-				order: 2 !important;
-				}
+        /* Active timers â€” taller and directly â€œtouchingâ€ boss list */
+        #timersPanel {
+          display: flex;
+          order: 2 !important;
+        }
 
-				/* Boss list â€” directly attached to timers */
-				#bossListPanel {
-				order: 1 !important;
-				flex: 1 1 auto;
-				width: 100%;
-				display: flex;
-				flex-direction: column;
-				overflow: hidden;
-				margin: 0;
-				padding: 0 10px 10px 10px;
-				box-shadow: none;
-				}
+        /* Boss list â€” directly attached to timers */
+        #bossListPanel {
+          order: 1 !important;
+          flex: 1 1 auto;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          margin: 0;
+          padding: 0 10px 10px 10px;
+          box-shadow: none;
+        }
 
-				/* Keep both panels the same background for seamless look */
-				#timersPanel, #bossListPanel {
-					background: linear-gradient(
-						180deg,
-						rgba(255,255,255,0.015),
-						rgba(0,0,0,0.05)
-					);
-					border: 1px solid var(--glass-border);
-				}
+        /* Keep both panels the same background for seamless look */
+        #timersPanel,
+        #bossListPanel {
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.015),
+            rgba(0, 0, 0, 0.05)
+          );
+          border: 1px solid var(--glass-border);
+        }
 
-				/* Compact headers to minimize space */
-				#timersPanel .card-header,
-				#bossListPanel .card-header {
-				min-height: 35px;
-				padding: 8px 0;
-				margin: 0;
-				border-radius: var(--radius) var(--radius) 0 0;
-				}
+        /* Compact headers to minimize space */
+        #timersPanel .card-header,
+        #bossListPanel .card-header {
+          min-height: 35px;
+          padding: 8px 0;
+          margin: 0;
+          border-radius: var(--radius) var(--radius) 0 0;
+        }
 
-				/* Only the inner lists scroll */
-				#timers, #bossList {
-					flex: 1 1 auto;
-					overflow-y: auto;
-					-webkit-overflow-scrolling: touch;
-					padding: 6px 4px;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					gap: 8px;
-				}
+        /* Only the inner lists scroll */
+        #timers,
+        #bossList {
+          flex: 1 1 auto;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          padding: 6px 4px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
 
-				/* Scrollbar */
-				#bossList::-webkit-scrollbar,
-				#timers::-webkit-scrollbar {
-					width: 8px;
-				}
+        /* Scrollbar */
+        #bossList::-webkit-scrollbar,
+        #timers::-webkit-scrollbar {
+          width: 8px;
+        }
 
-				#bossList::-webkit-scrollbar-thumb,
-				#timers::-webkit-scrollbar-thumb {
-					background: rgba(0,240,255,0.3);
-					border-radius: 8px;
-				}
-			}
+        #bossList::-webkit-scrollbar-thumb,
+        #timers::-webkit-scrollbar-thumb {
+          background: rgba(0, 240, 255, 0.3);
+          border-radius: 8px;
+        }
+      }
 
       /* === SETTINGS MODAL === */
       .settings-modal {
         width: auto;
-        min-width: 280px;
+        min-width: 300px;
         max-width: 90%;
-        padding: 20px;
+        padding: 24px;
       }
-      
+
       .settings-modal h3 {
         text-transform: uppercase;
         letter-spacing: 2px;
+        font-size: 18px;
+        margin-bottom: 20px;
       }
 
       .settings-list {
         display: flex;
         flex-direction: column;
-        gap: 0;
+        gap: 10px;
         margin-top: 16px;
-        border: 1px solid rgba(0, 240, 255, 0.15);
-        border-radius: 8px;
-        overflow: hidden;
-        background: rgba(0, 0, 0, 0.3);
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+        background: transparent;
       }
 
       .settings-item {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 14px 16px;
+        padding: 12px 16px;
         background: linear-gradient(
-          90deg,
-          rgba(0, 0, 0, 0.4),
-          rgba(0, 10, 20, 0.5)
+          135deg,
+          rgba(0, 30, 50, 0.6),
+          rgba(0, 15, 25, 0.8)
         );
-        border: none;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+        border: 1.5px solid rgba(0, 240, 255, 0.3);
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.25s ease;
         font-family: "Orbitron", sans-serif;
         text-align: left;
         text-transform: uppercase;
+        position: relative;
+        overflow: hidden;
       }
 
-      .settings-item:last-child {
-        border-bottom: none;
+      /* Dead code - not used: .settings-item:last-child border-bottom removed (gap-based layout now) */
+
+      .settings-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(0, 240, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.5s ease;
+      }
+
+      .settings-item:hover::before {
+        transform: translateX(100%);
       }
 
       .settings-item:hover {
         background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.15),
-          rgba(0, 150, 200, 0.1)
+          135deg,
+          rgba(0, 50, 80, 0.8),
+          rgba(0, 30, 50, 0.9)
         );
-        border-left: 3px solid var(--accent);
-        padding-left: 13px;
-        box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.1);
+        border-color: rgba(0, 240, 255, 0.6);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
+          inset 0 0 20px rgba(0, 240, 255, 0.1);
+        transform: translateY(-2px);
       }
 
       .settings-item .icon {
         font-size: 20px;
         flex-shrink: 0;
         filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
+        position: relative;
+        z-index: 1;
+        transition: all 0.25s ease;
+      }
+
+      .settings-item:hover .icon {
+        filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.8));
+        transform: scale(1.15);
       }
 
       .settings-item .label {
@@ -1223,11 +1265,19 @@
         text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
         flex: 1;
         text-transform: uppercase;
+        position: relative;
+        z-index: 1;
       }
 
       .settings-item:hover .label {
         color: #fff;
         text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
+      }
+
+      .settings-item:active {
+        transform: translateY(0);
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.25),
+          inset 0 0 30px rgba(0, 240, 255, 0.15);
       }
 
       /* --- Compact Cyber Modal (Webhook window) --- */
@@ -1549,7 +1599,8 @@
       }
 
       @keyframes corePulse {
-        0%, 100% {
+        0%,
+        100% {
           transform: scale(1);
         }
         50% {
@@ -1558,7 +1609,8 @@
       }
 
       @keyframes ringGlow {
-        0%, 100% {
+        0%,
+        100% {
           stroke-width: 2;
           opacity: 0.6;
         }
@@ -1569,7 +1621,8 @@
       }
 
       @keyframes ringPulse {
-        0%, 100% {
+        0%,
+        100% {
           r: 25;
           opacity: 0.8;
         }
@@ -1580,7 +1633,8 @@
       }
 
       @keyframes centerGlow {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 0.8;
           filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
         }
@@ -1608,7 +1662,8 @@
       }
 
       @keyframes textGlow {
-        0%, 100% {
+        0%,
+        100% {
           text-shadow: 0 0 15px rgba(0, 240, 255, 0.6),
             0 0 30px rgba(0, 240, 255, 0.3);
         }
@@ -1642,7 +1697,8 @@
       }
 
       @keyframes dotBounce {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 0.3;
           transform: translateY(0);
         }
@@ -1663,7 +1719,8 @@
       }
 
       @keyframes subtitleFade {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 0.5;
         }
         50% {
@@ -1847,60 +1904,61 @@
       }
 
       /* === DEAD BOSS - ENHANCED CARD DESIGN === */
-			/* Entire boss card gets different styling when dead */
-			.boss:has(.name.dead) {
-				background: linear-gradient(
-					135deg,
-					rgba(0, 20, 40, 0.6),
-					rgba(0, 10, 20, 0.4)
-				); /* same neutral background as alive bosses */
-				border-color: rgba(255, 68, 68, 0.4);
-				border-left-color: rgba(255, 0, 0, 0.6);
-				box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
-					inset 0 0 30px rgba(255, 68, 68, 0.05);
-				animation: deadCardPulse 3s ease-in-out infinite;
-			}
+      /* Entire boss card gets different styling when dead */
+      .boss:has(.name.dead) {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 20, 40, 0.6),
+          rgba(0, 10, 20, 0.4)
+        ); /* same neutral background as alive bosses */
+        border-color: rgba(255, 68, 68, 0.4);
+        border-left-color: rgba(255, 0, 0, 0.6);
+        box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
+          inset 0 0 30px rgba(255, 68, 68, 0.05);
+        animation: deadCardPulse 3s ease-in-out infinite;
+      }
 
-			.boss:has(.name.dead)::after {
-				background: linear-gradient(
-					180deg,
-					transparent,
-					rgba(255, 68, 68, 0.4),
-					transparent
-				);
-				opacity: 0.8;
-			}
+      .boss:has(.name.dead)::after {
+        background: linear-gradient(
+          180deg,
+          transparent,
+          rgba(255, 68, 68, 0.4),
+          transparent
+        );
+        opacity: 0.8;
+      }
 
-			@keyframes deadCardPulse {
-				0%, 100% {
-					box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
-						inset 0 0 30px rgba(255, 68, 68, 0.05);
-				}
-				50% {
-					box-shadow: 0 0 30px rgba(255, 68, 68, 0.25),
-						inset 0 0 40px rgba(255, 68, 68, 0.1);
-				}
-			}
+      @keyframes deadCardPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
+            inset 0 0 30px rgba(255, 68, 68, 0.05);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(255, 68, 68, 0.25),
+            inset 0 0 40px rgba(255, 68, 68, 0.1);
+        }
+      }
 
-			.boss:has(.name.dead):hover {
-				background: linear-gradient(
-					135deg,
-					rgba(60, 0, 0, 0.8),
-					rgba(30, 0, 15, 0.6)
-				);
-				border-color: rgba(255, 68, 68, 0.6);
-				box-shadow: 0 0 35px rgba(255, 68, 68, 0.3),
-					inset 0 0 45px rgba(255, 68, 68, 0.12);
-			}
+      .boss:has(.name.dead):hover {
+        background: linear-gradient(
+          135deg,
+          rgba(60, 0, 0, 0.8),
+          rgba(30, 0, 15, 0.6)
+        );
+        border-color: rgba(255, 68, 68, 0.6);
+        box-shadow: 0 0 35px rgba(255, 68, 68, 0.3),
+          inset 0 0 45px rgba(255, 68, 68, 0.12);
+      }
 
-			/* Dead boss portrait gets red tint */
-			.boss:has(.name.dead) .boss-portrait {
-				border-color: rgba(255, 68, 68, 0.5);
-				filter: sepia(0.3) hue-rotate(-20deg) saturate(1.5);
-				box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
-			}
+      /* Dead boss portrait gets red tint */
+      .boss:has(.name.dead) .boss-portrait {
+        border-color: rgba(255, 68, 68, 0.5);
+        filter: sepia(0.3) hue-rotate(-20deg) saturate(1.5);
+        box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+      }
 
-			/* Dead boss name styling */
+      /* Dead boss name styling */
       .boss .name.dead {
         font-family: "Orbitron", sans-serif;
         color: #ff5555;
@@ -1909,8 +1967,7 @@
         letter-spacing: 1px;
         text-transform: uppercase;
         text-shadow: 0 0 12px rgba(255, 68, 68, 0.8),
-          0 0 24px rgba(255, 0, 0, 0.5),
-          0 0 36px rgba(255, 0, 0, 0.3);
+          0 0 24px rgba(255, 0, 0, 0.5), 0 0 36px rgba(255, 0, 0, 0.3);
         transition: all 0.4s ease;
         display: inline-flex;
         align-items: center;
@@ -1918,33 +1975,36 @@
         position: relative;
       }
 
-			/* Status badge */
-			.boss .name.dead::before {
-				content: "⚠️  RESPAWNING"; /* non-breaking space after ⚠️  */
-				position: absolute;
-				top: -18px;
-				left: 0;
-				display: inline-flex;
-				align-items: center;
-				white-space: nowrap; /* ensures symbol + text stay together */
-				font-size: 8px;
-				font-weight: 700;
-				letter-spacing: 1.5px;
-				color: #ff8888;
-				background: rgba(255, 0, 0, 0.15);
-				padding: 2px 6px;
-				border-radius: 3px;
-				border: 1px solid rgba(255, 68, 68, 0.4);
-				box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
-				animation: badgeBlink 2s ease-in-out infinite;
-			}
+      /* Status badge */
+      .boss .name.dead::before {
+        content: "⚠️  RESPAWNING"; /* non-breaking space after ⚠️  */
+        position: absolute;
+        top: -18px;
+        left: 0;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap; /* ensures symbol + text stay together */
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #ff8888;
+        background: rgba(255, 0, 0, 0.15);
+        padding: 2px 6px;
+        border-radius: 3px;
+        border: 1px solid rgba(255, 68, 68, 0.4);
+        box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
+        animation: badgeBlink 2s ease-in-out infinite;
+      }
 
-			@keyframes badgeBlink {
-				0%, 100% { opacity: 0.8; }
-				50% { opacity: 1; }
-			}
-
-
+      @keyframes badgeBlink {
+        0%,
+        100% {
+          opacity: 0.8;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
 
       /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
       .card-header {
@@ -2042,523 +2102,524 @@
         scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
       }
 
-			/* --- Online Users Indicator --- */
-			.online-users {
-				position: fixed;
-				bottom: 14px;
-				right: 16px;
-				padding: 6px 10px;
-				font-family: Consolas, monospace;
-				font-size: 12px;
-				color: var(--accent);
-				background: rgba(0, 240, 255, 0.06);
-				border: 1px solid rgba(0, 240, 255, 0.2);
-				border-radius: 8px;
-				backdrop-filter: blur(8px);
-				box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-				text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
-				transition: opacity 0.3s ease, transform 0.3s ease;
-				animation: fadeInUsers 0.5s ease-out;
-				z-index: 3000;
-				display: inline-flex;
-				align-items: center;
-				gap: 4px;
-			}
+      /* --- Online Users Indicator --- */
+      .online-users {
+        position: fixed;
+        bottom: 14px;
+        right: 16px;
+        padding: 6px 10px;
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        color: var(--accent);
+        background: rgba(0, 240, 255, 0.06);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        border-radius: 8px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        animation: fadeInUsers 0.5s ease-out;
+        z-index: 3000;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
 
-			/* 🟢 Default icon */
-			.online-users::before {
-				content: "🟢";
-				margin-right: 4px;
-				transition: transform 0.3s ease, opacity 0.3s ease;
-			}
+      /* 🟢 Default icon */
+      .online-users::before {
+        content: "🟢";
+        margin-right: 4px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
 
-			/* 💬 replaces 🟢 when there's a new chat message */
-			.online-users.notify::before {
-				content: "🗨️";
-				color: #ff4d4d;
-				text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
-					0 0 12px rgba(255, 0, 0, 0.7),
-					0 0 18px rgba(255, 0, 0, 0.5);
-				animation: pulseNotify 1.4s infinite ease-in-out;
-			}
+      /* 💬 replaces 🟢 when there's a new chat message */
+      .online-users.notify::before {
+        content: "🗨️";
+        color: #ff4d4d;
+        text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
+          0 0 12px rgba(255, 0, 0, 0.7), 0 0 18px rgba(255, 0, 0, 0.5);
+        animation: pulseNotify 1.4s infinite ease-in-out;
+      }
 
-			/* Count text (only number updates via JS) */
-			.online-users .count {
-				font-weight: 600;
-			}
+      /* Count text (only number updates via JS) */
+      .online-users .count {
+        font-weight: 600;
+      }
 
-			/* Hover effect */
-			.online-users:hover {
-				box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
-				transform: translateY(-1px);
-			}
+      /* Hover effect */
+      .online-users:hover {
+        box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+        transform: translateY(-1px);
+      }
 
-			/* Fade-in animation */
-			@keyframes fadeInUsers {
-				from {
-					opacity: 0;
-					transform: translateY(10px);
-				}
-				to {
-					opacity: 1;
-					transform: translateY(0);
-				}
-			}
+      /* Fade-in animation */
+      @keyframes fadeInUsers {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-			/* 💬 red pulse animation */
-			@keyframes pulseNotify {
-				0%, 100% {
-					transform: scale(1);
-					opacity: 0.9;
-					text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
-						0 0 12px rgba(255, 0, 0, 0.7),
-						0 0 18px rgba(255, 0, 0, 0.5);
-				}
-				50% {
-					transform: scale(1.3);
-					opacity: 1;
-					text-shadow: 0 0 10px rgba(255, 100, 100, 1),
-						0 0 20px rgba(255, 0, 0, 0.8),
-						0 0 30px rgba(255, 0, 0, 0.5);
-				}
-			}
+      /* 💬 red pulse animation */
+      @keyframes pulseNotify {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.9;
+          text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
+            0 0 12px rgba(255, 0, 0, 0.7), 0 0 18px rgba(255, 0, 0, 0.5);
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 1;
+          text-shadow: 0 0 10px rgba(255, 100, 100, 1),
+            0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+      }
 
-			/* --- Tooltip: Softer Red Chat Bubble --- */
-			.online-users::after {
-				content: "";
-				position: absolute;
-				top: -36px; /* slightly higher */
-				right: 50%;
-				transform: translateX(50%);
-				background: transparent;
-				color: #fff;
-				font-size: 11px;
-				font-family: Consolas, monospace;
-				padding: 0;
-				border-radius: 0;
-				opacity: 0;
-				pointer-events: none;
-				transition: opacity 0.3s ease, transform 0.3s ease;
-			}
+      /* --- Tooltip: Softer Red Chat Bubble --- */
+      .online-users::after {
+        content: "";
+        position: absolute;
+        top: -36px; /* slightly higher */
+        right: 50%;
+        transform: translateX(50%);
+        background: transparent;
+        color: #fff;
+        font-size: 11px;
+        font-family: Consolas, monospace;
+        padding: 0;
+        border-radius: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
 
-			/* Show tooltip when new message arrives */
-			.online-users.notify::after {
-				content: "New message";
-				position: absolute;
-				top: -36px;
-				right: 50%;
-				transform: translateX(50%) translateY(-3px);
-				background: rgba(255, 70, 70, 0.25); /* âœ¨ translucent red */
-				border: 1px solid rgba(255, 90, 90, 0.4);
-				backdrop-filter: blur(6px);
-				padding: 4px 9px;
-				border-radius: 14px;
-				box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
-							0 0 20px rgba(255, 0, 0, 0.2);
-				opacity: 1;
-				animation: tooltipPulse 1.4s infinite ease-in-out;
-			}
+      /* Show tooltip when new message arrives */
+      .online-users.notify::after {
+        content: "New message";
+        position: absolute;
+        top: -36px;
+        right: 50%;
+        transform: translateX(50%) translateY(-3px);
+        background: rgba(255, 70, 70, 0.25); /* âœ¨ translucent red */
+        border: 1px solid rgba(255, 90, 90, 0.4);
+        backdrop-filter: blur(6px);
+        padding: 4px 9px;
+        border-radius: 14px;
+        box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
+          0 0 20px rgba(255, 0, 0, 0.2);
+        opacity: 1;
+        animation: tooltipPulse 1.4s infinite ease-in-out;
+      }
 
-			/* Chat bubble tail (now visible and glowy) */
-			.online-users.notify::after::before {
-				content: "";
-				position: absolute;
-				bottom: -6px;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 0;
-				height: 0;
-				border-left: 6px solid transparent;
-				border-right: 6px solid transparent;
-				border-top: 6px solid rgba(255, 90, 90, 0.4);
-				filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.5));
-			}
+      /* Chat bubble tail (now visible and glowy) */
+      .online-users.notify::after::before {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid rgba(255, 90, 90, 0.4);
+        filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.5));
+      }
 
-			/* Tooltip glow animation */
-			@keyframes tooltipPulse {
-				0%, 100% {
-					box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
-								0 0 18px rgba(255, 0, 0, 0.25);
-				}
-				50% {
-					box-shadow: 0 0 14px rgba(255, 100, 100, 0.5),
-								0 0 26px rgba(255, 0, 0, 0.35);
-				}
-			}
-		
-			/* --- Chat Box Styling --- */
-			.chat-box {
-				position: fixed;
-				bottom: 50px;
-				right: 16px;
-				width: 300px;
-				height: 350px;
-				background: rgba(0, 10, 20, 0.95);
-				border: 1px solid rgba(0, 240, 255, 0.25);
-				border-radius: 10px;
-				box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
-				transform: translateY(120%);
-				opacity: 0;
-				transition: all 0.4s ease-in-out;
-				display: flex;
-				flex-direction: column;
-				overflow: hidden;
-				z-index: 4000;
-				backdrop-filter: blur(8px);
-			}
+      /* Tooltip glow animation */
+      @keyframes tooltipPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
+            0 0 18px rgba(255, 0, 0, 0.25);
+        }
+        50% {
+          box-shadow: 0 0 14px rgba(255, 100, 100, 0.5),
+            0 0 26px rgba(255, 0, 0, 0.35);
+        }
+      }
 
-			/* Open animation */
-			.chat-box.active {
-				transform: translateY(0);
-				opacity: 1;
-				box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
-			}
+      /* --- Chat Box Styling --- */
+      .chat-box {
+        position: fixed;
+        bottom: 50px;
+        right: 16px;
+        width: 300px;
+        height: 350px;
+        background: rgba(0, 10, 20, 0.95);
+        border: 1px solid rgba(0, 240, 255, 0.25);
+        border-radius: 10px;
+        box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
+        transform: translateY(120%);
+        opacity: 0;
+        transition: all 0.4s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 4000;
+        backdrop-filter: blur(8px);
+      }
 
-			/* Fully hidden (when minimized) */
-			.chat-box.hidden {
-				transform: translateY(160%);
-				opacity: 0;
-				pointer-events: none;
-				transition: all 0.5s ease-in-out;
-			}
+      /* Open animation */
+      .chat-box.active {
+        transform: translateY(0);
+        opacity: 1;
+        box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+      }
 
-			/* --- Chat Header --- */
-			.chat-header {
-				position: relative;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				font-family: "Orbitron", sans-serif;
-				background: rgba(0, 240, 255, 0.1);
-				color: var(--accent);
-				padding: 8px 10px;
-				text-align: center;
-				font-size: 14px;
-				letter-spacing: 1px;
-				border-bottom: 1px solid rgba(0, 240, 255, 0.25);
-				text-shadow: 0 0 6px rgba(0, 240, 255, 0.5);
-				box-shadow: 0 2px 8px rgba(0, 240, 255, 0.1);
-			}
+      /* Fully hidden (when minimized) */
+      .chat-box.hidden {
+        transform: translateY(160%);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.5s ease-in-out;
+      }
 
-			/* --- Minimize Button --- */
-			.chat-minimize-btn {
-				position: absolute;
-				right: 8px;
-				top: 4px;
-				background: rgba(0, 240, 255, 0.05);
-				border: 1px solid rgba(0, 240, 255, 0.25);
-				color: var(--accent);
-				font-size: 16px;
-				line-height: 1;
-				cursor: pointer;
-				padding: 2px 6px;
-				border-radius: 6px;
-				transition: all 0.25s ease;
-				text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
-				box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
-				backdrop-filter: blur(6px);
-			}
+      /* --- Chat Header --- */
+      .chat-header {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Orbitron", sans-serif;
+        background: rgba(0, 240, 255, 0.1);
+        color: var(--accent);
+        padding: 8px 10px;
+        text-align: center;
+        font-size: 14px;
+        letter-spacing: 1px;
+        border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.5);
+        box-shadow: 0 2px 8px rgba(0, 240, 255, 0.1);
+      }
 
-			.chat-minimize-btn:hover {
-				color: #fff;
-				background: rgba(0, 240, 255, 0.15);
-				box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
-				transform: scale(1.1);
-			}
+      /* --- Minimize Button --- */
+      .chat-minimize-btn {
+        position: absolute;
+        right: 8px;
+        top: 4px;
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.25);
+        color: var(--accent);
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        transition: all 0.25s ease;
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+        backdrop-filter: blur(6px);
+      }
 
-			/* --- Messages --- */
-			.chat-messages {
-				flex: 1;
-				padding: 8px;
-				overflow-y: auto;
-				font-size: 12px;
-				line-height: 1.4;
-				color: var(--text);
-				scrollbar-width: thin;
-				scrollbar-color: rgba(0, 240, 255, 0.3) rgba(0, 240, 255, 0.05);
-			}
+      .chat-minimize-btn:hover {
+        color: #fff;
+        background: rgba(0, 240, 255, 0.15);
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        transform: scale(1.1);
+      }
 
-			/* Custom scrollbar (Chrome / Edge / Safari) */
-			.chat-messages::-webkit-scrollbar {
-				width: 8px;
-			}
-			.chat-messages::-webkit-scrollbar-track {
-				background: rgba(0, 240, 255, 0.05);
-				border-radius: 10px;
-			}
-			.chat-messages::-webkit-scrollbar-thumb {
-				background: linear-gradient(180deg, rgba(0, 240, 255, 0.5), rgba(0, 180, 255, 0.8));
-				border-radius: 10px;
-				box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-				transition: background 0.3s ease, box-shadow 0.3s ease;
-			}
-			.chat-messages::-webkit-scrollbar-thumb:hover {
-				background: linear-gradient(180deg, rgba(0, 255, 255, 0.8), rgba(0, 200, 255, 1));
-				box-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
-			}
+      /* --- Messages --- */
+      .chat-messages {
+        flex: 1;
+        padding: 8px;
+        overflow-y: auto;
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--text);
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 240, 255, 0.3) rgba(0, 240, 255, 0.05);
+      }
 
-			/* --- Each Message --- */
-			.chat-message {
-				margin-bottom: 6px;
-				word-wrap: break-word;
-			}
+      /* Custom scrollbar (Chrome / Edge / Safari) */
+      .chat-messages::-webkit-scrollbar {
+        width: 8px;
+      }
+      .chat-messages::-webkit-scrollbar-track {
+        background: rgba(0, 240, 255, 0.05);
+        border-radius: 10px;
+      }
+      .chat-messages::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 240, 255, 0.5),
+          rgba(0, 180, 255, 0.8)
+        );
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+      }
+      .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 255, 255, 0.8),
+          rgba(0, 200, 255, 1)
+        );
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+      }
 
-			/* --- Input Area --- */
-			.chat-input-area {
-				display: flex;
-				padding: 6px;
-				gap: 6px;
-				border-top: 1px solid rgba(0, 240, 255, 0.2);
-				background: rgba(0, 240, 255, 0.03);
-				backdrop-filter: blur(6px);
-			}
+      /* --- Each Message --- */
+      .chat-message {
+        margin-bottom: 6px;
+        word-wrap: break-word;
+      }
 
-			/* Input field */
-			.chat-input-area input {
-				flex: 1;
-				padding: 6px 8px;
-				background: rgba(0, 240, 255, 0.05);
-				border: 1px solid rgba(0, 240, 255, 0.2);
-				border-radius: 6px;
-				color: var(--text);
-				outline: none;
-				transition: all 0.3s ease;
-			}
-			.chat-input-area input:focus {
-				border-color: rgba(0, 240, 255, 0.6);
-				box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-				background: rgba(0, 240, 255, 0.08);
-			}
+      /* --- Input Area --- */
+      .chat-input-area {
+        display: flex;
+        padding: 6px;
+        gap: 6px;
+        border-top: 1px solid rgba(0, 240, 255, 0.2);
+        background: rgba(0, 240, 255, 0.03);
+        backdrop-filter: blur(6px);
+      }
 
-			/* Send button */
-			.chat-input-area button {
-				background: rgba(0, 240, 255, 0.15);
-				border: 1px solid rgba(0, 240, 255, 0.4);
-				color: var(--accent);
-				border-radius: 6px;
-				cursor: pointer;
-				padding: 0 10px;
-				font-weight: 600;
-				text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
-				transition: all 0.25s ease;
-			}
-			.chat-input-area button:hover {
-				background: rgba(0, 240, 255, 0.3);
-				box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
-				color: #fff;
-				transform: translateY(-1px);
-			}
-			
-			.name-wrapper {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-			}
+      /* Input field */
+      .chat-input-area input {
+        flex: 1;
+        padding: 6px 8px;
+        background: rgba(0, 240, 255, 0.05);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        border-radius: 6px;
+        color: var(--text);
+        outline: none;
+        transition: all 0.3s ease;
+      }
+      .chat-input-area input:focus {
+        border-color: rgba(0, 240, 255, 0.6);
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+        background: rgba(0, 240, 255, 0.08);
+      }
 
-			.portrait-meta {
-				display: flex;
-				align-items: flex-end;
-				gap: 10px;
-			}
+      /* Send button */
+      .chat-input-area button {
+        background: rgba(0, 240, 255, 0.15);
+        border: 1px solid rgba(0, 240, 255, 0.4);
+        color: var(--accent);
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 0 10px;
+        font-weight: 600;
+        text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+        transition: all 0.25s ease;
+      }
+      .chat-input-area button:hover {
+        background: rgba(0, 240, 255, 0.3);
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        color: #fff;
+        transform: translateY(-1px);
+      }
 
-			.boss-portrait {
-			width: 48px;
-			height: 64px;
-			object-fit: cover;
-			border-radius: 6px;
-			border: 1px solid rgba(255,255,255,0.2);
-			 transition: transform 0.3s ease, box-shadow 0.3s ease;
-		}
+      .name-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
 
-		.boss-portrait:hover {
-			transform: scale(1.3);
-			box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-		}
+      .portrait-meta {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+      }
 
-			.info {
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-			}
+      .boss-portrait {
+        width: 48px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
 
-			.actions {
-				display: flex;
-				align-items: center;
-				gap: 10px;
-				margin-top: 6px;
-			}
+      .boss-portrait:hover {
+        transform: scale(1.3);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+      }
 
-			/* === ACTION BUTTONS - CYBER THEME === */
-			.action-btn {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 4px;
-			}
+      .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
 
-			.icon-btn {
-				position: relative;
-				background: linear-gradient(
-					135deg,
-					rgba(0, 30, 50, 0.6),
-					rgba(0, 15, 25, 0.8)
-				);
-				border: 1px solid rgba(0, 240, 255, 0.3);
-				border-radius: 6px;
-				cursor: pointer;
-				padding: 8px;
-				color: var(--accent);
-				transition: all 0.3s ease;
-				box-shadow: 0 0 10px rgba(0, 240, 255, 0.1),
-					inset 0 0 15px rgba(0, 240, 255, 0.03);
-				overflow: hidden;
-			}
+      .actions {
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: center;
+        gap: 10px;
+        margin-top: 6px;
+      }
 
-			.icon-btn::before {
-				content: "";
-				position: absolute;
-				inset: 0;
-				background: linear-gradient(
-					45deg,
-					transparent,
-					rgba(0, 240, 255, 0.1),
-					transparent
-				);
-				transform: translateX(-100%);
-				transition: transform 0.5s ease;
-			}
+      /* === ACTION BUTTONS - CYBER THEME === */
+      .action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex: 0 0 auto;
+      }
 
-			.icon-btn:hover::before {
-				transform: translateX(100%);
-			}
+      .action-btn.hidden {
+        visibility: hidden;
+      }
 
-			.icon-btn:hover {
-				transform: translateY(-2px) scale(1.05);
-				border-color: var(--accent);
-				box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
-					inset 0 0 20px rgba(0, 240, 255, 0.1);
-				color: #fff;
-			}
+      .icon-btn {
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 30, 50, 0.6),
+          rgba(0, 15, 25, 0.8)
+        );
+        border: 1px solid rgba(0, 240, 255, 0.3);
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 8px;
+        color: var(--accent);
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 240, 255, 0.1),
+          inset 0 0 15px rgba(0, 240, 255, 0.03);
+        overflow: hidden;
+      }
 
-			.icon-btn:active {
-				transform: translateY(0) scale(1);
-				box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
-					inset 0 0 25px rgba(0, 240, 255, 0.15);
-			}
+      .icon-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(0, 240, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.5s ease;
+      }
 
-			.icon-btn svg {
-				position: relative;
-				z-index: 1;
-				filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.3));
-			}
+      .icon-btn:hover::before {
+        transform: translateX(100%);
+      }
 
-			.icon-btn:hover svg {
-				filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
-			}
+      .icon-btn:hover {
+        transform: translateY(-2px) scale(1.05);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
+          inset 0 0 20px rgba(0, 240, 255, 0.1);
+        color: #fff;
+      }
 
-			/* Mark Dead Button - Red/Danger Colors */
-			.icon-btn[data-action="mark"]:hover {
-				border-color: rgba(255, 80, 80, 0.6);
-				box-shadow: 0 0 20px rgba(255, 80, 80, 0.4),
-					inset 0 0 20px rgba(255, 80, 80, 0.1);
-				color: #ff8888;
-			}
+      .icon-btn:active {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
+          inset 0 0 25px rgba(0, 240, 255, 0.15);
+      }
 
-			.icon-btn[data-action="mark"]:hover svg {
-				filter: drop-shadow(0 0 8px rgba(255, 80, 80, 0.6));
-			}
+      .icon-btn svg {
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.3));
+      }
 
-			.icon-btn[data-action="mark"]::before {
-				background: linear-gradient(
-					45deg,
-					transparent,
-					rgba(255, 80, 80, 0.1),
-					transparent
-				);
-			}
+      .icon-btn:hover svg {
+        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+      }
 
-			/* Set Timer Button - Green/Success Colors */
-			.icon-btn[data-action="set"]:hover {
-				border-color: rgba(0, 255, 100, 0.6);
-				box-shadow: 0 0 20px rgba(0, 255, 100, 0.4),
-					inset 0 0 20px rgba(0, 255, 100, 0.1);
-				color: #88ff88;
-			}
+      /* Mark Dead Button - Red/Danger Colors */
+      .icon-btn[data-action="mark"]:hover {
+        border-color: rgba(255, 80, 80, 0.6);
+        box-shadow: 0 0 20px rgba(255, 80, 80, 0.4),
+          inset 0 0 20px rgba(255, 80, 80, 0.1);
+        color: #ff8888;
+      }
 
-			.icon-btn[data-action="set"]:hover svg {
-				filter: drop-shadow(0 0 8px rgba(0, 255, 100, 0.6));
-			}
+      .icon-btn[data-action="mark"]:hover svg {
+        filter: drop-shadow(0 0 8px rgba(255, 80, 80, 0.6));
+      }
 
-			.icon-btn[data-action="set"]::before {
-				background: linear-gradient(
-					45deg,
-					transparent,
-					rgba(0, 255, 100, 0.1),
-					transparent
-				);
-			}
+      .icon-btn[data-action="mark"]::before {
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 80, 80, 0.1),
+          transparent
+        );
+      }
 
-			.icon-label {
-				font-family: "Orbitron", sans-serif;
-				font-size: 9px;
-				font-weight: 700;
-				opacity: 0.8;
-				text-transform: uppercase;
-				letter-spacing: 0.8px;
-				color: var(--accent);
-				text-shadow: 0 0 4px rgba(0, 240, 255, 0.3);
-				transition: all 0.3s ease;
-			}
+      /* Set Timer Button - Green/Success Colors */
+      .icon-btn[data-action="set"]:hover {
+        border-color: rgba(0, 255, 100, 0.6);
+        box-shadow: 0 0 20px rgba(0, 255, 100, 0.4),
+          inset 0 0 20px rgba(0, 255, 100, 0.1);
+        color: #88ff88;
+      }
 
-			.action-btn:hover .icon-label {
-				opacity: 1;
-				text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-				color: #fff;
-			}
+      .icon-btn[data-action="set"]:hover svg {
+        filter: drop-shadow(0 0 8px rgba(0, 255, 100, 0.6));
+      }
 
+      .icon-btn[data-action="set"]::before {
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(0, 255, 100, 0.1),
+          transparent
+        );
+      }
+
+      .icon-label {
+        font-family: "Orbitron", sans-serif;
+        font-size: 9px;
+        font-weight: 700;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--accent);
+        text-shadow: 0 0 4px rgba(0, 240, 255, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .action-btn:hover .icon-label {
+        opacity: 1;
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        color: #fff;
+      }
     </style>
   </head>
 
   <body>
     <div class="container">
       <header class="app-header">
-        <div class="app-title">
-          <div class="logo">
-            <img alt="logo" class="logo-img" src="assets/images/logo5.png" />
-          </div>
-          <div>
-            <div class="main-title">FIELD BOSS TIME TRACKER</div>
-            <div class="warning-text">FOR RICARDO01 ONLY</div>
-          </div>
-        </div>
-        <div class="header-controls">
-          <div class="search-wrapper" style="position: relative">
-            <input
-              class="search"
-              id="bossSearch"
-              placeholder="Search boss..."
-            />
-            <span class="clear-icon" id="clearSearch"> ❌ </span>
-          </div>
-          <button aria-label="Settings" class="settings" id="settingsBtn">
-            <svg
-              fill="none"
-              height="18"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.6"
-              style="color: var(--accent)"
-              viewbox="0 0 24 24"
-              width="18"
-            >
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"></path>
-              <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9.5 19a1.65 1.65 0 0 0-1.82.33l-.06.06A2 2 0 0 1 4.8 16.5l.06-.06A1.65 1.65 0 0 0 5.18 14.6 1.65 1.65 0 0 0 4 13V12a2 2 0 0 1 2-2h.09c.39-.62 1-1.16 1.72-1.54a1.65 1.65 0 0 0 .33-1.82L9.2 4.8a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 14.6 4.18 1.65 1.65 0 0 0 16 4v.09A2 2 0 0 1 18 6h.09c.39.62 1 1.16 1.72 1.54A1.65 1.65 0 0 0 20.82 9.4z"
-              ></path>
-            </svg>
-          </button>
-        </div>
+      <div class="header-top">
+      <div class="app-title">
+      <div class="logo">
+      <img alt="logo" class="logo-img" src="assets/images/logo5.png" />
+      </div>
+      <div>
+      <div class="main-title">FIELD BOSS TIME TRACKER</div>
+      <div class="warning-text">FOR RICARDO01 ONLY</div>
+      </div>
+      </div>
+      </div>
+      <div class="header-controls">
+      <div class="search-wrapper" style="position: relative">
+      <input
+      class="search"
+      id="bossSearch"
+      placeholder="Search boss..."
+      />
+      <span class="clear-icon" id="clearSearch"> ❌ </span>
+      </div>
+      <button aria-label="Settings" class="settings" id="settingsBtn">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </button>
+      </div>
       </header>
       <main class="main">
         <section class="card" id="bossListPanel">
@@ -2681,40 +2742,103 @@
       // Data + constants (FULL BOSSES)
       // -------------------------
       const BOSSES = [
-		  { id: "Venatus", name: "Venatus", respawn: 60 * 60 * 10 },
-		  { id: "Viorent", name: "Viorent", respawn: 60 * 60 * 10 },
-		  { id: "Ego", name: "Ego", respawn: 60 * 60 * 21 },
-		  { id: "Clemantis", name: "Clemantis", weeklyRespawns: [{ day: 1, hour: 12, minute: 30 }, { day: 4, hour: 20, minute: 0 }] },
-		  { id: "Livera", name: "Livera", respawn: 60 * 60 * 24 },
-		  { id: "Araneo", name: "Araneo", respawn: 60 * 60 * 24 },
-		  { id: "Undomiel", name: "Undomiel", respawn: 60 * 60 * 24 },
-		  { id: "Saphirus", name: "Saphirus", weeklyRespawns: [{ day: 0, hour: 18, minute: 0 }, { day: 2, hour: 12, minute: 30 }] },
-		  { id: "Neutro", name: "Neutro", weeklyRespawns: [{ day: 2, hour: 20, minute: 0 }, { day: 4, hour: 12, minute: 30 }] },
-		  { id: "LadyDalia", name: "Lady Dalia", respawn: 60 * 60 * 18 },
-		  { id: "GeneralAquleus", name: "General Aquleus", respawn: 60 * 60 * 29 },
-		  { id: "Thymele", name: "Thymele", weeklyRespawns: [{ day: 1, hour: 20, minute: 0 }, { day: 3, hour: 12, minute: 30 }] },
-		  { id: "Amentis", name: "Amentis", respawn: 60 * 60 * 29 },
-		  { id: "BaronBraudmore", name: "Baron Braudmore", respawn: 60 * 60 * 32 },
-		  { id: "Milavy", name: "Milavy", weeklyRespawns: [{ day: 6, hour: 16, minute: 0 }] },
-		  { id: "Wannitas", name: "Wannitas", respawn: 60 * 60 * 48 },
-		  { id: "Metus", name: "Metus", respawn: 60 * 60 * 48 },
-		  { id: "Duplican", name: "Duplican", respawn: 60 * 60 * 48 },
-		  { id: "Shuliar", name: "Shuliar", respawn: 60 * 60 * 35 },
-		  { id: "Ringor", name: "Ringor", weeklyRespawns: [{ day: 6, hour: 18, minute: 0 }] },
-		  { id: "Roderick", name: "Roderick", weeklyRespawns: [{ day: 5, hour: 20, minute: 0 }] },
-		  { id: "Gareth", name: "Gareth", respawn: 60 * 60 * 32 },
-		  { id: "Titore", name: "Titore", respawn: 60 * 60 * 37 },
-		  { id: "Larba", name: "Larba", respawn: 60 * 60 * 35 },
-		  { id: "Catena", name: "Catena", respawn: 60 * 60 * 35 },
-		  { id: "Auraq", name: "Auraq", weeklyRespawns: [{ day: 5, hour: 23, minute: 0 }, { day: 3, hour: 22, minute: 0 }] },
-		  { id: "Secreta", name: "Secreta", respawn: 60 * 60 * 62 },
-		  { id: "Ordo", name: "Ordo", respawn: 60 * 60 * 62 },
-		  { id: "Asta", name: "Asta", respawn: 60 * 60 * 62 },
-		  { id: "Supore", name: "Supore", respawn: 60 * 60 * 62 },
-		  { id: "Chaiflock", name: "Chaiflock", weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }] },
-		  { id: "Benji", name: "Benji", weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }] },
-		  //{ id: "Test Boss", name: "Test Boss", respawn: 60 * 5 + 10 },
-		];
+        { id: "Venatus", name: "Venatus", respawn: 60 * 60 * 10 },
+        { id: "Viorent", name: "Viorent", respawn: 60 * 60 * 10 },
+        { id: "Ego", name: "Ego", respawn: 60 * 60 * 21 },
+        {
+          id: "Clemantis",
+          name: "Clemantis",
+          weeklyRespawns: [
+            { day: 1, hour: 12, minute: 30 },
+            { day: 4, hour: 20, minute: 0 },
+          ],
+        },
+        { id: "Livera", name: "Livera", respawn: 60 * 60 * 24 },
+        { id: "Araneo", name: "Araneo", respawn: 60 * 60 * 24 },
+        { id: "Undomiel", name: "Undomiel", respawn: 60 * 60 * 24 },
+        {
+          id: "Saphirus",
+          name: "Saphirus",
+          weeklyRespawns: [
+            { day: 0, hour: 18, minute: 0 },
+            { day: 2, hour: 12, minute: 30 },
+          ],
+        },
+        {
+          id: "Neutro",
+          name: "Neutro",
+          weeklyRespawns: [
+            { day: 2, hour: 20, minute: 0 },
+            { day: 4, hour: 12, minute: 30 },
+          ],
+        },
+        { id: "LadyDalia", name: "Lady Dalia", respawn: 60 * 60 * 18 },
+        {
+          id: "GeneralAquleus",
+          name: "General Aquleus",
+          respawn: 60 * 60 * 29,
+        },
+        {
+          id: "Thymele",
+          name: "Thymele",
+          weeklyRespawns: [
+            { day: 1, hour: 20, minute: 0 },
+            { day: 3, hour: 12, minute: 30 },
+          ],
+        },
+        { id: "Amentis", name: "Amentis", respawn: 60 * 60 * 29 },
+        {
+          id: "BaronBraudmore",
+          name: "Baron Braudmore",
+          respawn: 60 * 60 * 32,
+        },
+        {
+          id: "Milavy",
+          name: "Milavy",
+          weeklyRespawns: [{ day: 6, hour: 16, minute: 0 }],
+        },
+        { id: "Wannitas", name: "Wannitas", respawn: 60 * 60 * 48 },
+        { id: "Metus", name: "Metus", respawn: 60 * 60 * 48 },
+        { id: "Duplican", name: "Duplican", respawn: 60 * 60 * 48 },
+        { id: "Shuliar", name: "Shuliar", respawn: 60 * 60 * 35 },
+        {
+          id: "Ringor",
+          name: "Ringor",
+          weeklyRespawns: [{ day: 6, hour: 18, minute: 0 }],
+        },
+        {
+          id: "Roderick",
+          name: "Roderick",
+          weeklyRespawns: [{ day: 5, hour: 20, minute: 0 }],
+        },
+        { id: "Gareth", name: "Gareth", respawn: 60 * 60 * 32 },
+        { id: "Titore", name: "Titore", respawn: 60 * 60 * 37 },
+        { id: "Larba", name: "Larba", respawn: 60 * 60 * 35 },
+        { id: "Catena", name: "Catena", respawn: 60 * 60 * 35 },
+        {
+          id: "Auraq",
+          name: "Auraq",
+          weeklyRespawns: [
+            { day: 5, hour: 23, minute: 0 },
+            { day: 3, hour: 22, minute: 0 },
+          ],
+        },
+        { id: "Secreta", name: "Secreta", respawn: 60 * 60 * 62 },
+        { id: "Ordo", name: "Ordo", respawn: 60 * 60 * 62 },
+        { id: "Asta", name: "Asta", respawn: 60 * 60 * 62 },
+        { id: "Supore", name: "Supore", respawn: 60 * 60 * 62 },
+        {
+          id: "Chaiflock",
+          name: "Chaiflock",
+          weeklyRespawns: [{ day: 6, hour: 23, minute: 0 }],
+        },
+        {
+          id: "Benji",
+          name: "Benji",
+          weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }],
+        },
+        //{ id: "Test Boss", name: "Test Boss", respawn: 60 * 5 + 10 },
+      ];
       // -------------------------
       // DOM refs
       // -------------------------
@@ -2732,7 +2856,9 @@
       const saveTimeBtn = document.getElementById("saveTimeBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
       const settingsBtn = document.getElementById("settingsBtn");
-      const settingsModalBackdrop = document.getElementById("settingsModalBackdrop");
+      const settingsModalBackdrop = document.getElementById(
+        "settingsModalBackdrop"
+      );
       const discordWebhookBtn = document.getElementById("discordWebhookBtn");
       const webhookBackdrop = document.getElementById("webhookModalBackdrop");
       const webhookInput = document.getElementById("webhookInput");
@@ -3110,49 +3236,49 @@
           );
 
           // 🔔 Build appropriate embed
-						let embed;
-						switch (type) {
-							case "killed":
-								embed = buildEmbed(
-									`💀 ${boss.name} has been defeated!`,
-									`Next respawn: ${formattedTime}`,
-									0xff3333,
-									boss
-								);
-								break;
+          let embed;
+          switch (type) {
+            case "killed":
+              embed = buildEmbed(
+                `💀 ${boss.name} has been defeated!`,
+                `Next respawn: ${formattedTime}`,
+                0xff3333,
+                boss
+              );
+              break;
 
-							case "soon":
-								embed = buildEmbed(
-									`⚠️ ${boss.name} will respawn soon!`,
-									`Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
-									0xffcc00,
-									boss
-								);
-								break;
+            case "soon":
+              embed = buildEmbed(
+                `⚠️ ${boss.name} will respawn soon!`,
+                `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
+                0xffcc00,
+                boss
+              );
+              break;
 
-							case "spawn":
-								embed = buildEmbed(
-									`⚔️ ${boss.name} has spawned!`,
-									`It’s time to hunt!`,
-									0xb266ff,
-									boss
-								);
-								break;
+            case "spawn":
+              embed = buildEmbed(
+                `⚔️ ${boss.name} has spawned!`,
+                `It’s time to hunt!`,
+                0xb266ff,
+                boss
+              );
+              break;
 
-							case "manual":
-								embed = buildEmbed(
-									`⏰ ${boss.name} manual time set`,
-									`Next respawn: ${formattedTime}`,
-									0x3399ff,
-									boss
-								);
-								break;
+            case "manual":
+              embed = buildEmbed(
+                `⏰ ${boss.name} manual time set`,
+                `Next respawn: ${formattedTime}`,
+                0x3399ff,
+                boss
+              );
+              break;
 
-							default:
-								console.warn(`⚠️ Unknown notification type: ${type}`);
-								return;
-						}
-						
+            default:
+              console.warn(`⚠️ Unknown notification type: ${type}`);
+              return;
+          }
+
           // 🔔 Final Discord send
           await sendDiscordEmbed(embed);
           console.log(`✅ Sent ${type} notification for ${boss.name}`);
@@ -3174,16 +3300,16 @@
           footer: { text: "Lordnine Tracker" },
           timestamp: new Date().toISOString(),
         };
-        
+
         // Add boss image if boss object is provided
         if (boss && boss.id) {
           embed.thumbnail = {
             url: `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`,
             height: 300,
-            width: 300
+            width: 300,
           };
         }
-        
+
         return embed;
       }
 
@@ -3430,8 +3556,8 @@
             `⏰ ${boss.name} manual time set`,
             `Next respawn: ${formattedTime}`,
             0x3399ff,
-              boss
-           );
+            boss
+          );
           await sendDiscordEmbedOnce("manual", boss);
 
           console.log(`ðŸ“¡ Discord notification sent for ${boss.name}.`);
@@ -3447,34 +3573,34 @@
       // -------------------------
       // Render functions
       // -------------------------
-			function renderBossList() {
-				bossListEl.innerHTML = "";
-				const q = (searchInput.value || "").toLowerCase().trim();
+      function renderBossList() {
+        bossListEl.innerHTML = "";
+        const q = (searchInput.value || "").toLowerCase().trim();
 
-				for (const b of BOSSES) {
-					const isWeekly = !!b.weeklyRespawns;
-					const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-					if (q && !b.name.toLowerCase().includes(q)) continue;
+        for (const b of BOSSES) {
+          const isWeekly = !!b.weeklyRespawns;
+          const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
+          if (q && !b.name.toLowerCase().includes(q)) continue;
 
-					const subText = isWeekly
-						? b.weeklyRespawns
-								.map(
-									(r) =>
-										["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][r.day] +
-										" " +
-										String(r.hour).padStart(2, "0") +
-										":" +
-										String(r.minute).padStart(2, "0")
-								)
-								.join(", ")
-						: b.respawn / 3600 + " hr";
+          const subText = isWeekly
+            ? b.weeklyRespawns
+                .map(
+                  (r) =>
+                    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][r.day] +
+                    " " +
+                    String(r.hour).padStart(2, "0") +
+                    ":" +
+                    String(r.minute).padStart(2, "0")
+                )
+                .join(", ")
+            : b.respawn / 3600 + " hr";
 
-					const node = document.createElement("div");
-					node.className = "boss";
+          const node = document.createElement("div");
+          node.className = "boss";
 
-					const nameClass = isActive ? "name dead" : "name";
+          const nameClass = isActive ? "name dead" : "name";
 
-					node.innerHTML = `
+          node.innerHTML = `
 					<div class="meta">
 						<div class="portrait-meta">
 							<img class="boss-portrait" src="assets/images/${b.id}.png" alt="${b.name}">
@@ -3485,39 +3611,38 @@
 						</div>
 					</div>
 					<div class="actions">
-							<div class="action-btn">
-								<button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${b.id}">
-									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-										stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M12 2C7 2 3 6 3 11c0 3 2 6 5 7v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c3-1 5-4 5-7 0-5-4-9-9-9z"></path>
-										<circle cx="9" cy="11" r="1"></circle>
-										<circle cx="15" cy="11" r="1"></circle>
-									</svg>
-								</button>
-								<div class="icon-label">Killed</div>
-							</div>
+					<div class="action-btn ${isWeekly ? "hidden" : ""}">
+					<button class="kbtn icon-btn" title="Manual Set" data-action="set" data-id="${
+            b.id
+          }">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<circle cx="12" cy="12" r="10"></circle>
+					<polyline points="12 6 12 12 16 14"></polyline>
+					</svg>
+					</button>
+					<div class="icon-label">Manual</div>
+					</div>
 
-							${
-								!isWeekly
-									? `
-									<div class="action-btn">
-										<button class="kbtn icon-btn" title="Manual Set" data-action="set" data-id="${b.id}">
-											<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-												stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-												<circle cx="12" cy="12" r="10"></circle>
-												<polyline points="12 6 12 12 16 14"></polyline>
-											</svg>
-										</button>
-										<div class="icon-label">Manual</div>
-									</div>`
-									: ""
-							}
-						</div>
+					<div class="action-btn">
+					 <button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${
+             b.id
+           }">
+					 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M12 2C7 2 3 6 3 11c0 3 2 6 5 7v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c3-1 5-4 5-7 0-5-4-9-9-9z"></path>
+					<circle cx="9" cy="11" r="1"></circle>
+					<circle cx="15" cy="11" r="1"></circle>
+					</svg>
+					</button>
+					<div class="icon-label">Killed</div>
+					</div>
+					</div>
 					`;
 
-					bossListEl.appendChild(node);
-			}
-		}
+          bossListEl.appendChild(node);
+        }
+      }
 
       // === Unified Boss List Click Handler with atomic deadlock attempt ===
       bossListEl.addEventListener("click", async (e) => {
@@ -3729,171 +3854,181 @@
         nextTimeEl.textContent = `${String(hours).padStart(2, "0")}:${String(
           minutes
         ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-        
+
         // Auto-resize next boss name if it overflows
         adjustNextBossNameSize();
       }
-      
+
       function adjustNextBossNameSize() {
-        const nextBoss = document.getElementById('nextBoss');
+        const nextBoss = document.getElementById("nextBoss");
         if (!nextBoss) return;
-        
-        const nameEl = nextBoss.querySelector('.boss-name');
+
+        const nameEl = nextBoss.querySelector(".boss-name");
         if (!nameEl) return;
-        
+
         // Reset to default size
-        nameEl.style.fontSize = '1.8rem';
-        nameEl.style.letterSpacing = '1.5px';
-        
+        nameEl.style.fontSize = "1.8rem";
+        nameEl.style.letterSpacing = "1.5px";
+
         let fontSize = 1.8;
         const minFontSize = 0.9;
         const step = 0.1;
-        
+
         // Reduce font size until text fits within the next boss panel
         while (fontSize > minFontSize) {
-          nameEl.style.fontSize = fontSize + 'rem';
-          
+          nameEl.style.fontSize = fontSize + "rem";
+
           // Check if name is overflowing
-          if (nameEl.scrollWidth <= nextBoss.clientWidth - 40) { // 40px padding buffer
+          if (nameEl.scrollWidth <= nextBoss.clientWidth - 40) {
+            // 40px padding buffer
             break;
           }
-          
+
           fontSize -= step;
         }
-        
+
         // If still overflowing, reduce letter-spacing
-        if (fontSize <= minFontSize && nameEl.scrollWidth > nextBoss.clientWidth - 40) {
-          nameEl.style.letterSpacing = '0.5px';
+        if (
+          fontSize <= minFontSize &&
+          nameEl.scrollWidth > nextBoss.clientWidth - 40
+        ) {
+          nameEl.style.letterSpacing = "0.5px";
         }
       }
 
-			// == MAIN TICKUPDATE == //
-			async function tickUpdate() {
-				const now = Date.now();
-				const savePromises = [];
+      // == MAIN TICKUPDATE == //
+      async function tickUpdate() {
+        const now = Date.now();
+        const savePromises = [];
 
-				for (const [id, info] of Object.entries(timers)) {
-					const boss = BOSSES.find((b) => b.id === id);
-					if (!boss) continue;
+        for (const [id, info] of Object.entries(timers)) {
+          const boss = BOSSES.find((b) => b.id === id);
+          if (!boss) continue;
 
-					// ðŸ‘‡ Determine current phase (active timer vs cooldown)
-					const activeEndTime = info.cooldownUntil || info.endTime;
-					const remainingMs = activeEndTime - now;
+          // ðŸ‘‡ Determine current phase (active timer vs cooldown)
+          const activeEndTime = info.cooldownUntil || info.endTime;
+          const remainingMs = activeEndTime - now;
 
-					const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
-					const nameElem = bossCard?.querySelector(".name");
+          const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
+          const nameElem = bossCard?.querySelector(".name");
 
-					// --- (0) Handle cooldown visuals & skip logic during cooldown ---
-					if (info.cooldownUntil && now < info.cooldownUntil) {
-						// Ensure boss name shows alive look (no .dead)
-						if (nameElem && nameElem.classList.contains("dead")) {
-							nameElem.classList.remove("dead");
-						}
-						continue; // Skip further processing while cooldown active
-					}
+          // --- (0) Handle cooldown visuals & skip logic during cooldown ---
+          if (info.cooldownUntil && now < info.cooldownUntil) {
+            // Ensure boss name shows alive look (no .dead)
+            if (nameElem && nameElem.classList.contains("dead")) {
+              nameElem.classList.remove("dead");
+            }
+            continue; // Skip further processing while cooldown active
+          }
 
-					// --- (1) Apply .dead automatically when timer is running ---
-					if (remainingMs > 0 && !info.cooldownUntil) {
-						if (nameElem && !nameElem.classList.contains("dead")) {
-							nameElem.classList.add("dead");
-						}
-					}
+          // --- (1) Apply .dead automatically when timer is running ---
+          if (remainingMs > 0 && !info.cooldownUntil) {
+            if (nameElem && !nameElem.classList.contains("dead")) {
+              nameElem.classList.add("dead");
+            }
+          }
 
-					// --- (2) Soon warning (5 minutes before spawn) ---
-					if (
-						remainingMs <= 5 * 60 * 1000 &&
-						remainingMs > 0 &&
-						!info.notifiedSoon &&
-						!info.cooldownUntil
-					) {
-						console.log(`⚠️  soon: ${id} within 5min, preparing notification`);
-						info.notifiedSoon = true;
-						savePromises.push(saveTimerToFirestoreOnce(id));
-						savePromises.push(
-							(async () => await sendDiscordEmbedOnce("soon", boss))()
-						);
-					}
+          // --- (2) Soon warning (5 minutes before spawn) ---
+          if (
+            remainingMs <= 5 * 60 * 1000 &&
+            remainingMs > 0 &&
+            !info.notifiedSoon &&
+            !info.cooldownUntil
+          ) {
+            console.log(`⚠️  soon: ${id} within 5min, preparing notification`);
+            info.notifiedSoon = true;
+            savePromises.push(saveTimerToFirestoreOnce(id));
+            savePromises.push(
+              (async () => await sendDiscordEmbedOnce("soon", boss))()
+            );
+          }
 
-					// --- (3) Spawn announcement when timer reaches 0 ---
-					if (remainingMs <= 0 && !info.spawnAnnounced && !info.cooldownUntil) {
-						console.log(`🎉 spawn: ${id} reached spawn, announcing`);
-						info.spawnAnnounced = true;
-						savePromises.push(saveTimerToFirestoreOnce(id));
-						savePromises.push(
-							(async () => await sendDiscordEmbedOnce("spawn", boss))()
-						);
-					}
+          // --- (3) Spawn announcement when timer reaches 0 ---
+          if (remainingMs <= 0 && !info.spawnAnnounced && !info.cooldownUntil) {
+            console.log(`🎉 spawn: ${id} reached spawn, announcing`);
+            info.spawnAnnounced = true;
+            savePromises.push(saveTimerToFirestoreOnce(id));
+            savePromises.push(
+              (async () => await sendDiscordEmbedOnce("spawn", boss))()
+            );
+          }
 
-					// --- (4) Start 5-minute cooldown when reaching 0 ---
-					if (remainingMs <= 0 && !info.cooldownUntil) {
-						info.cooldownUntil = now + 5 * 60 * 1000;
-						console.log(
-							`⏳ ${boss.name} entering 5-minute cooldown until ${new Date(
-								info.cooldownUntil
-							).toLocaleTimeString()}`
-						);
+          // --- (4) Start 5-minute cooldown when reaching 0 ---
+          if (remainingMs <= 0 && !info.cooldownUntil) {
+            info.cooldownUntil = now + 5 * 60 * 1000;
+            console.log(
+              `⏳ ${boss.name} entering 5-minute cooldown until ${new Date(
+                info.cooldownUntil
+              ).toLocaleTimeString()}`
+            );
 
-						// 🟢 Visual: back to normal white glow during cooldown
-						if (nameElem) nameElem.classList.remove("dead");
+            // 🟢 Visual: back to normal white glow during cooldown
+            if (nameElem) nameElem.classList.remove("dead");
 
-						// 💾 Save cooldown state to Firestore
-						savePromises.push(saveTimerToFirestoreOnce(id));
-						continue;
-					}
+            // 💾 Save cooldown state to Firestore
+            savePromises.push(saveTimerToFirestoreOnce(id));
+            continue;
+          }
 
-					// --- (5) Cooldown ended â€” restart timer automatically ---
-					if (info.cooldownUntil && now >= info.cooldownUntil) {
-						console.log(`✅ ${boss.name} cooldown ended â€” restarting cycle...`);
+          // --- (5) Cooldown ended â€” restart timer automatically ---
+          if (info.cooldownUntil && now >= info.cooldownUntil) {
+            console.log(
+              `✅ ${boss.name} cooldown ended â€” restarting cycle...`
+            );
 
-						const nowLater = Date.now();
-						let nextTime;
+            const nowLater = Date.now();
+            let nextTime;
 
-						if (boss.weeklyRespawns) {
-							nextTime = getNextWeeklyRespawn(boss.weeklyRespawns, nowLater + 1);
-							while (nextTime <= nowLater)
-								nextTime += 7 * 24 * 60 * 60 * 1000;
-						} else {
-							nextTime = nowLater + boss.respawn * 1000;
-						}
+            if (boss.weeklyRespawns) {
+              nextTime = getNextWeeklyRespawn(
+                boss.weeklyRespawns,
+                nowLater + 1
+              );
+              while (nextTime <= nowLater) nextTime += 7 * 24 * 60 * 60 * 1000;
+            } else {
+              nextTime = nowLater + boss.respawn * 1000;
+            }
 
-						// â™» Reset timer and clear cooldown
-						timers[id] = {
-							endTime: nextTime,
-							startedAt: nowLater,
-							weekly: !!boss.weeklyRespawns,
-							notifiedSoon: false,
-							spawnAnnounced: false,
-							cooldownUntil: null,
-						};
+            // â™» Reset timer and clear cooldown
+            timers[id] = {
+              endTime: nextTime,
+              startedAt: nowLater,
+              weekly: !!boss.weeklyRespawns,
+              notifiedSoon: false,
+              spawnAnnounced: false,
+              cooldownUntil: null,
+            };
 
-						// Apply .dead class again (timer active)
-						if (nameElem && !nameElem.classList.contains("dead")) {
-							nameElem.classList.add("dead");
-						}
+            // Apply .dead class again (timer active)
+            if (nameElem && !nameElem.classList.contains("dead")) {
+              nameElem.classList.add("dead");
+            }
 
-						await saveTimerToFirestoreOnce(id);
-						addOrUpdateTimerElement(id);
-						renderBossList();
+            await saveTimerToFirestoreOnce(id);
+            addOrUpdateTimerElement(id);
+            renderBossList();
 
-						console.log(`🔁 ${boss.name} timer restarted after cooldown.`);
-						continue;
-					}
-				}
+            console.log(`🔁 ${boss.name} timer restarted after cooldown.`);
+            continue;
+          }
+        }
 
-				// --- (6) Commit pending Firestore writes ---
-				if (savePromises.length) {
-					try {
-						await Promise.all(savePromises);
-						console.log(`💾 tickUpdate: completed ${savePromises.length} save ops`);
-					} catch (e) {
-						console.warn("⚠️  tickUpdate savePromises error", e);
-					}
-				}
+        // --- (6) Commit pending Firestore writes ---
+        if (savePromises.length) {
+          try {
+            await Promise.all(savePromises);
+            console.log(
+              `💾 tickUpdate: completed ${savePromises.length} save ops`
+            );
+          } catch (e) {
+            console.warn("⚠️  tickUpdate savePromises error", e);
+          }
+        }
 
-				// --- (7) Update UI layout ---
-				computeNextBoss();
-				sortActiveTimersSmoothly();
-			}
+        // --- (7) Update UI layout ---
+        computeNextBoss();
+        sortActiveTimersSmoothly();
+      }
 
       // Optional lightweight visual update every second (no Firestore writes)
       function updateCountdownDisplay() {
@@ -3921,7 +4056,7 @@
         if (firebaseLoaded) tickUpdate();
       }, 1000);
 
-       // -------------------------
+      // -------------------------
       // UI wiring
       // -------------------------
       // Function to update clear button visibility
@@ -4091,296 +4226,345 @@
         await clearWebhookInFirestore();
       });
 
-			// -------------------------
-			// Init sequence
-			// -------------------------
-			async function init() {
-				loadingOverlay.style.display = "flex";
+      // -------------------------
+      // Init sequence
+      // -------------------------
+      async function init() {
+        loadingOverlay.style.display = "flex";
 
-				// ✅ Wait until the DOM is fully loaded
-				await new Promise((resolve) => {
-					if (
-						document.readyState === "complete" ||
-						document.readyState === "interactive"
-					)
-						resolve();
-					else
-						document.addEventListener("DOMContentLoaded", resolve, { once: true });
-				});
+        // ✅ Wait until the DOM is fully loaded
+        await new Promise((resolve) => {
+          if (
+            document.readyState === "complete" ||
+            document.readyState === "interactive"
+          )
+            resolve();
+          else
+            document.addEventListener("DOMContentLoaded", resolve, {
+              once: true,
+            });
+        });
 
-				bossListEl.innerHTML = "";
-				timersEl.innerHTML = "";
-				nextBossNameEl.textContent = "";
-				nextTimeEl.textContent = "";
+        bossListEl.innerHTML = "";
+        timersEl.innerHTML = "";
+        nextBossNameEl.textContent = "";
+        nextTimeEl.textContent = "";
 
-				try {
-					// ✅ Firestore real-time listener (safe merge that respects cooldowns)
-					const docRef = doc(db, "timers", "global");
-					onSnapshot(docRef, async (snap) => {
-						// ✅ Auto-create if the timers document doesnâ€™t exist
-						if (!snap.exists()) {
-							console.log("â„¹ No Firestore timers document found. Creating empty one...");
-							await setDoc(docRef, { timers: {} }, { merge: true });
-							return;
-						}
+        try {
+          // ✅ Firestore real-time listener (safe merge that respects cooldowns)
+          const docRef = doc(db, "timers", "global");
+          onSnapshot(docRef, async (snap) => {
+            // ✅ Auto-create if the timers document doesnâ€™t exist
+            if (!snap.exists()) {
+              console.log(
+                "â„¹ No Firestore timers document found. Creating empty one..."
+              );
+              await setDoc(docRef, { timers: {} }, { merge: true });
+              return;
+            }
 
-						const remoteTimers = snap.data().timers || {};
-						const now = Date.now();
+            const remoteTimers = snap.data().timers || {};
+            const now = Date.now();
 
-						// 🔒 Merge remote timers into local safely
-						for (const [id, remoteInfo] of Object.entries(remoteTimers)) {
-							const localInfo = timers[id] || {};
-							const boss = BOSSES.find((b) => b.id === id);
-							if (!boss) continue;
+            // 🔒 Merge remote timers into local safely
+            for (const [id, remoteInfo] of Object.entries(remoteTimers)) {
+              const localInfo = timers[id] || {};
+              const boss = BOSSES.find((b) => b.id === id);
+              if (!boss) continue;
 
-							// ✅ If local cooldown is active, keep it â€” donâ€™t overwrite
-							if (localInfo.cooldownUntil && localInfo.cooldownUntil > now) {
-								console.log(`⏸️ ${boss.name} in local cooldown â€” preserving local timer.`);
-								remoteTimers[id] = {
-									...remoteInfo,
-									cooldownUntil: localInfo.cooldownUntil,
-								};
-								continue;
-							}
+              // ✅ If local cooldown is active, keep it â€” donâ€™t overwrite
+              if (localInfo.cooldownUntil && localInfo.cooldownUntil > now) {
+                console.log(
+                  `⏸️ ${boss.name} in local cooldown â€” preserving local timer.`
+                );
+                remoteTimers[id] = {
+                  ...remoteInfo,
+                  cooldownUntil: localInfo.cooldownUntil,
+                };
+                continue;
+              }
 
-							// ✅ If remote has cooldown, preserve it too
-							if (remoteInfo.cooldownUntil && remoteInfo.cooldownUntil > now) {
-								console.log(`💾 ${boss.name} cooldown synced from Firestore.`);
-							}
-						}
+              // ✅ If remote has cooldown, preserve it too
+              if (remoteInfo.cooldownUntil && remoteInfo.cooldownUntil > now) {
+                console.log(`💾 ${boss.name} cooldown synced from Firestore.`);
+              }
+            }
 
-						timers = remoteTimers;
+            timers = remoteTimers;
 
-						rebuildTimersPanel();
-						renderBossList();
-						computeNextBoss();
+            rebuildTimersPanel();
+            renderBossList();
+            computeNextBoss();
 
-						console.log("ðŸ”„ Timers merged from Firestore:", timers);
-					});
-				} catch (e) {
-					console.warn("Firestore load failed", e);
-				}
+            console.log("ðŸ”„ Timers merged from Firestore:", timers);
+          });
+        } catch (e) {
+          console.warn("Firestore load failed", e);
+        }
 
-				// ✅ Normalize expired timers so everything is forward-looking (safe version)
-				const now = Date.now();
-				let timersChanged = false;
+        // ✅ Normalize expired timers so everything is forward-looking (safe version)
+        const now = Date.now();
+        let timersChanged = false;
 
-				for (const [id, info] of Object.entries(timers)) {
-					const boss = BOSSES.find((b) => b.id === id);
-					if (!boss || !info || !info.endTime) continue;
+        for (const [id, info] of Object.entries(timers)) {
+          const boss = BOSSES.find((b) => b.id === id);
+          if (!boss || !info || !info.endTime) continue;
 
-					// ðŸš« Skip normalization if cooldown is active
-					if (info.cooldownUntil && info.cooldownUntil > now) {
-						console.log(`⏸️ ${boss.name} still in cooldown â€” skipping normalization.`);
-						continue;
-					}
+          // ðŸš« Skip normalization if cooldown is active
+          if (info.cooldownUntil && info.cooldownUntil > now) {
+            console.log(
+              `⏸️ ${boss.name} still in cooldown â€” skipping normalization.`
+            );
+            continue;
+          }
 
-					// ðŸ§­ Normal advance logic for expired timers only
-					if (info.endTime <= now) {
-						if (boss.weeklyRespawns) {
-							const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
-							timers[id] = {
-								endTime: next,
-								startedAt: now,
-								weekly: true,
-								notifiedSoon: false,
-								spawnAnnounced: false,
-								cooldownUntil: null,
-							};
-							timersChanged = true;
-							console.log(`ðŸ§­ ${boss.name} normalized to next weekly cycle.`);
-						} else if (boss.respawn) {
-							const respMs = boss.respawn * 1000;
-							const cycles = Math.floor((now - info.endTime) / respMs) + 1;
-							const newEnd = info.endTime + cycles * respMs;
-							timers[id] = {
-								endTime: newEnd,
-								startedAt: now,
-								notifiedSoon: false,
-								spawnAnnounced: false,
-								cooldownUntil: null,
-							};
-							timersChanged = true;
-							console.log(`ðŸ§­ ${boss.name} normalized to next respawn cycle.`);
-						}
-					}
-				}
+          // ðŸ§­ Normal advance logic for expired timers only
+          if (info.endTime <= now) {
+            if (boss.weeklyRespawns) {
+              const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+              timers[id] = {
+                endTime: next,
+                startedAt: now,
+                weekly: true,
+                notifiedSoon: false,
+                spawnAnnounced: false,
+                cooldownUntil: null,
+              };
+              timersChanged = true;
+              console.log(`ðŸ§­ ${boss.name} normalized to next weekly cycle.`);
+            } else if (boss.respawn) {
+              const respMs = boss.respawn * 1000;
+              const cycles = Math.floor((now - info.endTime) / respMs) + 1;
+              const newEnd = info.endTime + cycles * respMs;
+              timers[id] = {
+                endTime: newEnd,
+                startedAt: now,
+                notifiedSoon: false,
+                spawnAnnounced: false,
+                cooldownUntil: null,
+              };
+              timersChanged = true;
+              console.log(
+                `ðŸ§­ ${boss.name} normalized to next respawn cycle.`
+              );
+            }
+          }
+        }
 
-				// ✅ Save normalized timers if any changed
-				if (timersChanged) {
-					try {
-						await saveTimers();
-						console.log("🔁 Timers normalized and saved after init.");
-					} catch (err) {
-						console.error("❌ Failed to save normalized timers:", err);
-					}
-				}
+        // ✅ Save normalized timers if any changed
+        if (timersChanged) {
+          try {
+            await saveTimers();
+            console.log("🔁 Timers normalized and saved after init.");
+          } catch (err) {
+            console.error("❌ Failed to save normalized timers:", err);
+          }
+        }
 
-				// ✅ Ensure Discord webhook is ready before any future notification
-				await autoLoadWebhook();
+        // ✅ Ensure Discord webhook is ready before any future notification
+        await autoLoadWebhook();
 
-				firebaseLoaded = true;
-				renderBossList();
-				rebuildTimersPanel();
-				computeNextBoss();
-				loadingOverlay.style.display = "none";
+        firebaseLoaded = true;
+        renderBossList();
+        rebuildTimersPanel();
+        computeNextBoss();
+        loadingOverlay.style.display = "none";
 
-				console.log("✅ init completed successfully.");
-			}
+        console.log("✅ init completed successfully.");
+      }
 
       window.addEventListener("load", () => init());
 
-			// ✅ Online presence tracking (Realtime Database)
-			const presenceRef = ref(rtdb, "presence");
-			const myConnection = push(presenceRef);
-			set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
-			onDisconnect(myConnection).remove();
+      // ✅ Online presence tracking (Realtime Database)
+      const presenceRef = ref(rtdb, "presence");
+      const myConnection = push(presenceRef);
+      set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
+      onDisconnect(myConnection).remove();
 
-			// ✅ Create or update the online users badge (🟢 icon now handled by CSS)
-			onValue(presenceRef, (snap) => {
-				const count = snap.size || snap.numChildren();
-				let el = document.getElementById("onlineCount");
+      // ✅ Create or update the online users badge (🟢 icon now handled by CSS)
+      onValue(presenceRef, (snap) => {
+        const count = snap.size || snap.numChildren();
+        let el = document.getElementById("onlineCount");
 
-				if (!el) {
-					el = document.createElement("div");
-					el.id = "onlineCount";
-					el.classList.add("online-users");
-					// 🟢 icon handled via CSS ::before â€” only insert count span here
-					el.innerHTML = `<span class="count">${count}</span>`;
-					document.body.appendChild(el);
-				} else {
-					const countSpan = el.querySelector(".count");
-					if (countSpan && countSpan.textContent !== String(count)) {
-						countSpan.textContent = count;
-					}
-				}
-			});
+        if (!el) {
+          el = document.createElement("div");
+          el.id = "onlineCount";
+          el.classList.add("online-users");
+          // 🟢 icon handled via CSS ::before â€” only insert count span here
+          el.innerHTML = `<span class="count">${count}</span>`;
+          document.body.appendChild(el);
+        } else {
+          const countSpan = el.querySelector(".count");
+          if (countSpan && countSpan.textContent !== String(count)) {
+            countSpan.textContent = count;
+          }
+        }
+      });
 
-			// === GLOBAL CHAT FUNCTIONALITY ===
-			const chatBox = document.getElementById("chatBox");
-			const chatMessages = document.getElementById("chatMessages");
-			const chatInput = document.getElementById("chatInput");
-			const chatSend = document.getElementById("chatSend");
-			const chatMinimize = document.getElementById("chatMinimize");
+      // === GLOBAL CHAT FUNCTIONALITY ===
+      const chatBox = document.getElementById("chatBox");
+      const chatMessages = document.getElementById("chatMessages");
+      const chatInput = document.getElementById("chatInput");
+      const chatSend = document.getElementById("chatSend");
+      const chatMinimize = document.getElementById("chatMinimize");
 
-			let lastSeenTimestamp = 0; // used to detect truly new messages
-			let initialLoadComplete = false;
+      let lastSeenTimestamp = 0; // used to detect truly new messages
+      let initialLoadComplete = false;
 
-			// ðŸ§  Generate random boss-based username (new each reload)
-			function generateRandomUsername() {
-				const prefixes = [
-					"The", "Dark", "Crimson", "Iron", "Shadow", "Arcane", "Silent", "Ancient",
-					"Eternal", "Solar", "Lunar", "Neon", "Fallen", "Cyber", "Storm", "Infernal",
-					"Frozen", "Radiant", "Cursed", "Sacred", "Phantom", "Celestial", "Venomous",
-					"Emerald", "Golden", "Azure", "Scarlet", "Mystic", "Quantum", "Obsidian",
-					"Violet", "Titan", "Echo", "Prime", "Nova", "Omega", "Spectral", "Astral",
-					"Dire", "Eclipse", "Wraith", "Void", "Ironclad", "Lucent", "Abyssal",
-				];
+      // ðŸ§  Generate random boss-based username (new each reload)
+      function generateRandomUsername() {
+        const prefixes = [
+          "The",
+          "Dark",
+          "Crimson",
+          "Iron",
+          "Shadow",
+          "Arcane",
+          "Silent",
+          "Ancient",
+          "Eternal",
+          "Solar",
+          "Lunar",
+          "Neon",
+          "Fallen",
+          "Cyber",
+          "Storm",
+          "Infernal",
+          "Frozen",
+          "Radiant",
+          "Cursed",
+          "Sacred",
+          "Phantom",
+          "Celestial",
+          "Venomous",
+          "Emerald",
+          "Golden",
+          "Azure",
+          "Scarlet",
+          "Mystic",
+          "Quantum",
+          "Obsidian",
+          "Violet",
+          "Titan",
+          "Echo",
+          "Prime",
+          "Nova",
+          "Omega",
+          "Spectral",
+          "Astral",
+          "Dire",
+          "Eclipse",
+          "Wraith",
+          "Void",
+          "Ironclad",
+          "Lucent",
+          "Abyssal",
+        ];
 
-				const boss = BOSSES[Math.floor(Math.random() * BOSSES.length)];
-				const prefix =
-					Math.random() < 0.8
-						? prefixes[Math.floor(Math.random() * prefixes.length)] + " "
-						: "";
+        const boss = BOSSES[Math.floor(Math.random() * BOSSES.length)];
+        const prefix =
+          Math.random() < 0.8
+            ? prefixes[Math.floor(Math.random() * prefixes.length)] + " "
+            : "";
 
-				return prefix + boss.name;
-			}
+        return prefix + boss.name;
+      }
 
-			const localUserName = generateRandomUsername();
+      const localUserName = generateRandomUsername();
 
-			// ✅ Wait until #onlineCount exists (created dynamically by Firebase)
-			function attachChatToggle() {
-				const onlineUsers = document.getElementById("onlineCount");
-				if (!onlineUsers) return setTimeout(attachChatToggle, 300);
+      // ✅ Wait until #onlineCount exists (created dynamically by Firebase)
+      function attachChatToggle() {
+        const onlineUsers = document.getElementById("onlineCount");
+        if (!onlineUsers) return setTimeout(attachChatToggle, 300);
 
-				onlineUsers.style.cursor = "pointer";
+        onlineUsers.style.cursor = "pointer";
 
-				// Clicking the online counter toggles chat open/close
-				onlineUsers.addEventListener("click", () => {
-					// If hidden (minimized), show it again
-					if (chatBox.classList.contains("hidden")) {
-						chatBox.classList.remove("hidden");
-						chatBox.classList.add("active");
-						return;
-					}
+        // Clicking the online counter toggles chat open/close
+        onlineUsers.addEventListener("click", () => {
+          // If hidden (minimized), show it again
+          if (chatBox.classList.contains("hidden")) {
+            chatBox.classList.remove("hidden");
+            chatBox.classList.add("active");
+            return;
+          }
 
-					chatBox.classList.toggle("active");
+          chatBox.classList.toggle("active");
 
-					// ðŸ”• Clear notification + tooltip when chat opens
-					if (chatBox.classList.contains("active")) {
-						onlineUsers.classList.remove("notify");
-						lastSeenTimestamp = Date.now();
-						onlineUsers.style.transition = "all 0.3s ease";
-					}
-				});
-			}
-			attachChatToggle();
+          // ðŸ”• Clear notification + tooltip when chat opens
+          if (chatBox.classList.contains("active")) {
+            onlineUsers.classList.remove("notify");
+            lastSeenTimestamp = Date.now();
+            onlineUsers.style.transition = "all 0.3s ease";
+          }
+        });
+      }
+      attachChatToggle();
 
-			// === Minimize Button Functionality ===
-			if (chatMinimize) {
-				chatMinimize.addEventListener("click", () => {
-					chatBox.classList.add("hidden");
-					chatBox.classList.remove("active");
-				});
-			}
+      // === Minimize Button Functionality ===
+      if (chatMinimize) {
+        chatMinimize.addEventListener("click", () => {
+          chatBox.classList.add("hidden");
+          chatBox.classList.remove("active");
+        });
+      }
 
-			// Reference to chat messages in Firebase
-			const chatRef = ref(rtdb, "globalChat");
+      // Reference to chat messages in Firebase
+      const chatRef = ref(rtdb, "globalChat");
 
-			// âœ‰ Send message
-			chatSend.addEventListener("click", sendMessage);
-			chatInput.addEventListener("keydown", (e) => {
-				if (e.key === "Enter") sendMessage();
-			});
+      // âœ‰ Send message
+      chatSend.addEventListener("click", sendMessage);
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendMessage();
+      });
 
-			function sendMessage() {
-				const text = chatInput.value.trim();
-				if (!text) return;
+      function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
 
-				push(chatRef, { name: localUserName, text, timestamp: Date.now() });
-				chatInput.value = "";
+        push(chatRef, { name: localUserName, text, timestamp: Date.now() });
+        chatInput.value = "";
 
-				// Update last seen when user sends (so they donâ€™t get notified of their own)
-				lastSeenTimestamp = Date.now();
-			}
+        // Update last seen when user sends (so they donâ€™t get notified of their own)
+        lastSeenTimestamp = Date.now();
+      }
 
-			// 🎨 Generate a consistent glowing color per username
-			function getUserColor(name) {
-				if (name === localUserName) return "hsl(180, 80%, 70%)"; // your color: cyan-blue glow
-				let hash = 0;
-				for (let i = 0; i < name.length; i++) {
-					hash = name.charCodeAt(i) + ((hash << 5) - hash);
-				}
-				const hue = Math.abs(hash) % 360;
-				return `hsl(${hue}, 70%, 70%)`; // others: soft rainbow hues
-			}
+      // 🎨 Generate a consistent glowing color per username
+      function getUserColor(name) {
+        if (name === localUserName) return "hsl(180, 80%, 70%)"; // your color: cyan-blue glow
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+          hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const hue = Math.abs(hash) % 360;
+        return `hsl(${hue}, 70%, 70%)`; // others: soft rainbow hues
+      }
 
-			// 💬 Detect last message before user loads (to prevent false notifications)
-			get(chatRef).then((snapshot) => {
-				if (snapshot.exists()) {
-					let latest = 0;
-					snapshot.forEach((child) => {
-						const data = child.val();
-						if (data.timestamp > latest) latest = data.timestamp;
-					});
-					lastSeenTimestamp = latest;
-				}
-				initialLoadComplete = true;
-			});
+      // 💬 Detect last message before user loads (to prevent false notifications)
+      get(chatRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          let latest = 0;
+          snapshot.forEach((child) => {
+            const data = child.val();
+            if (data.timestamp > latest) latest = data.timestamp;
+          });
+          lastSeenTimestamp = latest;
+        }
+        initialLoadComplete = true;
+      });
 
-			// 💬 Listen for incoming messages
-			onChildAdded(chatRef, (snapshot) => {
-				const data = snapshot.val();
-				const msgEl = document.createElement("div");
-				msgEl.className = "chat-message";
+      // 💬 Listen for incoming messages
+      onChildAdded(chatRef, (snapshot) => {
+        const data = snapshot.val();
+        const msgEl = document.createElement("div");
+        msgEl.className = "chat-message";
 
-				const userColor = getUserColor(data.name);
-				const time = new Date(data.timestamp).toLocaleTimeString([], {
-					hour: "2-digit",
-					minute: "2-digit",
-				});
+        const userColor = getUserColor(data.name);
+        const time = new Date(data.timestamp).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
 
-				msgEl.innerHTML = `
+        msgEl.innerHTML = `
 					<strong style="
 						color: ${userColor};
 						text-shadow: 0 0 8px ${userColor};
@@ -4392,55 +4576,53 @@
 					">${data.text}</span>
 				`;
 
-				chatMessages.appendChild(msgEl);
-				chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatMessages.appendChild(msgEl);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-				// Ignore notifications before initial load
-				if (!initialLoadComplete) return;
+        // Ignore notifications before initial load
+        if (!initialLoadComplete) return;
 
-				// Only notify for messages newer than last seen
-				if (data.timestamp <= lastSeenTimestamp) return;
+        // Only notify for messages newer than last seen
+        if (data.timestamp <= lastSeenTimestamp) return;
 
-				// 🔔 Show visual notification & tooltip if chat is closed
-				const onlineUsers = document.getElementById("onlineCount");
-				if (onlineUsers && !chatBox.classList.contains("active")) {
-					if (!onlineUsers.classList.contains("notify")) {
-						onlineUsers.classList.add("notify");
+        // 🔔 Show visual notification & tooltip if chat is closed
+        const onlineUsers = document.getElementById("onlineCount");
+        if (onlineUsers && !chatBox.classList.contains("active")) {
+          if (!onlineUsers.classList.contains("notify")) {
+            onlineUsers.classList.add("notify");
 
-						// small bounce animation
-						onlineUsers.animate(
-							[
-								{ transform: "translateY(0)" },
-								{ transform: "translateY(-4px)" },
-								{ transform: "translateY(0)" },
-							],
-							{ duration: 300, easing: "ease-out" }
-						);
-					}
-				}
-			});
+            // small bounce animation
+            onlineUsers.animate(
+              [
+                { transform: "translateY(0)" },
+                { transform: "translateY(-4px)" },
+                { transform: "translateY(0)" },
+              ],
+              { duration: 300, easing: "ease-out" }
+            );
+          }
+        }
+      });
 
       // Auto-refresh the page every 5 minutes
       setTimeout(() => {
         location.reload();
       }, 300000); // 300,000 ms = 5 minutes
     </script>
-		
-		<!-- Chat Box (hidden by default) -->
-		<div id="chatBox" class="chat-box">
-			<div class="chat-header">
-				SERVER CHAT
-				<button id="chatMinimize" class="chat-minimize-btn">−</button>
-			</div>
 
-			<div id="chatMessages" class="chat-messages"></div>
+    <!-- Chat Box (hidden by default) -->
+    <div id="chatBox" class="chat-box">
+      <div class="chat-header">
+        SERVER CHAT
+        <button id="chatMinimize" class="chat-minimize-btn">−</button>
+      </div>
 
-			<div class="chat-input-area">
-				<input id="chatInput" type="text" placeholder="Type a message..." />
-				<button id="chatSend">Send</button>
-			</div>
-		</div>
+      <div id="chatMessages" class="chat-messages"></div>
 
+      <div class="chat-input-area">
+        <input id="chatInput" type="text" placeholder="Type a message..." />
+        <button id="chatSend">Send</button>
+      </div>
+    </div>
   </body>
 </html>
-
