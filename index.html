@@ -3953,14 +3953,14 @@
             );
           }
 
-          // --- (4) Start 5-minute cooldown when reaching 0 ---
+          // --- (4) Start 3-minute cooldown when reaching 0 ---
           if (remainingMs <= 0 && !info.cooldownUntil) {
-            info.cooldownUntil = now + 5 * 60 * 1000;
-            console.log(
-              `⏳ ${boss.name} entering 5-minute cooldown until ${new Date(
-                info.cooldownUntil
-              ).toLocaleTimeString()}`
-            );
+          info.cooldownUntil = now + 3 * 60 * 1000;
+          console.log(
+          `⏳ ${boss.name} entering 3-minute cooldown until ${new Date(
+          info.cooldownUntil
+          ).toLocaleTimeString()}`
+          );
 
             // 🟢 Visual: back to normal white glow during cooldown
             if (nameElem) nameElem.classList.remove("dead");
