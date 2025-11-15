@@ -7,7 +7,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700&display=swap"
       rel="stylesheet"
     />
-    <title>LORDNINE TIME TRACKER</title>
+    <title>LORDNINE TRACKER</title>
     <link
       href="assets/images/logo5.png"
       rel="icon"
@@ -199,6 +199,55 @@
         gap: 16px;
         min-height: 0;
       }
+
+      /* Mobile responsive */
+      @media (max-width: 768px) {
+        .main {
+          grid-template-columns: 1fr;
+        }
+
+        .right-column {
+          flex-direction: row;
+          gap: 0;
+          flex-shrink: 0;
+        }
+
+        #nextBoss {
+          flex: 0 0 auto;
+          min-height: 80px;
+        }
+
+        #timersPanel {
+          flex: 0 0 auto;
+          border-top: 1px solid var(--border);
+          border-bottom: none;
+          border-left: none;
+          border-right: none;
+          border-radius: 0;
+        }
+
+        #timersPanel .card-body {
+          display: none;
+          max-height: 40vh;
+          overflow-y: auto;
+        }
+
+        #timersPanel.expanded .card-body {
+          display: block;
+        }
+
+        #timersPanel .card-header {
+          cursor: pointer;
+          user-select: none;
+          transition: background 0.2s;
+        }
+
+        #timersPanel .card-header:hover {
+          background: var(--bg-hover);
+        }
+      }
+
+
 
       /* Card Styles */
       .card {
@@ -1301,6 +1350,15 @@
       const cancelTimeBtn = document.getElementById("cancelTimeBtn");
       const sortBtn = document.getElementById("sortBtn");
       const syncBtn = document.getElementById("syncBtn");
+      const timersPanelEl = document.getElementById("timersPanel");
+      const timersPanelHeader = timersPanelEl?.querySelector(".card-header");
+
+      // Mobile timers panel toggle
+      if (timersPanelHeader && window.innerWidth <= 768) {
+        timersPanelHeader.addEventListener("click", () => {
+          timersPanelEl.classList.toggle("expanded");
+        });
+      }
 
       function formatTime(ms) {
         const totalSec = Math.floor(ms / 1000);
