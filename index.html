@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width,initial-scale=1" name="viewport" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700&display=swap"
       rel="stylesheet"
     />
     <title>LORDNINE TIME TRACKER</title>
@@ -16,15 +16,18 @@
     />
     <style>
       :root {
-        --bg: #07101a;
-        --muted: #9aa6b2;
+        --bg: #0a0a0a;
+        --bg-card: #151515;
+        --bg-hover: #1a1a1a;
+        --border: #252525;
+        --border-bright: #333;
+        --text: #e0e0e0;
+        --text-dim: #808080;
         --accent: #00f0ff;
-        --accent-2: #7dd3fc;
-        --glass: rgba(255, 255, 255, 0.03);
-        --radius: 10px;
-        --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
-        --glass-border: rgba(0, 240, 255, 0.08);
-        --text: #dff7ff;
+        --accent-dim: #008a95;
+        --success: #00ff88;
+        --warning: #ff6b00;
+        --danger: #ff3366;
       }
 
       * {
@@ -37,404 +40,909 @@
       body {
         height: 100%;
         overflow: hidden;
-        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
         background: var(--bg);
         color: var(--text);
         -webkit-font-smoothing: antialiased;
+        font-size: 14px;
       }
 
       .container {
         display: flex;
         flex-direction: column;
         height: 100%;
-        padding: 12px;
-        max-width: 1200px;
+        padding: 16px;
+        max-width: 1400px;
         margin: 0 auto;
-        gap: 12px;
+        gap: 16px;
       }
 
-      /* === HEADER CONTAINER - CYBER THEME === */
+      /* Header */
       header.app-header {
-        flex: 0 0 auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.8),
-          rgba(0, 15, 25, 0.9)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-top: 2px solid rgba(0, 240, 255, 0.5);
-        padding: 10px 16px;
-        border-radius: 8px;
-        box-shadow: 0 0 30px rgba(0, 240, 255, 0.15),
-          inset 0 0 40px rgba(0, 240, 255, 0.03);
-        backdrop-filter: blur(10px);
-        box-sizing: border-box;
-        position: relative;
-        overflow: hidden;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 12px 20px;
+        border-radius: 6px;
       }
 
-      /* === HEADER TOP ROW (Logo + Title + Settings) === */
-      .header-top {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex: 1;
-      }
-
-      /* Animated scan line across header */
-      header.app-header::before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          rgba(0, 240, 255, 0.8),
-          transparent
-        );
-        animation: headerScan 5s linear infinite;
-      }
-
-      @keyframes headerScan {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
-      }
-
-      /* Corner accents */
-      header.app-header::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 80px;
-        height: 80px;
-        background: radial-gradient(
-          circle at top right,
-          rgba(0, 240, 255, 0.1),
-          transparent 70%
-        );
-        pointer-events: none;
-      }
-
-      /* === APP TITLE GROUP (logo + text) === */
       .app-title {
         display: flex;
-        align-items: center; /* centers logo + text vertically */
-        gap: 10px;
-        font-weight: 700;
-        color: var(--accent);
-      }
-
-      /* === LOGO WRAPPER === */
-      .logo {
-        display: flex;
         align-items: center;
-        justify-content: center;
-        position: relative;
+        gap: 12px;
+        flex-wrap: wrap;
       }
 
-      /* === LOGO IMAGE === */
+      .app-title-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
       .logo-img {
-        height: 44px;
+        height: 40px;
         width: auto;
-        display: block;
-        object-fit: contain;
-        margin: 0;
-        animation: logoPulse 3s ease-in-out infinite;
+        opacity: 0.9;
       }
 
-      /* === Logo pulse animation === */
-      @keyframes logoPulse {
-        0%,
-        100% {
-          transform: scale(1);
-          filter: brightness(1);
-        }
-        50% {
-          transform: scale(1.1);
-          filter: brightness(1.3);
-        }
-      }
-
-      /* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
       .main-title {
-        font-size: 16px;
         font-family: "Orbitron", sans-serif;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1.3px;
-        color: #00f6ff;
-        background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
-        background-size: 200% auto;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 4px rgba(0, 255, 255, 0.3),
-          0 0 8px rgba(0, 255, 255, 0.15);
-        animation: gradientMove 6s linear infinite,
-          flicker 8s ease-in-out infinite;
-        position: relative;
-        display: block; /* aligns perfectly with warning text */
-        margin-left: 1px; /* matches left start with warning-text */
-        line-height: 1.1;
-        overflow: hidden; /* prevents bleed outside */
-        z-index: 1;
-      }
-
-      /* Softer flicker for digital realism */
-      @keyframes flicker {
-        0%,
-        19%,
-        21%,
-        23%,
-        25%,
-        54%,
-        56%,
-        100% {
-          opacity: 1;
-        }
-        20%,
-        24%,
-        55% {
-          opacity: 0.9;
-        }
-      }
-
-      /* Continuous underline scan line (non-looping bounce) */
-      .main-title::after {
-        content: "";
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        height: 2px;
-        width: 100%;
-        background: linear-gradient(90deg, rgba(0, 255, 255, 0.6), transparent);
-        background-size: 200% auto;
-        animation: scanLineContinuous 5s linear infinite;
-        border-radius: 1px;
-        opacity: 0.4;
-      }
-
-      @keyframes scanLineContinuous {
-        0% {
-          background-position-x: 0%;
-        }
-        100% {
-          background-position-x: 200%;
-        }
-      }
-
-      /* === WARNING TEXT (aligned, modern subtle glow gradient) === */
-      .warning-text {
-        font-size: 11px;
+        font-size: 18px;
         font-weight: 700;
-        background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
-        background-size: 200%;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradientMove 4s linear infinite;
-        text-shadow: 0 0 3px rgba(255, 120, 0, 0.35);
-        margin-left: 1px; /* aligns with title */
-        margin-top: 2px;
-        line-height: 1.1;
-        vertical-align: middle;
+        letter-spacing: 1px;
+        color: var(--accent);
+        text-transform: uppercase;
       }
 
-      /* Unified gradient animation for all gradient-text elements */
-      @keyframes gradientMove {
-        0% {
-          background-position: 0%;
-        }
-        100% {
-          background-position: 200%;
-        }
+      .warning-text {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--warning);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .header-controls {
         display: flex;
-        gap: 8px;
+        gap: 12px;
         align-items: center;
+      }
+
+      .search-wrapper {
         position: relative;
-        z-index: 2;
-        flex-shrink: 0;
-        margin-left: auto;
+        width: 220px;
       }
 
       .search {
-        width: 200px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.6),
-          rgba(0, 10, 20, 0.8)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        padding: 6px 10px;
-        border-radius: 8px;
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 8px 32px 8px 12px;
+        border-radius: 4px;
         color: var(--text);
         font-size: 13px;
-        box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.05);
-        transition: all 0.3s ease;
+        transition: all 0.2s;
       }
 
       .search:focus {
         outline: none;
         border-color: var(--accent);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
-          inset 0 0 20px rgba(0, 240, 255, 0.1);
+        background: var(--bg-hover);
       }
 
       .search::placeholder {
-        color: rgba(154, 166, 178, 0.6);
+        color: var(--text-dim);
+      }
+
+      .search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--text-dim);
+        cursor: pointer;
+        padding: 4px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        transition: all 0.2s;
+      }
+
+      .search-clear:hover {
+        color: var(--accent);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .search-clear.visible {
+        display: flex;
+      }
+
+      .search-clear svg {
+        width: 16px;
+        height: 16px;
       }
 
       .settings {
-        width: auto;
-        height: auto;
-        border: none;
-        border-radius: 0;
         background: transparent;
-        color: var(--accent);
+        border: none;
+        padding: 8px;
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        gap: 4px;
-        transition: all 0.25s ease;
-        position: relative;
-        z-index: 10001;
-        padding: 0;
-      }
-
-      .settings::before,
-      .settings::after {
-        display: none;
-      }
-
-      .settings::before {
-        content: "";
-        display: block;
-        width: 24px;
-        height: 2px;
-        background-color: var(--accent);
-        border-radius: 1px;
+        gap: 3px;
+        transition: all 0.2s;
       }
 
       .settings .line {
-        width: 24px;
+        width: 20px;
         height: 2px;
-        background-color: var(--accent);
+        background: var(--text);
         border-radius: 1px;
-        transition: all 0.25s ease;
-      }
-
-      .settings:hover {
-        color: #00ffff;
+        transition: all 0.2s;
       }
 
       .settings:hover .line {
-        background-color: #00ffff;
+        background: var(--accent);
       }
 
-      .settings:active {
-        transform: scale(0.95);
-      }
-
-      .settings.active {
-        color: #00ff88;
-      }
-
-      .settings.active .line {
-        background-color: #00ff88;
-      }
-
+      /* Main Layout */
       .main {
-        flex: 1 1 auto;
+        flex: 1;
         display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 12px;
+        grid-template-columns: 1fr 380px;
+        gap: 16px;
         min-height: 0;
       }
 
+      /* Card Styles */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-dim);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+      }
+
+      /* Sort Button */
+      .sort-btn {
+        padding: 5px 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        color: var(--text-dim);
+        font-size: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        backdrop-filter: blur(4px);
+      }
+
+      .sort-btn:hover {
+        background: rgba(0, 240, 255, 0.1);
+        border-color: rgba(0, 240, 255, 0.3);
+        color: var(--accent);
+        transform: translateY(-1px);
+      }
+
+      /* Next Boss */
+      #nextBoss {
+        background: linear-gradient(135deg, var(--bg-card) 0%, #1a1a1a 100%);
+        border: 1px solid var(--accent-dim);
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 80px;
+      }
+
+      .next-boss-name {
+        font-size: clamp(20px, 5vw, 28px);
+        font-weight: 700;
+        color: var(--accent);
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .next-boss-time {
+        font-size: clamp(12px, 3vw, 16px);
+        color: var(--text-dim);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      /* Boss List */
+      #bossList {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-auto-rows: auto;
+        gap: 12px;
+      }
+
+      .boss {
+        position: relative;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s;
+        cursor: pointer;
+        height: 280px;
+      }
+
+      .boss:hover {
+        border-color: var(--accent-dim);
+        transform: translateY(-2px);
+      }
+
+      .boss:hover .name {
+        color: var(--accent);
+        text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+      }
+
+      .boss:hover .sub {
+        color: var(--danger);
+        text-shadow: 0 0 8px rgba(255, 51, 102, 0.6);
+      }
+
+      .boss-background {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+        pointer-events: none;
+        filter: brightness(1.2);
+      }
+
+      .boss:hover .boss-background {
+        opacity: 0.7;
+        filter: brightness(1.8);
+      }
+
+      .boss-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(10, 10, 10, 0.4),
+          rgba(10, 10, 10, 0.95)
+        );
+        pointer-events: none;
+      }
+
+      .boss-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 12px 12px 12px;
+        z-index: 1;
+        text-align: center;
+      }
+
+      .boss-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 0px;
+      }
+
+      .boss .name {
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--text);
+        margin-bottom: 4px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .boss .sub {
+        font-size: 11px;
+        color: var(--text-dim);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+      }
+
+      .boss-actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+        margin-top: auto;
+      }
+
+      /* Buttons */
+      .kbtn {
+        padding: 7px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text-dim);
+        border-radius: 4px;
+        font-size: clamp(9px, 1.5vw, 10px);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        flex: 1 1 0;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .kbtn-icon {
+        display: none;
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+
+      .kbtn-text {
+        display: inline;
+      }
+
+      .kbtn:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.25);
+      }
+
+      .kbtn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .kbtn[data-action="mark"]:hover:not(:disabled) {
+        color: var(--accent);
+      }
+
+      .kbtn[data-action="cancel"]:hover {
+        color: var(--danger);
+      }
+
+      .kbtn[data-action="set"]:hover {
+        color: var(--warning);
+      }
+
+      /* Active Timers */
+      .timer {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 4px;
+        padding: 12px;
+        margin-bottom: 8px;
+        position: relative;
+        transition: all 0.2s;
+      }
+
+      .timer:hover {
+        background: var(--bg-hover);
+        border-color: var(--accent);
+      }
+
+      .timer-remaining {
+        font-size: 11px;
+        color: var(--warning);
+        margin-top: 6px;
+        padding-top: 6px;
+        border-top: 1px solid rgba(255, 107, 0, 0.2);
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease, padding-top 0.3s ease;
+      }
+
+      .timer:hover .timer-remaining {
+        opacity: 1;
+        max-height: 30px;
+      }
+
+      .timer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .timer-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      .timer-time {
+        font-size: 12px;
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      .timer-spawn {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 4px;
+      }
+
+      /* Ready to respawn state */
+      .timer.ready {
+        border-color: var(--success);
+        border-left-color: var(--success);
+        background: rgba(0, 255, 136, 0.05);
+        box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
+        animation: timerReadyPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes timerReadyPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+        }
+      }
+
+      /* Modal */
+      .modal-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(4px);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        width: 90%;
+        max-width: 400px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-section {
+        margin-bottom: 24px;
+      }
+
+      .modal-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .modal-section h3 {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .modal-actions .kbtn {
+        flex: 1;
+        min-width: 80px;
+      }
+
+      .modal-input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        border-radius: 4px;
+        color: var(--text);
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+
+      .modal-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* Time Picker Modal */
+      .time-picker-label {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .datetime-input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        border-radius: 4px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: inherit;
+      }
+
+      .datetime-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* Online Counter */
+      .online-users {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 8px 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        z-index: 1000;
+      }
+
+      .online-users:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      .online-users::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: var(--success);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--success);
+      }
+
+      .online-users.notify {
+        animation: pulse 1s infinite;
+        border-color: var(--warning);
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* Chat */
+      .chat-box {
+        position: fixed;
+        bottom: 70px;
+        right: 20px;
+        width: 350px;
+        height: 450px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        display: none;
+        flex-direction: column;
+        z-index: 1001;
+        overflow: hidden;
+      }
+
+      .chat-box.active {
+        display: flex;
+      }
+
+      .chat-box.hidden {
+        display: none;
+      }
+
+      .chat-header {
+        padding: 12px 16px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .chat-minimize-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-dim);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s;
+      }
+
+      .chat-minimize-btn:hover {
+        color: var(--accent);
+      }
+
+      .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .chat-message {
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--text);
+      }
+
+      .chat-input-area {
+        padding: 12px;
+        background: var(--bg);
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+      }
+
+      .chat-input-area input {
+        flex: 1;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 8px 10px;
+        border-radius: 4px;
+        color: var(--text);
+        font-size: 12px;
+      }
+
+      .chat-input-area input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .chat-input-area button {
+        padding: 8px 16px;
+        background: var(--accent);
+        border: none;
+        border-radius: 4px;
+        color: var(--bg);
+        font-weight: 600;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .chat-input-area button:hover {
+        background: var(--success);
+      }
+
+      /* Loading */
+      .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        color: var(--text-dim);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--danger), #cc2952);
+        border-radius: 4px;
+        border: 2px solid var(--bg);
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #ff5577, var(--danger));
+        box-shadow: 0 0 6px rgba(255, 51, 102, 0.5);
+      }
+
+      /* Firefox scrollbar */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--danger) var(--bg);
+      }
+
+      /* Mobile */
       @media (max-width: 768px) {
-        /* Mobile Header: Logo+Title on top-left, Settings on top-right, Search below */
-        header.app-header {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          align-items: flex-start;
+        .container {
+          padding: 12px;
+          gap: 12px;
         }
 
-        .header-top {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex: 1 0 auto;
-          order: 1;
+        .main {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr auto;
+        }
+
+        #bossList {
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          gap: 10px;
+        }
+
+        .boss {
+          height: 220px;
+        }
+
+        .boss .name {
+          font-size: 13px;
+        }
+
+        .boss .sub {
+          font-size: 10px;
+        }
+
+        .kbtn {
+          font-size: clamp(8px, 1.8vw, 9px);
+          padding: 8px 6px;
+          letter-spacing: 0.2px;
+        }
+
+        .kbtn-icon {
+          display: block;
+          width: 18px;
+          height: 18px;
+        }
+
+        .kbtn-text {
+          display: none;
+        }
+
+        header.app-header {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 12px;
+          padding: 12px 16px;
         }
 
         .app-title {
-          display: flex;
-          gap: 8px;
-          align-items: center;
+          width: 100%;
+          justify-content: flex-start;
         }
 
-        .logo-img {
-          height: 36px !important;
-        }
-
-        .main-title {
-          font-size: clamp(14px, 6vw, 24px) !important;
-          letter-spacing: 0.8px !important;
-          line-height: 1.2;
+        .app-title-text {
+          flex-direction: row;
+          align-items: baseline;
+          gap: 6px;
         }
 
         .warning-text {
-          font-size: 9px !important;
+          font-size: 9px;
         }
 
         .header-controls {
+          width: 100%;
           display: flex;
-          width: 70%;
-          gap: 8px !important;
-          align-items: center;
-          margin-left: 0 !important;
-          flex-basis: 100%;
-          order: 3;
+          gap: 8px;
         }
 
         .search-wrapper {
           flex: 1;
+          min-width: 0;
+          width: auto;
         }
 
         .search {
           width: 100%;
-          padding: 6px 8px !important;
-          font-size: 12px !important;
         }
 
-        #settingsBtn {
-          order: 2;
+        .settings {
           flex-shrink: 0;
-          margin-left: auto;
         }
 
-        .main {
-          display: grid !important;
-          grid-template-columns: 1fr !important;
-          grid-template-rows: auto auto auto !important;
-          gap: 12px;
+        .main-title {
+          font-size: 16px;
+        }
+
+        .logo-img {
+          height: 36px;
+        }
+
+        .chat-box {
+          width: calc(100vw - 24px);
+          right: 12px;
         }
 
         .right-column {
@@ -442,2305 +950,227 @@
         }
 
         #nextBoss {
-          grid-row: 1 !important;
-          grid-column: 1 !important;
-        }
-
-        #timersPanel {
-          grid-row: 3 !important;
-          grid-column: 1 !important;
-          display: flex;
-          flex: 0 0 auto;
-          max-height: 25vh;
-          min-height: 0;
-          overflow: hidden;
-        }
-
-        #timers {
-          max-height: 100%;
-          flex: 1 1 auto;
-          min-height: 0;
-          overflow: auto;
-        }
-
-        #bossList {
-          max-height: none;
-          flex: 1 1 auto;
+          order: 1;
+          padding: 20px 12px;
+          min-height: 70px;
+          gap: 6px;
         }
 
         #bossListPanel {
-          grid-row: 2 !important;
-          grid-column: 1 !important;
-          flex: 1 1 auto;
-          min-height: 0;
-          overflow: hidden;
+          order: 2;
         }
 
-        #bossListPanel .card-header {
-          min-height: 35px;
-          padding: 8px 0;
-          margin: 0;
-          border-radius: var(--radius) var(--radius) 0 0;
+        #timersPanel {
+          order: 3;
+          max-height: 30vh;
         }
 
-        /* Mobile: Smaller text and buttons */
-        .boss .name {
-          font-size: 0.75rem !important;
-          letter-spacing: 0.3px !important;
+        .next-boss-name {
+          font-size: clamp(16px, 6vw, 22px);
         }
 
-        .boss .sub {
-          font-size: 9px !important;
-        }
-
-        .boss {
-          padding: 3px 4px !important;
-          font-size: 11px !important;
-        }
-
-        .kbtn {
-          padding: 3px 4px !important;
-          font-size: 10px !important;
-          border-radius: 4px !important;
-        }
-
-        .timer {
-          padding: 5px 8px !important;
-          min-height: 40px !important;
-          font-size: 10px !important;
-        }
-
-        .timer-left {
-          gap: 1px !important;
-        }
-
-        .timer-name {
-          font-size: 11px !important;
-        }
-
-        .timer-time {
-          font-size: 10px !important;
-        }
-
-        #nextBoss {
-          min-height: 75px !important;
-          padding: 6px 8px !important;
-        }
-
-        #nextBoss .boss-name {
-          font-size: 1.4rem !important;
-        }
-
-        #nextBoss .time-remaining {
-          font-size: 0.85rem !important;
-        }
-
-        .card-header h2 {
-          font-size: 14px !important;
-        }
-
-        /* Status icons smaller */
-        .status-icon {
-          width: 16px !important;
-          height: 16px !important;
-          font-size: 12px !important;
-        }
-      }
-
-      .card {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 20, 30, 0.4),
-          rgba(0, 5, 10, 0.6)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: var(--radius);
-        padding: 10px;
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.08),
-          inset 0 0 30px rgba(0, 240, 255, 0.02);
-        display: flex;
-        flex-direction: column;
-        min-height: 0;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        animation: cardScanLine 4s linear infinite;
-      }
-
-      @keyframes cardScanLine {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
+        .next-boss-time {
+          font-size: clamp(11px, 3.5vw, 14px);
         }
       }
 
       .right-column {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 16px;
         min-height: 0;
       }
 
-      #bossList,
-      #timers {
-        flex: 1 1 auto;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+      #bossListPanel,
+      #timersPanel {
         min-height: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 2px;
-        max-height: 100%;
-        scroll-behavior: smooth;
-      }
-
-      /* === BOSS LIST CYBER THEME === */
-      .boss {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 95%;
-        padding: 4px 6px;
-        border-radius: 6px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.6),
-          rgba(0, 10, 20, 0.4)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.15);
-        border-left: 3px solid rgba(0, 240, 255, 0.3);
-        font-size: 12px;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.1),
-          inset 0 0 20px rgba(0, 240, 255, 0.03);
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-        position: relative;
-      }
-
-      .boss::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 4px;
-        height: 60%;
-        background: linear-gradient(
-          180deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .boss:hover {
-        transform: translateX(4px);
-        border-color: rgba(0, 240, 255, 0.4);
-        border-left-color: var(--accent);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 240, 255, 0.12),
-          rgba(0, 100, 150, 0.08)
-        );
-        box-shadow: 0 0 25px rgba(0, 240, 255, 0.25),
-          inset 0 0 30px rgba(0, 240, 255, 0.08);
-      }
-
-      .boss:hover::after {
-        opacity: 0.6;
-      }
-
-      .boss .meta {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-
-      /* Normal (alive / cooldown) */
-      .boss .name {
-        font-family: "Orbitron", sans-serif;
-        color: #ffffff;
-        font-weight: 900;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.5),
-          0 0 20px rgba(0, 240, 255, 0.3);
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        position: relative;
-      }
-
-      .boss .sub {
-        font-size: 10px;
-        color: var(--muted);
-      }
-
-      .kbtn {
-        padding: 4px 6px;
-        border-radius: 5px;
-        border: 1px solid rgba(0, 240, 255, 0.14);
-        background: var(--glass);
-        color: var(--accent);
-        cursor: pointer;
-        font-size: 11px;
-        font-weight: 700;
-        transition: all 0.2s ease;
-      }
-
-      .kbtn:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.15),
-          rgba(125, 211, 252, 0.15)
-        );
-        border-color: rgba(0, 240, 255, 0.4);
-        color: #fff;
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-        transform: translateY(-1px);
-      }
-
-      /* Smaller delete button in active timers */
-      .clear-timer-btn {
-        padding: 4px 6px;
-        font-size: 10px;
-        border-radius: 4px;
-        opacity: 0.8;
-      }
-
-      .clear-timer-btn:hover {
-        opacity: 1;
-      }
-
-      /* === NEXT BOSS - CYBER HEXAGON THEME (reduced margins) === */
-      #nextBoss {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        gap: 4px;
-
-        /* â†“ Reduce space inside and outside â†“ */
-        padding: 8px 12px;
-        margin: 0;
-        width: 100%; /* match timer width */
-        min-height: 90px; /* taller panel */
-
-        border-radius: 10px;
-        border: 2px solid rgba(0, 240, 255, 0.3);
-        border-right: 3px solid rgba(0, 240, 255, 0.3);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 40, 60, 0.6),
-          rgba(0, 20, 30, 0.8)
-        );
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
-          inset 0 0 40px rgba(0, 240, 255, 0.05);
-        font-family: "Orbitron", sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      #nextBoss::before {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -100%;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        animation: nextBossScan 3s linear infinite;
-      }
-
-      @keyframes nextBossScan {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
-      }
-
-      #nextBoss::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 10px;
-        padding: 2px;
-        background: linear-gradient(
-          45deg,
-          transparent 30%,
-          rgba(0, 240, 255, 0.1) 50%,
-          transparent 70%
-        );
-        -webkit-mask: linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        animation: borderRotate 4s linear infinite;
-        pointer-events: none;
-      }
-
-      @keyframes borderRotate {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* === NEXT BOSS NAME: NEON RED GLOW WITH PULSE === */
-      #nextBoss .boss-name {
-        font-size: 1.8rem;
-        font-weight: 900;
-        color: #ff4d4d;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        display: inline-flex;
-        align-items: center;
-        position: relative;
-        text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-          0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
-        animation: bossNamePulse 2s ease-in-out infinite;
-        z-index: 1;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-
-      @keyframes bossNamePulse {
-        0%,
-        100% {
-          text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-            0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
-          transform: scale(1);
-        }
-        50% {
-          text-shadow: 0 0 20px rgba(255, 80, 80, 1),
-            0 0 40px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.5);
-          transform: scale(1.02);
-        }
-      }
-
-      #nextBoss .time-remaining {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--accent);
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.8),
-          0 0 20px rgba(0, 240, 255, 0.5);
-        margin-top: 0;
-        animation: timeGlow 2s ease-in-out infinite;
-        z-index: 1;
-        white-space: nowrap;
-        flex-shrink: 1;
-        min-width: 0;
-      }
-
-      @keyframes timeGlow {
-        0%,
-        100% {
-          opacity: 0.9;
-        }
-        50% {
-          opacity: 1;
-        }
-      }
-
-      @keyframes bossGlow {
-        0%,
-        100% {
-          text-shadow: 0 0 8px rgba(0, 240, 255, 0.8),
-            0 0 16px rgba(0, 240, 255, 0.6);
-        }
-
-        50% {
-          text-shadow: 0 0 14px rgba(0, 240, 255, 1),
-            0 0 28px rgba(0, 240, 255, 0.8);
-        }
-      }
-
-      /* === ACTIVE TIMER CARD â€” CYBER THEME === */
-      .timer {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 95%;
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.5),
-          rgba(0, 15, 25, 0.3)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-right: 3px solid rgba(0, 240, 255, 0.3);
-        font-size: 11px;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.12),
-          inset 0 0 25px rgba(0, 240, 255, 0.04);
-        transition: all 0.3s ease;
-        overflow: hidden;
-        height: auto;
-        min-height: 48px;
-      }
-
-      .timer::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 70%;
-        background: linear-gradient(
-          180deg,
-          transparent,
-          rgba(0, 240, 255, 0.5),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .timer:hover::before {
-        opacity: 1;
-      }
-
-      /* Glow state â€” Ready to respawn */
-      .timer.ready {
-        border-color: rgba(0, 255, 100, 0.4);
-        border-right-color: rgba(0, 255, 100, 0.6);
-        box-shadow: 0 0 25px rgba(0, 255, 100, 0.3),
-          inset 0 0 35px rgba(0, 255, 100, 0.1);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 255, 100, 0.15),
-          rgba(0, 150, 80, 0.1)
-        );
-        animation: timerReadyPulse 2s ease-in-out infinite;
-      }
-
-      @keyframes timerReadyPulse {
-        0%,
-        100% {
-          box-shadow: 0 0 20px rgba(0, 255, 100, 0.25),
-            inset 0 0 30px rgba(0, 255, 100, 0.08);
-        }
-        50% {
-          box-shadow: 0 0 35px rgba(0, 255, 100, 0.4),
-            inset 0 0 45px rgba(0, 255, 100, 0.15);
-        }
-      }
-
-      /* Timer layout */
-      .timer-left {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        min-width: 0;
-        flex: 1;
-      }
-
-      .timer-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 6px;
-        min-width: 100px;
-      }
-
-      .timer-actions {
-        display: flex;
-        gap: 2px;
-      }
-
-      /* === TIMER TEXT - CYBER THEME === */
-      .timer .timer-name {
-        font-family: "Orbitron", sans-serif;
-        font-weight: 900;
-        font-size: 12px;
-        color: #fff;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4),
-          0 0 12px rgba(0, 240, 255, 0.2);
-      }
-
-      .timer .timer-spawn {
-        font-size: 7px;
-        color: var(--accent);
-        opacity: 0.7;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-      }
-
-      .timer .timer-remaining {
-        font-family: "Orbitron", sans-serif;
-        font-weight: 500;
-        font-size: 7px;
-        color: var(--accent);
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
-          0 0 15px rgba(0, 240, 255, 0.3);
-        letter-spacing: 1px;
-      }
-
-      /* Ready state - green glow */
-      .timer.ready .timer-remaining {
-        color: #00ff88;
-        text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
-          0 0 20px rgba(0, 255, 136, 0.5);
-        animation: readyBlink 1s ease-in-out infinite;
-      }
-
-      @keyframes readyBlink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.7;
-        }
-      }
-
-      /* Hover glow */
-      .timer:hover {
-        transform: translateX(3px);
-        border-color: rgba(0, 240, 255, 0.4);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.25),
-          inset 0 0 30px rgba(0, 240, 255, 0.08);
-      }
-
-      .timer:hover .timer-name {
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.7),
-          0 0 20px rgba(0, 240, 255, 0.4);
-      }
-
-      /* Hover â€” bright neon red glow */
-      .timer .kbtn:hover {
-        background: rgba(255, 60, 60, 0.15);
-        border-color: rgba(255, 100, 100, 0.6);
-        color: #fff;
-        box-shadow: 0 0 14px rgba(255, 80, 80, 0.5);
-        transform: translateY(-1px);
-      }
-
-      /* Active press effect */
-      .timer .kbtn:active {
-        transform: scale(0.97);
-        box-shadow: 0 0 8px rgba(255, 60, 60, 0.3);
-      }
-
-      @media (max-width: 900px) {
-        html,
-        body {
-          height: 100% !important;
-          overflow: hidden !important;
-        }
-
-        .container {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .main {
-          display: flex !important;
-          flex-direction: column !important;
-          flex: 1 1 auto;
-          height: 100%;
-          overflow: hidden !important;
-          gap: 10px; /* match right-column gap */
-        }
-
-        .right-column {
-          order: 0 !important;
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 10px;
-          flex: 0 0 auto;
-          width: 100%;
-        }
-
-        /* Stacking order */
-        #nextBoss {
-          order: 0 !important;
-          flex: 0 0 auto !important;
-          width: 100% !important;
-        }
-
-        /* Active timers â€” taller and directly â€œtouchingâ€ boss list */
-        #timersPanel {
-          display: flex;
-          order: 2 !important;
-        }
-
-        /* Boss list â€” directly attached to timers */
-        #bossListPanel {
-          order: 1 !important;
-          flex: 1 1 auto;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
-          margin: 0;
-          padding: 0 10px 10px 10px;
-          box-shadow: none;
-        }
-
-        /* Keep both panels the same background for seamless look */
-        #timersPanel,
-        #bossListPanel {
-          background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.015),
-            rgba(0, 0, 0, 0.05)
-          );
-          border: 1px solid var(--glass-border);
-        }
-
-        /* Compact headers to minimize space */
-        #timersPanel .card-header,
-        #bossListPanel .card-header {
-          min-height: 35px;
-          padding: 8px 0;
-          margin: 0;
-          border-radius: var(--radius) var(--radius) 0 0;
-        }
-
-        /* Only the inner lists scroll */
-        #timers,
-        #bossList {
-          flex: 1 1 auto;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-          padding: 6px 4px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        }
-
-        /* Scrollbar */
-        #bossList::-webkit-scrollbar,
-        #timers::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        #bossList::-webkit-scrollbar-thumb,
-        #timers::-webkit-scrollbar-thumb {
-          background: rgba(0, 240, 255, 0.3);
-          border-radius: 8px;
-        }
-      }
-
-      /* === SETTINGS MODAL === */
-      .settings-modal {
-        width: auto;
-        min-width: 300px;
-        max-width: 90%;
-        padding: 24px;
-      }
-
-      .settings-modal h3 {
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 18px;
-        margin-bottom: 20px;
-      }
-
-      .settings-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 16px;
-        border: none;
-        border-radius: 0;
-        overflow: visible;
-        background: transparent;
-      }
-
-      .settings-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.6),
-          rgba(0, 15, 25, 0.8)
-        );
-        border: 1.5px solid rgba(0, 240, 255, 0.3);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        font-family: "Orbitron", sans-serif;
-        text-align: left;
-        text-transform: uppercase;
-        position: relative;
-        overflow: hidden;
-      }
-
-      /* Dead code - not used: .settings-item:last-child border-bottom removed (gap-based layout now) */
-
-      .settings-item::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(0, 240, 255, 0.1),
-          transparent
-        );
-        transform: translateX(-100%);
-        transition: transform 0.5s ease;
-      }
-
-      .settings-item:hover::before {
-        transform: translateX(100%);
-      }
-
-      .settings-item:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(0, 50, 80, 0.8),
-          rgba(0, 30, 50, 0.9)
-        );
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
-          inset 0 0 20px rgba(0, 240, 255, 0.1);
-        transform: translateY(-2px);
-      }
-
-      .settings-item .icon {
-        font-size: 20px;
-        flex-shrink: 0;
-        filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
-        position: relative;
-        z-index: 1;
-        transition: all 0.25s ease;
-      }
-
-      .settings-item:hover .icon {
-        filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.8));
-        transform: scale(1.15);
-      }
-
-      .settings-item .label {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.2px;
-        color: var(--accent);
-        text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
-        flex: 1;
-        text-transform: uppercase;
-        position: relative;
-        z-index: 1;
-      }
-
-      .settings-item:hover .label {
-        color: #fff;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
-      }
-
-      .settings-item:active {
-        transform: translateY(0);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.25),
-          inset 0 0 30px rgba(0, 240, 255, 0.15);
-      }
-
-      /* --- Compact Cyber Modal (Webhook window) --- */
-      .modal-backdrop {
-        position: fixed;
-        inset: 0;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 2000;
-        background: rgba(0, 10, 20, 0.75);
-        backdrop-filter: blur(10px);
-        animation: cyberFadeIn 0.3s ease forwards;
-      }
-
-      @keyframes cyberFadeIn {
-        from {
-          opacity: 0;
-        }
-
-        to {
-          opacity: 1;
-        }
-      }
-
-      .modal {
-        background: linear-gradient(
-          180deg,
-          rgba(5, 15, 25, 0.96),
-          rgba(0, 10, 20, 0.9)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
-          inset 0 0 12px rgba(0, 240, 255, 0.05);
-        padding: 22px 20px;
-        width: 340px;
-        max-width: 90%;
-        color: var(--text);
-        text-align: center;
-        transform: translateY(30px) scale(0.96);
-        opacity: 0;
-        animation: cyberModalIn 0.4s ease-out forwards;
-        backdrop-filter: blur(12px);
-      }
-
-      @keyframes cyberModalIn {
-        0% {
-          opacity: 0;
-          transform: translateY(30px) scale(0.96);
-          box-shadow: none;
-        }
-
-        100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      .modal h3 {
-        margin: 0 0 10px 0;
-        font-size: 16px;
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7),
-          0 0 14px rgba(0, 240, 255, 0.4);
-      }
-
-      /* --- Cyber-styled Webhook Input --- */
-      #webhookInput {
-        width: 100%;
-        margin: 16px 0 18px 0;
-        padding: 10px 12px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 8px;
-        color: var(--accent);
-        font-family: Consolas, monospace;
-        font-size: 12px;
-        text-align: center;
-        outline: none;
-        transition: all 0.3s ease;
-        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.08);
-      }
-
-      #webhookInput::placeholder {
-        color: rgba(125, 211, 252, 0.35);
-        font-style: italic;
-      }
-
-      #webhookInput:focus {
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.4),
-          inset 0 0 8px rgba(0, 240, 255, 0.25);
-        background: rgba(0, 240, 255, 0.08);
-        color: #fff;
-        animation: inputPulse 2.2s ease-in-out infinite;
-      }
-
-      @keyframes inputPulse {
-        0%,
-        100% {
-          box-shadow: 0 0 10px rgba(0, 240, 255, 0.4),
-            inset 0 0 6px rgba(0, 240, 255, 0.2);
-        }
-
-        50% {
-          box-shadow: 0 0 20px rgba(0, 240, 255, 0.8),
-            inset 0 0 10px rgba(0, 240, 255, 0.35);
-        }
-      }
-
-      /* --- Webhook Modal Buttons (SAVE, TEST, CLEAR) --- */
-      #webhookModalBackdrop .modal-actions {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 8px;
-      }
-
-      #webhookSave,
-      #webhookTest,
-      #webhookClear {
-        flex: 1;
-        background: rgba(0, 240, 255, 0.08);
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        color: var(--accent);
-        font-weight: 700;
-        font-size: 12px;
-        padding: 8px 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        transition: all 0.25s ease;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.15);
-        backdrop-filter: blur(4px);
-      }
-
-      /* --- SAVE button: bright cyan accent --- */
-      #webhookSave:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.18),
-          rgba(125, 211, 252, 0.18)
-        );
-        color: #fff;
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
-        transform: translateY(-1px);
-      }
-
-      #webhookSave:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
-      }
-
-      /* --- TEST button: purple accent --- */
-      #webhookTest {
-        border-color: rgba(180, 100, 255, 0.3);
-        color: #bfaeff;
-        background: rgba(150, 80, 255, 0.08);
-        box-shadow: 0 0 6px rgba(180, 100, 255, 0.15);
-      }
-
-      #webhookTest:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(150, 80, 255, 0.25),
-          rgba(0, 240, 255, 0.2)
-        );
-        color: #fff;
-        box-shadow: 0 0 14px rgba(180, 100, 255, 0.45);
-      }
-
-      /* --- CLEAR button: danger red accent --- */
-      #webhookClear {
-        border-color: rgba(255, 80, 80, 0.4);
-        color: #ff8080;
-        background: rgba(255, 60, 60, 0.05);
-        box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
-      }
-
-      #webhookClear:hover {
-        background: rgba(255, 60, 60, 0.15);
-        box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
-        color: #fff;
-      }
-
-      #webhookClear:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 8px rgba(255, 80, 80, 0.3);
-      }
-
-      .small {
-        font-size: 12px;
-        color: var(--muted);
-      }
-
-      /* === LOADING OVERLAY === */
-      .loading-overlay {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        backdrop-filter: blur(12px);
-        background: radial-gradient(
-          circle at center,
-          rgba(0, 10, 20, 0.98) 0%,
-          rgba(0, 0, 0, 0.99) 100%
-        );
-      }
-
-      .loading-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 30px;
-      }
-
-      .loading-hexagon {
-        position: relative;
-        width: 200px;
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .hex-spinner {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-      }
-
-      .hex-layer {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border: 3px solid transparent;
-        border-radius: 50%;
-        animation: spinHex 3s linear infinite;
-      }
-
-      .hex-1 {
-        border-top-color: var(--accent);
-        border-right-color: var(--accent);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-        animation-duration: 2s;
-      }
-
-      .hex-2 {
-        border-bottom-color: var(--accent-2);
-        border-left-color: var(--accent-2);
-        box-shadow: 0 0 20px rgba(125, 211, 252, 0.3);
-        animation-duration: 3s;
-        animation-direction: reverse;
-        width: 75%;
-        height: 75%;
-        top: 12.5%;
-        left: 12.5%;
-      }
-
-      .hex-3 {
-        border-top-color: #fff;
-        border-right-color: #fff;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        animation-duration: 4s;
-        width: 50%;
-        height: 50%;
-        top: 25%;
-        left: 25%;
-      }
-
-      @keyframes spinHex {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      .loading-core {
-        position: relative;
-        width: 80px;
-        height: 80px;
-        z-index: 1;
-      }
-
-      .core-icon {
-        width: 100%;
-        height: 100%;
-        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.8));
-        animation: corePulse 2s ease-in-out infinite;
-      }
-
-      .core-ring {
-        fill: none;
-        stroke: var(--accent);
-        stroke-width: 2;
-        opacity: 0.6;
-        animation: ringGlow 2s ease-in-out infinite;
-      }
-
-      .core-pulse {
-        fill: none;
-        stroke: var(--accent-2);
-        stroke-width: 2;
-        opacity: 0.8;
-        animation: ringPulse 2s ease-in-out infinite;
-      }
-
-      .core-center {
-        fill: var(--accent);
-        animation: centerGlow 1.5s ease-in-out infinite;
-      }
-
-      @keyframes corePulse {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
-        }
-      }
-
-      @keyframes ringGlow {
-        0%,
-        100% {
-          stroke-width: 2;
-          opacity: 0.6;
-        }
-        50% {
-          stroke-width: 3;
-          opacity: 1;
-        }
-      }
-
-      @keyframes ringPulse {
-        0%,
-        100% {
-          r: 25;
-          opacity: 0.8;
-        }
-        50% {
-          r: 28;
-          opacity: 1;
-        }
-      }
-
-      @keyframes centerGlow {
-        0%,
-        100% {
-          opacity: 0.8;
-          filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
-        }
-        50% {
-          opacity: 1;
-          filter: drop-shadow(0 0 15px rgba(0, 240, 255, 1));
-        }
-      }
-
-      .loader-text {
-        font-family: "Orbitron", sans-serif;
-        font-size: 2rem;
-        font-weight: 900;
-        letter-spacing: 4px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .loading-word {
-        color: var(--accent);
-        text-shadow: 0 0 20px rgba(0, 240, 255, 0.8),
-          0 0 40px rgba(0, 240, 255, 0.4);
-        animation: textGlow 2s ease-in-out infinite;
-      }
-
-      @keyframes textGlow {
-        0%,
-        100% {
-          text-shadow: 0 0 15px rgba(0, 240, 255, 0.6),
-            0 0 30px rgba(0, 240, 255, 0.3);
-        }
-        50% {
-          text-shadow: 0 0 25px rgba(0, 240, 255, 1),
-            0 0 50px rgba(0, 240, 255, 0.6);
-        }
-      }
-
-      .loading-dots {
-        display: flex;
-        gap: 2px;
-      }
-
-      .loading-dots span {
-        color: var(--accent);
-        animation: dotBounce 1.5s ease-in-out infinite;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
-      }
-
-      .loading-dots span:nth-child(1) {
-        animation-delay: 0s;
-      }
-
-      .loading-dots span:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-
-      .loading-dots span:nth-child(3) {
-        animation-delay: 0.4s;
-      }
-
-      @keyframes dotBounce {
-        0%,
-        100% {
-          opacity: 0.3;
-          transform: translateY(0);
-        }
-        50% {
-          opacity: 1;
-          transform: translateY(-8px);
-        }
-      }
-
-      .loading-subtitle {
-        font-size: 0.9rem;
-        font-weight: 600;
-        letter-spacing: 2px;
-        color: var(--muted);
-        text-transform: uppercase;
-        opacity: 0.7;
-        animation: subtitleFade 2s ease-in-out infinite;
-      }
-
-      @keyframes subtitleFade {
-        0%,
-        100% {
-          opacity: 0.5;
-        }
-        50% {
-          opacity: 0.9;
-        }
-      }
-
-      @keyframes shakeFlash {
-        0%,
-        100% {
-          transform: translateX(0);
-          box-shadow: none;
-          border-color: rgba(0, 240, 255, 0.08);
-        }
-
-        10%,
-        30%,
-        50%,
-        70%,
-        90% {
-          transform: translateX(-4px);
-          box-shadow: 0 0 12px rgba(255, 60, 60, 0.7);
-          border-color: rgba(255, 100, 100, 0.6);
-        }
-
-        20%,
-        40%,
-        60%,
-        80% {
-          transform: translateX(4px);
-          box-shadow: 0 0 12px rgba(255, 60, 60, 0.7);
-          border-color: rgba(255, 100, 100, 0.6);
-        }
-      }
-
-      /* === CYBER POPUP: Set Time Modal === */
-      #timeModal {
-        position: fixed;
-        inset: 0;
-        display: none;
-        /* JS toggles this */
-        align-items: center;
-        justify-content: center;
-        z-index: 5000;
-        background: rgba(0, 10, 20, 0.8);
-        backdrop-filter: blur(10px);
-      }
-
-      #timeModal .modal-content {
-        background: linear-gradient(
-          180deg,
-          rgba(5, 15, 25, 0.96),
-          rgba(0, 10, 20, 0.9)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.2),
-          inset 0 0 12px rgba(0, 240, 255, 0.05);
-        padding: 20px 18px;
-        width: 340px;
-        max-width: 90%;
-        color: var(--text);
-        text-align: center;
-        animation: popupRise 0.28s ease-out;
-        transform: translateY(0);
-        font-family: "Orbitron", sans-serif;
-      }
-
-      @keyframes popupRise {
-        0% {
-          opacity: 0;
-          transform: translateY(18px) scale(0.98);
-        }
-
-        100% {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      #timeModal h3 {
-        font-size: 16px;
-        color: var(--accent);
-        margin: 0 0 10px 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7),
-          0 0 14px rgba(0, 240, 255, 0.4);
-      }
-
-      #timeModal .modal-subtitle {
-        font-size: 12px;
-        color: var(--muted);
-        margin-bottom: 14px;
-        letter-spacing: 0.5px;
-        text-transform: none;
-        font-family: "Inter", sans-serif;
-      }
-
-      #killTimeInput {
-        width: 100%;
-        margin-bottom: 14px;
-        padding: 10px 12px;
-        background: rgba(0, 240, 255, 0.04);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 8px;
-        color: var(--accent);
-        font-family: Consolas, monospace;
-        font-size: 13px;
-        text-align: center;
-        outline: none;
-        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.06);
-        transition: all 0.22s ease;
-      }
-
-      #killTimeInput:focus {
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.32),
-          inset 0 0 8px rgba(0, 240, 255, 0.18);
-        background: rgba(0, 240, 255, 0.08);
-        color: #fff;
-      }
-
-      #timeModal .actions {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 12px;
-      }
-
-      #timeModal .kbtn {
-        flex: 1;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        background: rgba(0, 240, 255, 0.08);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 8px;
-        color: var(--accent);
-        padding: 8px 10px;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.12);
-      }
-
-      #timeModal .kbtn:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.18),
-          rgba(125, 211, 252, 0.18)
-        );
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.38);
-        color: #fff;
-        transform: translateY(-1px);
-      }
-
-      #timeModal .kbtn:active {
-        transform: scale(0.98);
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
-      }
-
-      /* Mobile tweak */
-      @media (max-width: 420px) {
-        #timeModal .modal-content {
-          width: 92%;
-          padding: 14px;
-        }
-
-        #killTimeInput {
-          font-size: 14px;
-          padding: 10px;
-        }
-      }
-
-      .boss.shake {
-        animation: shakeFlash 1.2s ease-in-out;
-        z-index: 10;
-        position: relative;
-        transition: none !important;
-      }
-
-      /* === DEAD BOSS - ENHANCED CARD DESIGN === */
-      /* Entire boss card gets different styling when dead */
-      .boss:has(.name.dead) {
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.6),
-          rgba(0, 10, 20, 0.4)
-        ); /* same neutral background as alive bosses */
-        border-color: rgba(255, 68, 68, 0.4);
-        border-left-color: rgba(255, 0, 0, 0.6);
-        box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
-          inset 0 0 30px rgba(255, 68, 68, 0.05);
-        animation: deadCardPulse 3s ease-in-out infinite;
-      }
-
-      .boss:has(.name.dead)::after {
-        background: linear-gradient(
-          180deg,
-          transparent,
-          rgba(255, 68, 68, 0.4),
-          transparent
-        );
-        opacity: 0.8;
-      }
-
-      @keyframes deadCardPulse {
-        0%,
-        100% {
-          box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
-            inset 0 0 30px rgba(255, 68, 68, 0.05);
-        }
-        50% {
-          box-shadow: 0 0 30px rgba(255, 68, 68, 0.25),
-            inset 0 0 40px rgba(255, 68, 68, 0.1);
-        }
-      }
-
-      .boss:has(.name.dead):hover {
-        background: linear-gradient(
-          135deg,
-          rgba(60, 0, 0, 0.8),
-          rgba(30, 0, 15, 0.6)
-        );
-        border-color: rgba(255, 68, 68, 0.6);
-        box-shadow: 0 0 35px rgba(255, 68, 68, 0.3),
-          inset 0 0 45px rgba(255, 68, 68, 0.12);
-      }
-
-      /* Dead boss portrait gets red tint */
-      .boss:has(.name.dead) .boss-portrait {
-        border-color: rgba(255, 68, 68, 0.5);
-        filter: sepia(0.3) hue-rotate(-20deg) saturate(1.5);
-        box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
-      }
-
-      /* Dead boss name styling */
-      .boss .name.dead {
-        font-family: "Orbitron", sans-serif;
-        color: #ff5555;
-        font-weight: 900;
-        font-size: 0.95rem;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        text-shadow: 0 0 12px rgba(255, 68, 68, 0.8),
-          0 0 24px rgba(255, 0, 0, 0.5), 0 0 36px rgba(255, 0, 0, 0.3);
-        transition: all 0.4s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        position: relative;
-      }
-
-      /* Status badge */
-      .boss .name.dead::before {
-        content: "⚠️  RESPAWNING"; /* non-breaking space after ⚠️  */
-        position: absolute;
-        top: -18px;
-        left: 0;
-        display: inline-flex;
-        align-items: center;
-        white-space: nowrap; /* ensures symbol + text stay together */
-        font-size: 8px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        color: #ff8888;
-        background: rgba(255, 0, 0, 0.15);
-        padding: 2px 6px;
-        border-radius: 3px;
-        border: 1px solid rgba(255, 68, 68, 0.4);
-        box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
-        animation: badgeBlink 2s ease-in-out infinite;
-      }
-
-      @keyframes badgeBlink {
-        0%,
-        100% {
-          opacity: 0.8;
-        }
-        50% {
-          opacity: 1;
-        }
-      }
-
-      /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
-      .card-header {
-        font-family: "Orbitron", sans-serif;
-        font-size: clamp(13px, 2vw, 16px);
-        /* auto-scales for screen size */
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 35px;
-        position: relative;
-        overflow: hidden;
-        border-bottom: 0px solid rgba(0, 240, 255, 0.12);
-        padding: 8px 0;
-        text-shadow: 0 0 5px rgba(0, 240, 255, 0.4),
-          0 0 10px rgba(0, 240, 255, 0.2);
-        box-sizing: border-box;
-        margin: 0;
-        width: 100%;
-        /* no overflow */
-      }
-
-      /* --- Mobile refinement --- */
-      @media (max-width: 720px) {
-        .card-header {
-          font-size: 13px;
-          letter-spacing: 0.8px;
-          padding: 8px 4px;
-          min-height: 44px;
-          text-align: center;
-        }
-      }
-
-      .clear-icon {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        display: none;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1;
-        transition: color 0.2s ease;
-      }
-
-      .clear-icon:hover {
-        color: var(--accent);
-      }
-
-      /* === Custom Scrollbars for Boss List & Timers === */
-      #bossList::-webkit-scrollbar,
-      #timers::-webkit-scrollbar {
-        width: 10px;
-      }
-
-      #bossList::-webkit-scrollbar-track,
-      #timers::-webkit-scrollbar-track {
-        background: rgba(0, 20, 30, 0.3);
-        border-radius: 10px;
-        border: 1px solid rgba(0, 240, 255, 0.1);
-      }
-
-      #bossList::-webkit-scrollbar-thumb,
-      #timers::-webkit-scrollbar-thumb {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.4),
-          rgba(125, 211, 252, 0.4)
-        );
-        border-radius: 10px;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.3),
-          inset 0 0 4px rgba(0, 240, 255, 0.2);
-        transition: background 0.3s ease;
-      }
-
-      #bossList::-webkit-scrollbar-thumb:hover,
-      #timers::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.7),
-          rgba(125, 211, 252, 0.7)
-        );
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.6),
-          inset 0 0 6px rgba(0, 240, 255, 0.3);
-      }
-
-      /* Firefox scrollbar customization */
-      #bossList,
-      #timers {
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
-      }
-
-      /* --- Online Users Indicator --- */
-      .online-users {
-        position: fixed;
-        bottom: 14px;
-        right: 16px;
-        padding: 6px 10px;
-        font-family: Consolas, monospace;
-        font-size: 12px;
-        color: var(--accent);
-        background: rgba(0, 240, 255, 0.06);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 8px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        animation: fadeInUsers 0.5s ease-out;
-        z-index: 3000;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-      }
-
-      /* 🟢 Default icon */
-      .online-users::before {
-        content: "🟢";
-        margin-right: 4px;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-      }
-
-      /* 💬 replaces 🟢 when there's a new chat message */
-      .online-users.notify::before {
-        content: "🗨️";
-        color: #ff4d4d;
-        text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
-          0 0 12px rgba(255, 0, 0, 0.7), 0 0 18px rgba(255, 0, 0, 0.5);
-        animation: pulseNotify 1.4s infinite ease-in-out;
-      }
-
-      /* Count text (only number updates via JS) */
-      .online-users .count {
-        font-weight: 600;
-      }
-
-      /* Hover effect */
-      .online-users:hover {
-        box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
-        transform: translateY(-1px);
-      }
-
-      /* Fade-in animation */
-      @keyframes fadeInUsers {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* 💬 red pulse animation */
-      @keyframes pulseNotify {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 0.9;
-          text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
-            0 0 12px rgba(255, 0, 0, 0.7), 0 0 18px rgba(255, 0, 0, 0.5);
-        }
-        50% {
-          transform: scale(1.3);
-          opacity: 1;
-          text-shadow: 0 0 10px rgba(255, 100, 100, 1),
-            0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.5);
-        }
-      }
-
-      /* --- Tooltip: Softer Red Chat Bubble --- */
-      .online-users::after {
-        content: "";
-        position: absolute;
-        top: -36px; /* slightly higher */
-        right: 50%;
-        transform: translateX(50%);
-        background: transparent;
-        color: #fff;
-        font-size: 11px;
-        font-family: Consolas, monospace;
-        padding: 0;
-        border-radius: 0;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease, transform 0.3s ease;
-      }
-
-      /* Show tooltip when new message arrives */
-      .online-users.notify::after {
-        content: "New message";
-        position: absolute;
-        top: -36px;
-        right: 50%;
-        transform: translateX(50%) translateY(-3px);
-        background: rgba(255, 70, 70, 0.25); /* âœ¨ translucent red */
-        border: 1px solid rgba(255, 90, 90, 0.4);
-        backdrop-filter: blur(6px);
-        padding: 4px 9px;
-        border-radius: 14px;
-        box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
-          0 0 20px rgba(255, 0, 0, 0.2);
-        opacity: 1;
-        animation: tooltipPulse 1.4s infinite ease-in-out;
-      }
-
-      /* Chat bubble tail (now visible and glowy) */
-      .online-users.notify::after::before {
-        content: "";
-        position: absolute;
-        bottom: -6px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0;
-        height: 0;
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 6px solid rgba(255, 90, 90, 0.4);
-        filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.5));
-      }
-
-      /* Tooltip glow animation */
-      @keyframes tooltipPulse {
-        0%,
-        100% {
-          box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
-            0 0 18px rgba(255, 0, 0, 0.25);
-        }
-        50% {
-          box-shadow: 0 0 14px rgba(255, 100, 100, 0.5),
-            0 0 26px rgba(255, 0, 0, 0.35);
-        }
-      }
-
-      /* --- Chat Box Styling --- */
-      .chat-box {
-        position: fixed;
-        bottom: 50px;
-        right: 16px;
-        width: 300px;
-        height: 350px;
-        background: rgba(0, 10, 20, 0.95);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 10px;
-        box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
-        transform: translateY(120%);
-        opacity: 0;
-        transition: all 0.4s ease-in-out;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        z-index: 4000;
-        backdrop-filter: blur(8px);
-      }
-
-      /* Open animation */
-      .chat-box.active {
-        transform: translateY(0);
-        opacity: 1;
-        box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
-      }
-
-      /* Fully hidden (when minimized) */
-      .chat-box.hidden {
-        transform: translateY(160%);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.5s ease-in-out;
-      }
-
-      /* --- Chat Header --- */
-      .chat-header {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: "Orbitron", sans-serif;
-        background: rgba(0, 240, 255, 0.1);
-        color: var(--accent);
-        padding: 8px 10px;
-        text-align: center;
-        font-size: 14px;
-        letter-spacing: 1px;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.25);
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.5);
-        box-shadow: 0 2px 8px rgba(0, 240, 255, 0.1);
-      }
-
-      /* --- Minimize Button --- */
-      .chat-minimize-btn {
-        position: absolute;
-        right: 8px;
-        top: 4px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        color: var(--accent);
-        font-size: 16px;
-        line-height: 1;
-        cursor: pointer;
-        padding: 2px 6px;
-        border-radius: 6px;
-        transition: all 0.25s ease;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
-        backdrop-filter: blur(6px);
-      }
-
-      .chat-minimize-btn:hover {
-        color: #fff;
-        background: rgba(0, 240, 255, 0.15);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
-        transform: scale(1.1);
-      }
-
-      /* --- Messages --- */
-      .chat-messages {
-        flex: 1;
-        padding: 8px;
-        overflow-y: auto;
-        font-size: 12px;
-        line-height: 1.4;
-        color: var(--text);
-        scrollbar-width: thin;
-        scrollbar-color: rgba(0, 240, 255, 0.3) rgba(0, 240, 255, 0.05);
-      }
-
-      /* Custom scrollbar (Chrome / Edge / Safari) */
-      .chat-messages::-webkit-scrollbar {
-        width: 8px;
-      }
-      .chat-messages::-webkit-scrollbar-track {
-        background: rgba(0, 240, 255, 0.05);
-        border-radius: 10px;
-      }
-      .chat-messages::-webkit-scrollbar-thumb {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.5),
-          rgba(0, 180, 255, 0.8)
-        );
-        border-radius: 10px;
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-        transition: background 0.3s ease, box-shadow 0.3s ease;
-      }
-      .chat-messages::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 255, 255, 0.8),
-          rgba(0, 200, 255, 1)
-        );
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
-      }
-
-      /* --- Each Message --- */
-      .chat-message {
-        margin-bottom: 6px;
-        word-wrap: break-word;
-      }
-
-      /* --- Input Area --- */
-      .chat-input-area {
-        display: flex;
-        padding: 6px;
-        gap: 6px;
-        border-top: 1px solid rgba(0, 240, 255, 0.2);
-        background: rgba(0, 240, 255, 0.03);
-        backdrop-filter: blur(6px);
-      }
-
-      /* Input field */
-      .chat-input-area input {
-        flex: 1;
-        padding: 6px 8px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 6px;
-        color: var(--text);
-        outline: none;
-        transition: all 0.3s ease;
-      }
-      .chat-input-area input:focus {
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-        background: rgba(0, 240, 255, 0.08);
-      }
-
-      /* Send button */
-      .chat-input-area button {
-        background: rgba(0, 240, 255, 0.15);
-        border: 1px solid rgba(0, 240, 255, 0.4);
-        color: var(--accent);
-        border-radius: 6px;
-        cursor: pointer;
-        padding: 0 10px;
-        font-weight: 600;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
-        transition: all 0.25s ease;
-      }
-      .chat-input-area button:hover {
-        background: rgba(0, 240, 255, 0.3);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
-        color: #fff;
-        transform: translateY(-1px);
-      }
-
-      .name-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .portrait-meta {
-        display: flex;
-        align-items: flex-end;
-        gap: 10px;
-      }
-
-      .boss-portrait {
-        width: 48px;
-        height: 64px;
-        object-fit: cover;
-        border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .boss-portrait:hover {
-        transform: scale(1.3);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-      }
-
-      .info {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-
-      .actions {
-        display: grid;
-        grid-template-columns: auto auto;
-        align-items: center;
-        gap: 10px;
-        margin-top: 6px;
-      }
-
-      /* === ACTION BUTTONS - CYBER THEME === */
-      .action-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        flex: 0 0 auto;
-      }
-
-      .action-btn.hidden {
-        visibility: hidden;
-      }
-
-      .icon-btn {
-        position: relative;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.6),
-          rgba(0, 15, 25, 0.8)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-radius: 6px;
-        cursor: pointer;
-        padding: 8px;
-        color: var(--accent);
-        transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.1),
-          inset 0 0 15px rgba(0, 240, 255, 0.03);
-        overflow: hidden;
-      }
-
-      .icon-btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(0, 240, 255, 0.1),
-          transparent
-        );
-        transform: translateX(-100%);
-        transition: transform 0.5s ease;
-      }
-
-      .icon-btn:hover::before {
-        transform: translateX(100%);
-      }
-
-      .icon-btn:hover {
-        transform: translateY(-2px) scale(1.05);
-        border-color: var(--accent);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
-          inset 0 0 20px rgba(0, 240, 255, 0.1);
-        color: #fff;
-      }
-
-      .icon-btn:active {
-        transform: translateY(0) scale(1);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
-          inset 0 0 25px rgba(0, 240, 255, 0.15);
-      }
-
-      .icon-btn svg {
-        position: relative;
-        z-index: 1;
-        filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.3));
-      }
-
-      .icon-btn:hover svg {
-        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
-      }
-
-      /* Mark Dead Button - Red/Danger Colors */
-      .icon-btn[data-action="mark"]:hover {
-        border-color: rgba(255, 80, 80, 0.6);
-        box-shadow: 0 0 20px rgba(255, 80, 80, 0.4),
-          inset 0 0 20px rgba(255, 80, 80, 0.1);
-        color: #ff8888;
-      }
-
-      .icon-btn[data-action="mark"]:hover svg {
-        filter: drop-shadow(0 0 8px rgba(255, 80, 80, 0.6));
-      }
-
-      .icon-btn[data-action="mark"]::before {
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(255, 80, 80, 0.1),
-          transparent
-        );
-      }
-
-      /* Set Timer Button - Green/Success Colors */
-      .icon-btn[data-action="set"]:hover {
-        border-color: rgba(0, 255, 100, 0.6);
-        box-shadow: 0 0 20px rgba(0, 255, 100, 0.4),
-          inset 0 0 20px rgba(0, 255, 100, 0.1);
-        color: #88ff88;
-      }
-
-      .icon-btn[data-action="set"]:hover svg {
-        filter: drop-shadow(0 0 8px rgba(0, 255, 100, 0.6));
-      }
-
-      .icon-btn[data-action="set"]::before {
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(0, 255, 100, 0.1),
-          transparent
-        );
-      }
-
-      .icon-label {
-        font-family: "Orbitron", sans-serif;
-        font-size: 6px;
-        font-weight: 700;
-        opacity: 0.8;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        color: var(--accent);
-        text-shadow: 0 0 4px rgba(0, 240, 255, 0.3);
-        transition: all 0.3s ease;
-      }
-
-      .action-btn:hover .icon-label {
-        opacity: 1;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-        color: #fff;
       }
     </style>
   </head>
-
   <body>
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading...</div>
+    </div>
+
     <div class="container">
       <header class="app-header">
-        <div class="header-top">
-          <div class="app-title">
-            <div class="logo">
-              <img alt="logo" class="logo-img" src="assets/images/logo5.png" />
-            </div>
-            <div>
-              <div class="main-title">FIELD BOSS TIME TRACKER</div>
-              <div class="warning-text">FOR RICARDO01</div>
-            </div>
+        <div class="app-title">
+          <div class="logo">
+            <img
+              class="logo-img"
+              src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/logo5.png"
+              alt="Logo"
+            />
+          </div>
+          <div class="app-title-text">
+            <div class="main-title">Field Boss Time Tracker</div>
+            <div class="warning-text">for Ricardo01</div>
           </div>
         </div>
         <div class="header-controls">
-          <div class="search-wrapper" style="position: relative">
+          <div class="search-wrapper">
             <input
+              type="text"
               class="search"
-              id="bossSearch"
-              placeholder="Search boss..."
+              id="searchBox"
+              placeholder="Search boss name..."
             />
-            <span class="clear-icon" id="clearSearch"> ❌ </span>
+            <button class="search-clear" id="searchClear">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
           </div>
-          <button aria-label="Settings" class="settings" id="settingsBtn">
+          <button class="settings" id="settingsBtn">
             <span class="line"></span>
             <span class="line"></span>
             <span class="line"></span>
           </button>
         </div>
       </header>
-      <main class="main">
-        <section class="card" id="bossListPanel">
-          <h4 class="card-header">BOSS LIST</h4>
-          <div class="scrollable" id="bossList"></div>
-        </section>
-        <aside class="right-column">
-          <div class="card" id="nextBoss">
-            <div class="boss-name">Next Boss</div>
-            <div class="time-remaining" id="nextTime">â€” â€”</div>
-          </div>
-          <section class="card" id="timersPanel">
-            <h4 class="card-header">ACTIVE TIMERS</h4>
-            <div class="scrollable" id="timers"></div>
-          </section>
-        </aside>
-      </main>
-    </div>
-    <!-- Time modal (cyber-styled) -->
-    <div aria-hidden="true" id="timeModal">
-      <div
-        aria-labelledby="modalBossName"
-        aria-modal="true"
-        class="modal-content"
-        role="dialog"
-      >
-        <h3 id="modalBossName"></h3>
-        <div class="modal-subtitle">Set date and time of death</div>
-        <input id="killTimeInput" type="datetime-local" />
-        <div class="actions">
-          <button class="kbtn" id="cancelTimeBtn">Cancel</button>
-          <button class="kbtn" id="saveTimeBtn">Save</button>
+
+      <div class="main">
+        <div id="bossListPanel" class="card">
+          <div class="card-header">Boss List</div>
+          <div class="card-body" id="bossList"></div>
         </div>
-      </div>
-    </div>
-    <!-- Webhook modal â€” compact cyber panel -->
-    <div class="modal-backdrop" id="webhookModalBackdrop">
-      <div
-        aria-labelledby="webhookTitle"
-        aria-modal="true"
-        class="modal cyber-modal"
-        role="dialog"
-      >
-        <h3 id="webhookTitle">💬 Discord Webhook</h3>
-        <div class="small">Paste your Discord webhook URL below.</div>
-        <input
-          class="webhook-input"
-          id="webhookInput"
-          placeholder="Paste your Discord Webhook URL here."
-          type="text"
-        />
-        <div class="modal-actions">
-          <button class="cyber-btn" id="webhookSave">SAVE</button>
-          <button class="cyber-btn" id="webhookTest">TEST</button>
-          <button class="cyber-btn danger" id="webhookClear">CLEAR</button>
+
+        <div class="right-column">
+          <div id="nextBoss" class="card">
+            <div class="next-boss-name" id="nextBossName">—</div>
+            <div class="next-boss-time" id="nextTime">—</div>
+          </div>
+
+          <div id="timersPanel" class="card">
+            <div class="card-header">
+              <span>Active Timers</span>
+              <button class="sort-btn" id="sortBtn">Sort: Time</button>
+            </div>
+            <div class="card-body" id="timers"></div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="modal-backdrop" id="settingsModalBackdrop">
-      <div
-        aria-labelledby="settingsTitle"
-        aria-modal="true"
-        class="modal cyber-modal settings-modal"
-        role="dialog"
-      >
-        <h3 id="settingsTitle">⚙️ Settings</h3>
-        <div class="settings-list">
-          <button class="settings-item" id="exportBtn">
-            <span class="icon">📤</span>
-            <span class="label">Export JSON</span>
-          </button>
-          <button class="settings-item" id="importBtn">
-            <span class="icon">📥</span>
-            <span class="label">Import JSON</span>
-          </button>
-          <button class="settings-item" id="resetBtn">
-            <span class="icon">🗑️</span>
-            <span class="label">Reset Timers</span>
-          </button>
-          <button class="settings-item" id="syncBtn">
-            <span class="icon">🔄</span>
-            <span class="label">Synchronize Users</span>
-          </button>
-          <button class="settings-item" id="discordWebhookBtn">
-            <span class="icon">💬</span>
-            <span class="label">Discord Webhook URL</span>
-          </button>
+      <div class="modal">
+        <div class="modal-header">Settings</div>
+        <div class="modal-body">
+          <div class="modal-section">
+            <h3>Synchronization</h3>
+            <div class="modal-actions">
+              <button class="kbtn" id="syncBtn">Sync All Users</button>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Data Management</h3>
+            <div class="modal-actions">
+              <button class="kbtn" id="exportBtn">Export</button>
+              <button class="kbtn" id="importBtn">Import</button>
+              <button class="kbtn" id="resetBtn">Reset All</button>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <h3>Discord Webhook</h3>
+            <input
+              type="text"
+              class="modal-input"
+              id="webhookInput"
+              placeholder="Paste webhook URL..."
+            />
+            <div class="modal-actions">
+              <button class="kbtn" id="webhookSave">Save</button>
+              <button class="kbtn" id="webhookTest">Test</button>
+              <button class="kbtn" id="webhookClear">Clear</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div id="loadingOverlay" class="loading-overlay">
-      <div class="loading-container">
-        <div class="loading-hexagon">
-          <div class="hex-spinner">
-            <div class="hex-layer hex-1"></div>
-            <div class="hex-layer hex-2"></div>
-            <div class="hex-layer hex-3"></div>
+
+    <div class="modal-backdrop" id="timeModalBackdrop">
+      <div class="modal">
+        <div class="modal-header" id="timeModalTitle">Set Spawn Time</div>
+        <div class="modal-body">
+          <div class="modal-section">
+            <label class="time-picker-label">Select spawn date and time:</label>
+            <input
+              type="datetime-local"
+              class="datetime-input"
+              id="datetimeInput"
+            />
           </div>
-          <div class="loading-core">
-            <svg viewBox="0 0 100 100" class="core-icon">
-              <circle cx="50" cy="50" r="35" class="core-ring" />
-              <circle cx="50" cy="50" r="25" class="core-pulse" />
-              <circle cx="50" cy="50" r="15" class="core-center" />
-            </svg>
+          <div class="modal-actions">
+            <button class="kbtn" id="saveTimeBtn">Save</button>
+            <button class="kbtn" id="cancelTimeBtn">Cancel</button>
           </div>
         </div>
-        <div class="loader-text">
-          <span class="loading-word">LOADING</span>
-          <span class="loading-dots">
-            <span>.</span><span>.</span><span>.</span>
-          </span>
-        </div>
-        <div class="loading-subtitle">Initializing Boss Tracker</div>
+      </div>
+    </div>
+
+    <div id="chatBox" class="chat-box">
+      <div class="chat-header">
+        Chat
+        <button id="chatMinimize" class="chat-minimize-btn">−</button>
+      </div>
+      <div id="chatMessages" class="chat-messages"></div>
+      <div class="chat-input-area">
+        <input id="chatInput" type="text" placeholder="Type a message..." />
+        <button id="chatSend">Send</button>
       </div>
     </div>
 
     <script type="module">
-      // -------------------------
-      // Data + constants (FULL BOSSES)
-      // -------------------------
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDoc,
+        onSnapshot,
+        updateDoc,
+        deleteField,
+        runTransaction,
+        serverTimestamp,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        push,
+        onValue,
+        onDisconnect,
+        serverTimestamp as rtdbServerTimestamp,
+        get,
+        onChildAdded,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
+        authDomain: "lordnine-timer-9f21e.firebaseapp.com",
+        databaseURL:
+          "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "lordnine-timer-9f21e",
+        storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
+        messagingSenderId: "644000692891",
+        appId: "1:644000692891:web:224bca1478655a43c0243e",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const rtdb = getDatabase(app);
+
       const BOSSES = [
         { id: "Venatus", name: "Venatus", respawn: 60 * 60 * 10 },
         { id: "Viorent", name: "Viorent", respawn: 60 * 60 * 10 },
@@ -2836,228 +1266,121 @@
           id: "Benji",
           name: "Benji",
           weeklyRespawns: [{ day: 0, hour: 22, minute: 0 }],
-        },
-        //{ id: "Test Boss", name: "Test Boss", respawn: 60 * 5 + 10 },
+        }
       ];
-      // -------------------------
-      // DOM refs
-      // -------------------------
+
+      let timers = {};
+      let deadLocks = {};
+      let firebaseLoaded = false;
+      let cachedWebhookUrl = "";
+      let currentBossForTime = null;
+      let sortMode = "time"; // "time" or "name"
+
+      const loadingOverlay = document.getElementById("loadingOverlay");
       const bossListEl = document.getElementById("bossList");
       const timersEl = document.getElementById("timers");
-      const nextBossNameEl = document.querySelector("#nextBoss .boss-name");
+      const nextBossNameEl = document.getElementById("nextBossName");
       const nextTimeEl = document.getElementById("nextTime");
-      const searchInput = document.getElementById("bossSearch");
-      const clearSearch = document.getElementById("clearSearch");
-      const searchWrapper = document.querySelector(".search-wrapper");
-      const modal = document.getElementById("timeModal");
-      const modalName = document.getElementById("modalBossName");
-      const killTimeInput = document.getElementById("killTimeInput");
-      const cancelTimeBtn = document.getElementById("cancelTimeBtn");
-      const saveTimeBtn = document.getElementById("saveTimeBtn");
-      const loadingOverlay = document.getElementById("loadingOverlay");
+      const searchBox = document.getElementById("searchBox");
+      const searchClear = document.getElementById("searchClear");
       const settingsBtn = document.getElementById("settingsBtn");
       const settingsModalBackdrop = document.getElementById(
         "settingsModalBackdrop"
       );
-      const discordWebhookBtn = document.getElementById("discordWebhookBtn");
-      const webhookBackdrop = document.getElementById("webhookModalBackdrop");
+      const exportBtn = document.getElementById("exportBtn");
+      const importBtn = document.getElementById("importBtn");
+      const resetBtn = document.getElementById("resetBtn");
       const webhookInput = document.getElementById("webhookInput");
       const webhookSave = document.getElementById("webhookSave");
       const webhookTest = document.getElementById("webhookTest");
       const webhookClear = document.getElementById("webhookClear");
-
-      // -------------------------
-      // State
-      // -------------------------
-      let firebaseLoaded = false;
-      let cachedWebhookUrl = null;
-      let timers = {}; // { bossId: { endTime, startedAt, weekly?, notifiedSoon?, spawnAnnounced? } }
-      let currentBossForTime = null;
-      let deadLocks = {}; // in-memory map of boss cooldowns
-
-      // Dedup caches
-      const lastWriteCache = {}; // { bossId: lastJson }
-      const localNotifCache = {}; // { `${bossId}_${type}`: timestamp(ms) }
-
-      // -------------------------
-      // Helpers
-      // -------------------------
-      function sortActiveTimersSmoothly() {
-        const timersContainer = document.getElementById("timers");
-        if (!timersContainer) return;
-        const timerCards = Array.from(timersContainer.children);
-        timerCards.sort((a, b) => {
-          const aTime = parseInt(a.dataset.remaining || 0);
-          const bTime = parseInt(b.dataset.remaining || 0);
-          return aTime - bTime;
-        });
-        let changed = false;
-        for (let i = 0; i < timerCards.length; i++) {
-          if (timersContainer.children[i] !== timerCards[i]) {
-            changed = true;
-            break;
-          }
-        }
-        if (changed) {
-          const fragment = document.createDocumentFragment();
-          timerCards.forEach((card) => fragment.appendChild(card));
-          timersContainer.appendChild(fragment);
-        }
-      }
-
-      function formatSec(s) {
-        if (s <= 0) return "Spawned";
-        const d = Math.floor(s / 86400);
-        s %= 86400;
-        const h = Math.floor(s / 3600);
-        s %= 3600;
-        const m = Math.floor(s / 60);
-        const sec = Math.floor(s % 60);
-        if (d > 0)
-          return `${d}d ${String(h).padStart(2, "0")}h ${String(m).padStart(
-            2,
-            "0"
-          )}m`;
-        if (h > 0)
-          return `${String(h).padStart(2, "0")}h ${String(m).padStart(
-            2,
-            "0"
-          )}m`;
-        return `${String(m).padStart(2, "0")}m ${String(sec).padStart(
-          2,
-          "0"
-        )}s`;
-      }
-
-      function getNextWeeklyRespawn(respawns, fromTime = Date.now()) {
-        const now = new Date(fromTime);
-        let soonest = null;
-        for (const { day, hour, minute } of respawns) {
-          const t = new Date(now);
-          t.setHours(hour, minute, 0, 0);
-          const delta = (day + 7 - now.getDay()) % 7;
-          t.setDate(now.getDate() + delta);
-          if (t.getTime() <= now.getTime()) t.setDate(t.getDate() + 7);
-          if (!soonest || t.getTime() < soonest.getTime()) soonest = t;
-        }
-        return soonest ? soonest.getTime() : now.getTime();
-      }
-
-      // ✅ Import Firebase core and services
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-      import {
-        getFirestore,
-        doc,
-        setDoc,
-        getDoc,
-        updateDoc,
-        deleteDoc,
-        deleteField,
-        runTransaction,
-        onSnapshot,
-        serverTimestamp, // ✅ Firestore FieldValue server timestamp (used in dedupe transaction)
-      } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
-      import {
-        getDatabase,
-        ref,
-        onDisconnect,
-        onValue,
-        set,
-        push,
-        serverTimestamp as rtdbServerTimestamp,
-        onChildAdded,
-        get, // ✅ rename this one so you donâ€™t clash
-      } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-
-      // ✅ Initialize Firebase app
-      const firebaseConfig = {
-        apiKey: "AIzaSyD9n0a6rQbt_M3J51pIILf-Ticjbttc3eg",
-        authDomain: "lordnine-timer-9f21e.firebaseapp.com",
-        databaseURL:
-          "https://lordnine-timer-9f21e-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "lordnine-timer-9f21e",
-        storageBucket: "lordnine-timer-9f21e.firebasestorage.app",
-        messagingSenderId: "644000692891",
-        appId: "1:644000692891:web:224bca1478655a43c0243e",
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const rtdb = getDatabase(app);
-
-      // ✅ Firestore-based Global Synchronization
-      let lastTriggeredBySelf = null;
+      const timeModalBackdrop = document.getElementById("timeModalBackdrop");
+      const timeModalTitle = document.getElementById("timeModalTitle");
+      const datetimeInput = document.getElementById("datetimeInput");
+      const saveTimeBtn = document.getElementById("saveTimeBtn");
+      const cancelTimeBtn = document.getElementById("cancelTimeBtn");
+      const sortBtn = document.getElementById("sortBtn");
       const syncBtn = document.getElementById("syncBtn");
-      const refreshDocRef = doc(db, "meta", "refresh"); // Firestore doc for sync trigger
 
-      // --- Trigger Sync ---
-      syncBtn.addEventListener("click", async () => {
-        settingsModalBackdrop.style.display = "none";
-        if (
-          confirm(
-            "Synchronize all clients? This will reload every user's page."
-          )
-        ) {
-          const now = Date.now();
-          lastTriggeredBySelf = now;
-          await setDoc(refreshDocRef, { forceRefresh: now });
-          alert("✅ Synchronization triggered for all connected users.");
-          console.log("🔁 sync triggered at", new Date(now).toISOString());
-        }
-      });
-
-      // --- Auto-refresh on Firestore update ---
-      let hasInitialized = false;
-      onSnapshot(refreshDocRef, (snapshot) => {
-        const data = snapshot.data();
-        if (!data) return;
-        const lastTrigger = data.forceRefresh;
-        const lastTriggerMs =
-          lastTrigger && lastTrigger.toMillis
-            ? lastTrigger.toMillis()
-            : lastTrigger;
-
-        if (!hasInitialized) {
-          hasInitialized = true;
-          return;
-        }
-        if (lastTriggerMs === lastTriggeredBySelf) return;
-
-        console.log("ðŸ”„ Firestore refresh triggered, reloading page.");
-        location.reload();
-      });
-
-      // ✅ Safe Firestore write helper â€” ensures reliable merges
-      async function safeWrite(ref, payload) {
-        try {
-          await updateDoc(ref, payload);
-        } catch (err) {
-          console.warn("⚠️  updateDoc failed, retrying with setDoc merge", err);
-          await setDoc(ref, payload, { merge: true });
-        }
+      function formatTime(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const h = Math.floor(totalSec / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+        return `${h.toString().padStart(2, "0")}:${m
+          .toString()
+          .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
       }
 
-      // --- Load Discord webhook on startup (Firestore version) ---
-      async function autoLoadWebhook() {
-        try {
-          const docRef = doc(db, "config", "discordWebhook");
-          const snap = await getDoc(docRef);
-          if (snap.exists()) {
-            const data = snap.data();
-            cachedWebhookUrl = data.url || null;
-            console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
-          } else {
-            console.warn("⚠️  No webhook found in Firestore config.");
+      function formatTimeWithDays(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const days = Math.floor(totalSec / 86400);
+        const h = Math.floor((totalSec % 86400) / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+
+        if (days > 0) {
+          return `${days}d ${h.toString().padStart(2, "0")}:${m
+            .toString()
+            .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+        }
+        return `${h.toString().padStart(2, "0")}:${m
+          .toString()
+          .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+      }
+
+      function formatDateTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function getNextWeeklyRespawn(schedule, afterMs) {
+        const after = new Date(afterMs);
+        const candidates = [];
+        for (let offset = 0; offset < 14; offset++) {
+          for (const slot of schedule) {
+            const candidate = new Date(after);
+            candidate.setDate(after.getDate() + offset);
+            const dow = candidate.getDay();
+            const targetDow = slot.day % 7;
+            if (dow !== targetDow) continue;
+            candidate.setHours(slot.hour, slot.minute, 0, 0);
+            if (candidate.getTime() > afterMs)
+              candidates.push(candidate.getTime());
           }
+        }
+        return candidates.length ? Math.min(...candidates) : afterMs + 86400000;
+      }
+
+      async function saveTimers() {
+        if (!firebaseLoaded) return;
+        try {
+          const docRef = doc(db, "timers", "global");
+          await setDoc(docRef, { timers }, { merge: true });
         } catch (e) {
-          console.error("❌ Failed to auto-load webhook:", e);
+          console.error("Save error:", e);
         }
       }
 
-      // -------------------------
-      // Webhook load/save/clear
-      // -------------------------
+      async function saveWebhookToFirestore(url) {
+        try {
+          await setDoc(doc(db, "config", "discordWebhook"), { url });
+          cachedWebhookUrl = url;
+          webhookInput.value = url;
+          alert("✅ Webhook saved");
+          console.log("✅ Webhook saved to Firestore.");
+        } catch (e) {
+          console.warn("save webhook err", e);
+          alert("❌ Failed to save webhook");
+        }
+      }
+
       async function loadWebhookFromFirestore() {
         try {
           const docRef = doc(db, "config", "discordWebhook");
@@ -3071,7 +1394,7 @@
           } else {
             cachedWebhookUrl = null;
             webhookInput.value = "";
-            console.log("â„¹ No webhook stored in Firestore.");
+            console.log("ℹ No webhook stored in Firestore.");
             return null;
           }
         } catch (e) {
@@ -3080,55 +1403,88 @@
         }
       }
 
-      async function saveWebhookToFirestore(url) {
-        try {
-          await setDoc(doc(db, "config", "discordWebhook"), { url });
-          cachedWebhookUrl = url;
-          webhookInput.value = url;
-          alert("✅ Webhook saved.");
-          console.log("✅ Webhook saved to Firestore.");
-        } catch (e) {
-          console.warn("save webhook err", e);
-          alert("❌ Failed to save webhook.");
-        }
-      }
-
       async function clearWebhookInFirestore() {
         try {
-          await deleteDoc(doc(db, "config", "discordWebhook"));
+          await setDoc(doc(db, "config", "discordWebhook"), { url: "" });
           cachedWebhookUrl = null;
           webhookInput.value = "";
-          alert("✅ Webhook cleared.");
+          alert("✅ Webhook cleared");
           console.log("✅ Webhook cleared from Firestore.");
         } catch (e) {
           console.warn("clear webhook err", e);
-          alert("❌ Failed to clear webhook.");
+          alert("❌ Failed to clear webhook");
         }
       }
 
-      // -------------------------
-      // Discord send helpers
-      // -------------------------
-      async function sendDiscordEmbed(embed) {
-        const webhook =
-          cachedWebhookUrl ||
-          (webhookInput && webhookInput.value.trim()) ||
-          null;
+      async function testWebhook() {
+        if (!cachedWebhookUrl && !webhookInput.value.trim()) {
+          alert("No webhook URL configured.");
+          return;
+        }
+        if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
 
-        if (!webhook) {
-          console.warn("⚠️  No Discord webhook configured.");
+        const testBoss = BOSSES[0] || null;
+        await sendDiscordEmbed(
+          buildEmbed(
+            "🧪 Webhook test successful!",
+            "This is a test message from Lordnine Tracker.",
+            0x00ff99,
+            testBoss
+          )
+        );
+        alert("Test sent (check your Discord).");
+      }
+
+      async function autoLoadWebhook() {
+        try {
+          const docRef = doc(db, "config", "discordWebhook");
+          const snap = await getDoc(docRef);
+          if (snap.exists()) {
+            const data = snap.data();
+            cachedWebhookUrl = data.url || null;
+            console.log("✅ Webhook loaded on startup:", cachedWebhookUrl);
+          } else {
+            console.warn("⚠️ No webhook found in Firestore config.");
+          }
+        } catch (e) {
+          console.error("❌ Failed to auto-load webhook:", e);
+        }
+      }
+
+      function buildEmbed(title, description, colorHex, boss) {
+        const embed = {
+          title,
+          description,
+          color: colorHex,
+          footer: { text: "Lordnine Tracker" },
+          timestamp: new Date().toISOString(),
+        };
+
+        // Add boss image if boss object is provided
+        if (boss && boss.id) {
+          embed.thumbnail = {
+            url: `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`,
+            height: 300,
+            width: 300,
+          };
+        }
+
+        return embed;
+      }
+
+      async function sendDiscordEmbed(embed) {
+        if (!cachedWebhookUrl) {
+          console.warn("⚠️ No Discord webhook configured.");
           return;
         }
 
-        const mentionTarget = ""; // no @everyone by default
-
         try {
           const payload = {
-            content: mentionTarget,
+            content: "",
             embeds: [embed],
           };
 
-          const res = await fetch(webhook, {
+          const res = await fetch(cachedWebhookUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -3144,34 +1500,48 @@
             console.log("✅ Discord embed sent successfully.");
           }
         } catch (err) {
-          console.error("⚠️  Discord webhook error:", err);
+          console.error("⚠️ Discord webhook error:", err);
         }
       }
 
-      // === patched sendDiscordEmbedOnce: normalized key + endTimeMs dedupe ===
+      async function sendDiscordNotification(message) {
+        if (!cachedWebhookUrl) return;
+        try {
+          await fetch(cachedWebhookUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: message }),
+          });
+        } catch (e) {
+          console.error("Discord notification error:", e);
+        }
+      }
+
+      let localNotifCache = {}; // Local dedupe cache for Discord notifications
+
+      // Deduplicated Discord embed send with Firestore server-side tracking
       async function sendDiscordEmbedOnce(type, boss) {
         try {
           if (!boss || !type) return;
 
-          // 🔔 Normalize Firestore key (handles spaces, punctuation)
           const safeId = encodeURIComponent(boss.id.trim());
           const key = `${safeId}_${type}`;
 
           const now = Date.now();
           const localWindow = 2 * 60 * 1000; // 2 min client dedupe
 
-          // 🔔 Local dedupe guard (fast path)
+          // Local dedupe guard (fast path)
           if (
             localNotifCache[key] &&
             now - localNotifCache[key] < localWindow
           ) {
             console.log(
-              `ðŸ›‘ Locally skipped duplicate ${type} notification for ${boss.name}`
+              `🛑 Locally skipped duplicate ${type} notification for ${boss.name}`
             );
             return;
           }
 
-          // 🔒 Reserve locally
+          // Reserve locally
           localNotifCache[key] = now;
           console.log(`🔒 Local reserve set for ${key}`);
 
@@ -3197,7 +1567,7 @@
             const thisEndTimeMs = timers[boss.id]?.endTime || 0;
             const nowMs = Date.now();
 
-            // 🔔 Only skip if (a) last send < 2min ago AND (b) same spawn cycle
+            // Only skip if (a) last send < 2min ago AND (b) same spawn cycle
             const recentlySent =
               nowMs - lastSentMs < thresholdMs &&
               lastEndTimeMs === thisEndTimeMs;
@@ -3209,7 +1579,7 @@
               return false;
             }
 
-            // 🔔 Write both lastSent + lastEndTimeMs atomically
+            // Write both lastSent + lastEndTimeMs atomically
             tx.set(
               ref,
               {
@@ -3231,17 +1601,15 @@
             return;
           }
 
-          const formattedTime = formatShortDateTime(
-            txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()
-          );
+          const spawnUnix = Math.floor((txResult.endTimeMs || timers[boss.id]?.endTime || Date.now()) / 1000);
 
-          // 🔔 Build appropriate embed
+          // Build appropriate embed
           let embed;
           switch (type) {
             case "killed":
               embed = buildEmbed(
                 `💀 ${boss.name} has been defeated!`,
-                `Next respawn: ${formattedTime}`,
+                `Next respawn:\n<t:${spawnUnix}:f>`,
                 0xff3333,
                 boss
               );
@@ -3250,7 +1618,7 @@
             case "soon":
               embed = buildEmbed(
                 `⚠️ ${boss.name} will respawn soon!`,
-                `Spawn expected in 5 minutes.\nSpawn Time: ${formattedTime}`,
+                `Spawn expected in 5 minutes.\nSpawn time:\n<t:${spawnUnix}:f>`,
                 0xffcc00,
                 boss
               );
@@ -3259,7 +1627,7 @@
             case "spawn":
               embed = buildEmbed(
                 `⚔️ ${boss.name} has spawned!`,
-                `It’s time to hunt!`,
+                `It's time to hunt!`,
                 0xb266ff,
                 boss
               );
@@ -3267,8 +1635,8 @@
 
             case "manual":
               embed = buildEmbed(
-                `⏰ ${boss.name} manual time set`,
-                `Next respawn: ${formattedTime}`,
+                `⏰ ${boss.name} manual time set.`,
+                `Next respawn:\n<t:${spawnUnix}:f>`,
                 0x3399ff,
                 boss
               );
@@ -3279,311 +1647,114 @@
               return;
           }
 
-          // 🔔 Final Discord send
+          // Final Discord send
           await sendDiscordEmbed(embed);
           console.log(`✅ Sent ${type} notification for ${boss.name}`);
         } catch (e) {
           if (e?.code === "ABORTED") {
-            console.warn("â„¹ Transaction aborted (expected):", e);
+            console.warn("ℹ️ Transaction aborted (expected):", e);
             return;
           }
-          console.warn("⚠️  sendDiscordEmbedOnce error:", e);
-          delete localNotifCache[key]; // allow retry if failed
+          console.warn("⚠️ sendDiscordEmbedOnce error:", e);
+          const safeId = encodeURIComponent(boss.id.trim());
+          delete localNotifCache[`${safeId}_${type}`]; // allow retry if failed
         }
       }
 
-      function buildEmbed(title, description, colorHex, boss) {
-        const embed = {
-          title,
-          description,
-          color: colorHex,
-          footer: { text: "Lordnine Tracker" },
-          timestamp: new Date().toISOString(),
-        };
-
-        // Add boss image if boss object is provided
-        if (boss && boss.id) {
-          embed.thumbnail = {
-            url: `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`,
-            height: 300,
-            width: 300,
-          };
-        }
-
-        return embed;
-      }
-
-      async function testWebhook() {
-        if (!cachedWebhookUrl && !webhookInput.value.trim()) {
-          alert("No webhook URL configured.");
-          return;
-        }
-        if (!cachedWebhookUrl) cachedWebhookUrl = webhookInput.value.trim();
-        // Use the first boss for test image
-        const testBoss = BOSSES[0] || null;
-        await sendDiscordEmbed(
-          buildEmbed(
-            "🧪 Webhook test successful!",
-            "This is a test message from Lord Nine Tracker.",
-            0x00ff99,
-            testBoss
-          )
-        );
-        alert("Test sent (check your Discord).");
-      }
-
-      // -------------------------
-      // Firestore save dedupe helpers
-      // -------------------------
-      async function saveTimersToFirestore() {
-        try {
-          await setDoc(
-            doc(db, "timers", "global"),
-            { timers },
-            { merge: true }
-          );
-          console.log("✅ saveTimersToFirestore: saved timers document.");
-        } catch (e) {
-          console.warn("saveTimersToFirestore err", e);
-        }
-      }
-
-      // Save or update a single boss timer in Firestore safely, with dedupe
-      async function saveTimerToFirestoreOnce(bossId) {
-        try {
-          const ref = doc(db, "timers", "global");
-          const data = timers[bossId];
-          const json = JSON.stringify(data || {});
-          if (lastWriteCache[bossId] === json) {
-            console.log(`â„¹ Skipping redundant write for ${bossId}`);
-            return;
-          }
-          lastWriteCache[bossId] = json;
-          await safeWrite(ref, { [`timers.${bossId}`]: data });
-          console.log(`✅ saveTimerToFirestoreOnce: wrote timer for ${bossId}`);
-        } catch (e) {
-          console.warn("saveTimerToFirestoreOnce err", e);
-        }
-      }
-
-      async function saveTimers() {
-        try {
-          await saveTimersToFirestore();
-        } catch (e) {
-          console.warn("saveTimers err", e);
-        }
-      }
-
-      // -------------------------
-      // Actions: start / clear / reset
-      // -------------------------
-      async function startTimer(bossId) {
-        const boss = BOSSES.find((b) => b.id === bossId);
+      async function markDead(id) {
+        const boss = BOSSES.find((b) => b.id === id);
         if (!boss) return;
+
         const now = Date.now();
         let endTime;
+
         if (boss.weeklyRespawns) {
-          endTime = getNextWeeklyRespawn(boss.weeklyRespawns);
-          timers[bossId] = {
-            endTime,
-            startedAt: now,
-            weekly: true,
-            notifiedSoon: false,
-            spawnAnnounced: false,
-          };
-        } else {
+          endTime = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
+        } else if (boss.respawn) {
           endTime = now + boss.respawn * 1000;
-          timers[bossId] = {
-            endTime,
-            startedAt: now,
-            notifiedSoon: false,
-            spawnAnnounced: false,
-          };
         }
 
-        // deduped write
-        await saveTimerToFirestoreOnce(bossId);
-        addOrUpdateTimerElement(bossId);
-        renderBossList();
+        timers[id] = {
+          endTime,
+          startedAt: now,
+          notifiedSoon: false,
+          spawnAnnounced: false,
+          cooldownUntil: now + 5000,
+          weekly: !!boss.weeklyRespawns,
+        };
 
-        console.log(
-          `ðŸ•¹ startTimer: started ${bossId} -> ${new Date(
-            timers[bossId].endTime
-          ).toISOString()}`
+        saveTimers();
+        rebuildTimersPanel();
+        renderBossList();
+        computeNextBoss();
+
+        setDoc(
+          doc(db, "meta", "deadLocks"),
+          { [id]: now + 5000 },
+          { merge: true }
         );
 
-        // send killed embed (deduped)
+        // Send Discord embed notification (deduplicated)
         await sendDiscordEmbedOnce("killed", boss);
       }
 
-      async function clearTimer(bossId) {
-        const boss = BOSSES.find((b) => b.id === bossId);
-        const ref = doc(db, "timers", "global");
+      function openTimeModal(id) {
+        const boss = BOSSES.find((b) => b.id === id);
+        if (!boss) return;
 
-        if (!timers[bossId]) {
-          console.log(`â„¹ No timer to clear for ${boss?.name || bossId}.`);
-          return;
-        }
+        currentBossForTime = id;
+        timeModalTitle.textContent = `Set Time: ${boss.name}`;
 
-        delete timers[bossId]; // remove locally
+        // Set default to current time
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(now - offset).toISOString().slice(0, 16);
+        datetimeInput.value = localISOTime;
 
-        try {
-          // Ensure the document exists first
-          const snap = await getDoc(ref);
-          if (!snap.exists()) {
-            console.warn(
-              "⚠️  timers/global did not exist. Creating it first..."
-            );
-            await setDoc(ref, { timers: {} }, { merge: true });
-          }
-
-          // ✅ Delete nested key with updateDoc and field path
-          await updateDoc(ref, { [`timers.${bossId}`]: deleteField() });
-
-          console.log(`✅ clearTimer: removed ${bossId} from Firestore.`);
-        } catch (err) {
-          console.error("❌ Firestore delete failed for", bossId, err);
-          alert("Failed to clear timer in Firestore. Please retry.");
-        }
-
-        // Update UI
-        removeTimerElement(bossId);
-        renderBossList();
-
-        console.log(
-          `ðŸ§¹ Cleared timer for ${boss?.name || bossId} locally and remotely.`
-        );
+        timeModalBackdrop.style.display = "flex";
       }
 
-      async function resetAll() {
-        if (!confirm("Clear all non-weekly timers?")) return;
-        const preserved = {};
-        for (const [id, info] of Object.entries(timers)) {
-          const boss = BOSSES.find((b) => b.id === id);
-          if (boss && boss.weeklyRespawns) preserved[id] = info;
-        }
-        timers = preserved;
-
+      async function cancelTimer(id) {
         try {
-          await setDoc(doc(db, "timers", "global"), { timers }); // overwrite entire timers doc
+          // Delete directly from Firebase using updateDoc with field deletion
+          const docRef = doc(db, "timers", "global");
+          const updateData = {};
+          updateData[`timers.${id}`] = deleteField();
+          await updateDoc(docRef, updateData);
+
+          // Remove from local state
+          delete timers[id];
           rebuildTimersPanel();
           renderBossList();
-          alert("✅ All non-weekly timers reset (Firestore updated).");
-          console.log("🔁 resetAll: fully reset timers and updated Firestore.");
+          computeNextBoss();
         } catch (e) {
-          console.warn("❌ resetAll Firestore update failed", e);
-          alert("⚠️  Failed to update Firestore.");
+          console.error("Failed to delete timer from Firebase:", e);
+          alert("❌ Failed to delete timer");
         }
       }
 
-      // -------------------------
-      // Modal for manual time
-      // -------------------------
-      function openTimeModal(bossId) {
-        const boss = BOSSES.find((b) => b.id === bossId);
-        if (!boss) return;
-        currentBossForTime = boss;
-        modalName.textContent = boss.name;
-        killTimeInput.value = "";
-        modal.style.display = "flex";
+      function resetAll() {
+        timers = {};
+        saveTimers();
+        rebuildTimersPanel();
+        renderBossList();
+        computeNextBoss();
       }
 
-      function closeTimeModal() {
-        modal.style.display = "none";
-        currentBossForTime = null;
-      }
-
-      cancelTimeBtn.addEventListener("click", closeTimeModal);
-
-      saveTimeBtn.addEventListener("click", async () => {
-        const input = killTimeInput.value;
-        if (!input || !currentBossForTime) return;
-
-        const parsed = new Date(input);
-        if (isNaN(parsed)) {
-          alert("Invalid date format.");
-          return;
-        }
-
-        const killedAt = parsed.getTime();
-        const boss = currentBossForTime;
-        let endTime;
-
-        // ✅ Calculate respawn
-        if (boss.weeklyRespawns) {
-          endTime = getNextWeeklyRespawn(boss.weeklyRespawns, killedAt + 1000);
-          while (endTime <= killedAt) endTime += 7 * 24 * 60 * 60 * 1000;
-          timers[boss.id] = {
-            endTime,
-            startedAt: killedAt,
-            weekly: true,
-            notifiedSoon: false,
-            spawnAnnounced: false,
-          };
-        } else {
-          endTime = killedAt + boss.respawn * 1000;
-          timers[boss.id] = {
-            endTime,
-            startedAt: killedAt,
-            notifiedSoon: false,
-            spawnAnnounced: false,
-          };
-        }
-
-        try {
-          // ✅ Ensure webhook is loaded before use
-          if (!cachedWebhookUrl) await autoLoadWebhook();
-
-          const ref = doc(db, "timers", "global");
-
-          // ✅ Correct Firestore structure
-          await setDoc(
-            ref,
-            { timers: { [boss.id]: timers[boss.id] } },
-            { merge: true }
-          );
-
-          console.log(`✅ Firestore updated: ${boss.name} manual time saved.`);
-
-          // ✅ Update local UI
-          closeTimeModal();
-          addOrUpdateTimerElement(boss.id);
-          renderBossList();
-
-          // ✅ Send Discord notification (manual entry always sends)
-          const formattedTime = formatShortDateTime(endTime);
-          const embed = buildEmbed(
-            `⏰ ${boss.name} manual time set`,
-            `Next respawn: ${formattedTime}`,
-            0x3399ff,
-            boss
-          );
-          await sendDiscordEmbedOnce("manual", boss);
-
-          console.log(`ðŸ“¡ Discord notification sent for ${boss.name}.`);
-          alert(`✅ Manual time saved and synced for ${boss.name}.`);
-        } catch (err) {
-          console.error("❌ Failed to record manual time:", err);
-          alert(
-            "❌ Failed to record manual time to Firestore. Check console for details."
-          );
-        }
-      });
-
-      // -------------------------
-      // Render functions
-      // -------------------------
       function renderBossList() {
+        const query = searchBox.value.toLowerCase();
         bossListEl.innerHTML = "";
-        const q = (searchInput.value || "").toLowerCase().trim();
 
-        for (const b of BOSSES) {
-          const isWeekly = !!b.weeklyRespawns;
-          const isActive = timers[b.id] && timers[b.id].endTime > Date.now();
-          if (q && !b.name.toLowerCase().includes(q)) continue;
+        BOSSES.filter((b) => b.name.toLowerCase().includes(query)).forEach(
+          (boss) => {
+            const hasTimer = timers[boss.id];
+            const isWeekly = !!boss.weeklyRespawns;
+            const div = document.createElement("div");
+            div.className = "boss";
 
-          const subText = isWeekly
-            ? b.weeklyRespawns
+            let subText = "";
+            if (boss.weeklyRespawns) {
+              subText = boss.weeklyRespawns
                 .map(
                   (r) =>
                     ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][r.day] +
@@ -3592,327 +1763,211 @@
                     ":" +
                     String(r.minute).padStart(2, "0")
                 )
-                .join(", ")
-            : b.respawn / 3600 + " hr";
+                .join(", ");
+            } else if (boss.respawn) {
+              subText = `${boss.respawn / 3600} hr`;
+            }
 
-          const node = document.createElement("div");
-          node.className = "boss";
+            const imageUrl = `https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${boss.id}.png`;
 
-          const nameClass = isActive ? "name dead" : "name";
-
-          node.innerHTML = `
-					<div class="meta">
-						<div class="portrait-meta">
-							<img class="boss-portrait" src="assets/images/${b.id}.png" alt="${b.name}">
-							<div class="info">
-								<div class="${nameClass}">${b.name}</div>
-								<div class="sub">${subText}</div>
-							</div>
-						</div>
-					</div>
-					<div class="actions">
-					<div class="action-btn ${isWeekly ? "hidden" : ""}">
-					<button class="kbtn icon-btn" title="Manual Set" data-action="set" data-id="${
-            b.id
-          }">
-					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="12" cy="12" r="10"></circle>
-					<polyline points="12 6 12 12 16 14"></polyline>
-					</svg>
-					</button>
-					<div class="icon-label">Manual</div>
-					</div>
-
-					<div class="action-btn">
-					 <button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${
-             b.id
-           }">
-					 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M12 2C7 2 3 6 3 11c0 3 2 6 5 7v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c3-1 5-4 5-7 0-5-4-9-9-9z"></path>
-					<circle cx="9" cy="11" r="1"></circle>
-					<circle cx="15" cy="11" r="1"></circle>
-					</svg>
-					</button>
-					<div class="icon-label">Killed</div>
-					</div>
-					</div>
-					`;
-
-          bossListEl.appendChild(node);
-        }
-      }
-
-      // === Unified Boss List Click Handler with atomic deadlock attempt ===
-      bossListEl.addEventListener("click", async (e) => {
-        const btn = e.target.closest(".kbtn");
-        if (!btn) return;
-
-        // Prevent click event from bubbling to parent boss card
-        e.stopPropagation();
-
-        const action = btn.getAttribute("data-action");
-        const id = btn.getAttribute("data-id");
-        if (!id) return;
-
-        if (action === "mark") {
-          const now = Date.now();
-          const lockDuration = 60 * 1000; // 1 minute
-          const lockUntil = now + lockDuration;
-
-          // Immediate visual disable to give feedback
-          btn.disabled = true;
-          console.log(
-            `ðŸ”˜ mark clicked: attempting lock for ${id} (local visual disabled)`
-          );
-
-          try {
-            // Try atomic transaction to set lock only if not locked
-            const locked = await runTransaction(db, async (tx) => {
-              const snap = await tx.get(deadLockRef);
-              const data = snap.exists() ? snap.data() : {};
-              const existing = data[id] || 0;
-              const tsNow = Date.now();
-
-              if (existing && existing > tsNow) {
-                // someone else holds lock
-                return false;
+            let buttons = "";
+            if (isWeekly) {
+              // Weekly boss: only Killed button
+              buttons = `
+              <button class="kbtn" data-action="mark" data-id="${boss.id}">
+                <svg class="kbtn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+                <span class="kbtn-text">Killed</span>
+              </button>`;
+            } else {
+              // Non-weekly boss: Killed, Set buttons, and Cancel only if timer exists
+              buttons = `
+              <button class="kbtn" data-action="mark" data-id="${boss.id}">
+                <svg class="kbtn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+                <span class="kbtn-text">Killed</span>
+              </button>`;
+              buttons += `
+              <button class="kbtn" data-action="set" data-id="${boss.id}">
+                <svg class="kbtn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="kbtn-text">Set</span>
+              </button>`;
+              if (hasTimer) {
+                buttons += `
+                <button class="kbtn" data-action="cancel" data-id="${boss.id}">
+                  <svg class="kbtn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                  <span class="kbtn-text">Cancel</span>
+                </button>`;
               }
-              // set lock
-              tx.set(deadLockRef, { [id]: lockUntil }, { merge: true });
-              return true;
-            });
-
-            if (!locked) {
-              // lock lost to another client: re-enable and warn
-              console.warn(
-                `â›” markDead: failed to acquire lock for ${id} â€” another user locked it.`
-              );
-              // refresh deadLocks on next snapshot will correct disabled state, but re-enable for good UX
-              btn.disabled = false;
-              return;
             }
 
-            // We acquired lock: update local memory immediately and disable all mark buttons for this boss
-            deadLocks[id] = lockUntil;
-            document
-              .querySelectorAll(`.kbtn[data-id="${id}"][data-action="mark"]`)
-              .forEach((b) => (b.disabled = true));
-            console.log(
-              `🔒 Acquired lock for ${id} until ${new Date(
-                lockUntil
-              ).toISOString()}`
-            );
-
-            // Animate the boss card
-            const card = btn.closest(".boss");
-            if (card) {
-              card.classList.add("shake");
-              card.addEventListener(
-                "animationend",
-                () => card.classList.remove("shake"),
-                { once: true }
-              );
-            }
-
-            // Start the timer (this writes timer and triggers Discord send)
-            await startTimer(id);
-          } catch (err) {
-            console.error("⚠️  Error during mark dead transaction:", err);
-            btn.disabled = false;
-          }
-          return;
-        }
-
-        if (action === "set") {
-          openTimeModal(id);
-        }
-      });
-
-      // Safer, locale-aware short datetime formatter
-      function formatShortDateTime(ms) {
-        const d = new Date(ms);
-        const options = {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        };
-        const formatted = d.toLocaleString("en-US", options);
-        return formatted
-          .replace(/\s{2,}/g, " ")
-          .replace(/\s*,\s*/g, ", ")
-          .trim();
-      }
-
-      function addOrUpdateTimerElement(bossId) {
-        const boss = BOSSES.find((b) => b.id === bossId);
-        if (!boss) return;
-
-        const info = timers[bossId];
-        if (!info || !info.endTime) {
-          return;
-        }
-
-        const existing = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
-        const remainingSec = Math.max(
-          0,
-          Math.round((info.endTime - Date.now()) / 1000)
-        );
-        const spawnStr = formatShortDateTime(info.endTime);
-
-        if (existing) {
-          existing.dataset.remaining = String(remainingSec);
-          const nameEl = existing.querySelector(".timer-name");
-          const remainEl = existing.querySelector(".timer-remaining");
-          const spawnEl = existing.querySelector(".timer-spawn");
-
-          if (nameEl) nameEl.textContent = boss.name;
-          if (remainEl) remainEl.textContent = formatSec(remainingSec);
-          if (spawnEl) spawnEl.textContent = spawnStr;
-          if (remainingSec === 0) existing.classList.add("ready");
-          else existing.classList.remove("ready");
-        } else {
-          const node = document.createElement("div");
-          node.className = "timer";
-          node.dataset.id = bossId;
-          node.dataset.remaining = String(remainingSec);
-          node.innerHTML = `
-          <div class="timer-left">
-            <div class="timer-name">${boss.name}</div>
-            <div class="timer-spawn">🔄 SPAWN TIME: ${spawnStr}</div>
-          </div>
-          <div class="timer-right">
-            <div class="timer-remaining">${formatSec(remainingSec)}</div>
-            <div class="timer-actions">
-              <button class="kbtn clear-timer-btn" data-id="${bossId}">Delete</button>
+            div.innerHTML = `
+            <div class="boss-background" style="background-image: url('${imageUrl}');"></div>
+            <div class="boss-overlay"></div>
+            <div class="boss-content">
+              <div class="boss-info">
+                <div class="name">${boss.name}</div>
+                <div class="sub">${subText}</div>
+              </div>
+              <div class="boss-actions">
+                ${buttons}
+              </div>
             </div>
-          </div>
-        `;
-          if (remainingSec === 0) node.classList.add("ready");
-          timersEl.appendChild(node);
+          `;
 
-          // attach clear handler specifically for this timer's clear button
-          node.querySelectorAll(".clear-timer-btn").forEach((btn) => {
-            btn.addEventListener("click", async (e) => {
-              const bid = e.currentTarget.getAttribute("data-id");
-              if (bid) await clearTimer(bid);
+            div.querySelectorAll(".kbtn").forEach((btn) => {
+              const action = btn.getAttribute("data-action");
+              const id = btn.getAttribute("data-id");
+              if (action === "mark") {
+                btn.addEventListener("click", () => markDead(id));
+              } else if (action === "set") {
+                btn.addEventListener("click", () => openTimeModal(id));
+              } else if (action === "cancel") {
+                btn.addEventListener("click", () => cancelTimer(id));
+              }
             });
-          });
-        }
+
+            bossListEl.appendChild(div);
+          }
+        );
       }
 
-      function removeTimerElement(bossId) {
-        const el = timersEl.querySelector(`.timer[data-id="${bossId}"]`);
-        if (el) el.remove();
+      function updateTimerRemaining(timerElement) {
+        const remainingEl = timerElement.querySelector(".timer-remaining");
+        if (!remainingEl) return;
+
+        const endTime = parseInt(timerElement.getAttribute("data-end-time"));
+        const remaining = Math.max(0, endTime - Date.now());
+        remainingEl.textContent = `Remaining: ${formatTimeWithDays(remaining)}`;
       }
 
       function rebuildTimersPanel() {
         timersEl.innerHTML = "";
-        const entries = Object.entries(timers)
-          .map(([id, info]) => ({
-            id,
-            info,
-            boss: BOSSES.find((b) => b.id === id),
-          }))
-          .filter((x) => x.boss)
-          .sort((a, b) => a.info.endTime - b.info.endTime);
-        for (const e of entries) addOrUpdateTimerElement(e.id);
-        console.log("🔁 rebuildTimersPanel: timers rendered.");
-      }
-
-      // -------------------------
-      // Compute next boss helper
-      // -------------------------
-      function computeNextBoss() {
-        const upcoming = Object.entries(timers)
-          .map(([id, info]) => ({
-            id,
-            endTime: info.endTime,
-            boss: BOSSES.find((b) => b.id === id),
-          }))
-          .filter((x) => x.boss)
-          .sort((a, b) => a.endTime - b.endTime);
-
-        if (upcoming.length === 0) {
-          nextBossNameEl.textContent = "Next Boss: â€”";
-          nextTimeEl.textContent = "â€”";
-          return;
-        }
-
-        const soon = upcoming[0];
         const now = Date.now();
-        const remainingMs = Math.max(0, soon.endTime - now);
-        const totalSeconds = Math.floor(remainingMs / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = Math.floor(totalSeconds % 60);
 
-        nextBossNameEl.textContent = `${soon.boss.name}`;
-        nextTimeEl.textContent = `${String(hours).padStart(2, "0")}:${String(
-          minutes
-        ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        let timerArray = Object.keys(timers)
+          .map((id) => {
+            const boss = BOSSES.find((b) => b.id === id);
+            const info = timers[id];
+            return { id, boss, info };
+          })
+          .filter((t) => t.boss);
 
-        // Auto-resize next boss name if it overflows
-        adjustNextBossNameSize();
+        // Sort
+        if (sortMode === "time") {
+          timerArray.sort((a, b) => {
+            const timeA = a.info.cooldownUntil || a.info.endTime;
+            const timeB = b.info.cooldownUntil || b.info.endTime;
+            return timeA - timeB;
+          });
+        } else {
+          timerArray.sort((a, b) => a.boss.name.localeCompare(b.boss.name));
+        }
+
+        timerArray.forEach(({ id, boss, info }) => {
+          const remaining = Math.max(0, info.endTime - now);
+          const isReady = remaining === 0;
+          const isCooldown = info.cooldownUntil && now < info.cooldownUntil;
+
+          const div = document.createElement("div");
+          div.className = "timer" + (isReady ? " ready" : "");
+          div.setAttribute("data-id", id);
+          div.setAttribute("data-end-time", info.endTime);
+
+          div.innerHTML = `
+            <div class="timer-header">
+              <div class="timer-name">${boss.name}</div>
+            </div>
+            <div class="timer-spawn">Spawns: ${formatDateTime(
+              info.endTime
+            )}</div>
+            <div class="timer-remaining">Remaining: ${formatTimeWithDays(remaining)}</div>
+          `;
+
+          // Add hover listeners for live countdown
+          div.addEventListener("mouseenter", () => {
+            updateTimerRemaining(div);
+            div.timerInterval = setInterval(() => updateTimerRemaining(div), 1000);
+          });
+
+          div.addEventListener("mouseleave", () => {
+            if (div.timerInterval) clearInterval(div.timerInterval);
+          });
+
+          timersEl.appendChild(div);
+        });
+
+        if (timersEl.children.length === 0) {
+          timersEl.innerHTML =
+            '<div style="text-align: center; color: var(--text-dim); padding: 20px;">No active timers</div>';
+        }
       }
 
-      function adjustNextBossNameSize() {
-        const nextBoss = document.getElementById("nextBoss");
-        if (!nextBoss) return;
+      let nextBoss = null;
+      let nextBossTime = Infinity;
+      let nextBossIsCooldown = false;
 
-        const nameEl = nextBoss.querySelector(".boss-name");
-        if (!nameEl) return;
+      function computeNextBoss() {
+        const now = Date.now();
+        nextBoss = null;
+        nextBossTime = Infinity;
+        nextBossIsCooldown = false;
 
-        // Reset to default size
-        nameEl.style.fontSize = "1.8rem";
-        nameEl.style.letterSpacing = "1.5px";
+        Object.keys(timers).forEach((id) => {
+          const info = timers[id];
 
-        let fontSize = 1.8;
-        const minFontSize = 0.9;
-        const step = 0.1;
+          // Determine the target end time (cooldown or regular timer)
+          const targetTime = info.cooldownUntil || info.endTime;
 
-        // Reduce font size until text fits within the next boss panel
-        while (fontSize > minFontSize) {
-          nameEl.style.fontSize = fontSize + "rem";
-
-          // Check if name is overflowing
-          if (nameEl.scrollWidth <= nextBoss.clientWidth - 40) {
-            // 40px padding buffer
-            break;
+          // Find the soonest ending timer (including cooldowns)
+          if (targetTime < nextBossTime && targetTime > now) {
+            nextBossTime = targetTime;
+            nextBoss = BOSSES.find((b) => b.id === id);
+            nextBossIsCooldown = !!info.cooldownUntil; // Mark if it's a cooldown
           }
+        });
 
-          fontSize -= step;
-        }
-
-        // If still overflowing, reduce letter-spacing
-        if (
-          fontSize <= minFontSize &&
-          nameEl.scrollWidth > nextBoss.clientWidth - 40
-        ) {
-          nameEl.style.letterSpacing = "0.5px";
+        if (nextBoss) {
+          nextBossNameEl.textContent = nextBoss.name;
+          updateNextBossTime();
+        } else {
+          nextBossNameEl.textContent = "No active timers";
+          nextTimeEl.textContent = "";
         }
       }
 
-      // == MAIN TICKUPDATE == //
+      function updateNextBossTime() {
+        if (!nextBoss || nextBossTime === Infinity) return;
+        const remaining = Math.max(0, nextBossTime - Date.now());
+        nextTimeEl.textContent = nextBossIsCooldown
+          ? "SPAWNED"
+          : formatTimeWithDays(remaining);
+      }
+
       async function tickUpdate() {
         const now = Date.now();
-        const savePromises = [];
+        let hasChanges = false;
 
         for (const [id, info] of Object.entries(timers)) {
           const boss = BOSSES.find((b) => b.id === id);
           if (!boss) continue;
 
-          // ðŸ‘‡ Determine current phase (active timer vs cooldown)
+          // Determine current phase (active timer vs cooldown)
           const activeEndTime = info.cooldownUntil || info.endTime;
           const remainingMs = activeEndTime - now;
 
           const bossCard = document.querySelector(`.boss[data-id="${id}"]`);
           const nameElem = bossCard?.querySelector(".name");
 
-          // --- (0) Handle cooldown visuals & skip logic during cooldown ---
+          // (0) Handle cooldown visuals & skip logic during cooldown
           if (info.cooldownUntil && now < info.cooldownUntil) {
             // Ensure boss name shows alive look (no .dead)
             if (nameElem && nameElem.classList.contains("dead")) {
@@ -3921,60 +1976,52 @@
             continue; // Skip further processing while cooldown active
           }
 
-          // --- (1) Apply .dead automatically when timer is running ---
+          // (1) Apply .dead automatically when timer is running
           if (remainingMs > 0 && !info.cooldownUntil) {
             if (nameElem && !nameElem.classList.contains("dead")) {
               nameElem.classList.add("dead");
             }
           }
 
-          // --- (2) Soon warning (5 minutes before spawn) ---
+          // (2) Soon warning (5 minutes before spawn)
           if (
             remainingMs <= 5 * 60 * 1000 &&
             remainingMs > 0 &&
             !info.notifiedSoon &&
             !info.cooldownUntil
           ) {
-            console.log(`⚠️  soon: ${id} within 5min, preparing notification`);
             info.notifiedSoon = true;
-            savePromises.push(saveTimerToFirestoreOnce(id));
-            savePromises.push(
-              (async () => await sendDiscordEmbedOnce("soon", boss))()
-            );
+            await sendDiscordEmbedOnce("soon", boss);
           }
 
-          // --- (3) Spawn announcement when timer reaches 0 ---
+          // (3) Spawn announcement when timer reaches 0
           if (remainingMs <= 0 && !info.spawnAnnounced && !info.cooldownUntil) {
-            console.log(`🎉 spawn: ${id} reached spawn, announcing`);
             info.spawnAnnounced = true;
-            savePromises.push(saveTimerToFirestoreOnce(id));
-            savePromises.push(
-              (async () => await sendDiscordEmbedOnce("spawn", boss))()
-            );
+            await sendDiscordEmbedOnce("spawn", boss);
           }
 
-          // --- (4) Start 3-minute cooldown when reaching 0 ---
+          // (4) Start 3-minute cooldown when reaching 0
           if (remainingMs <= 0 && !info.cooldownUntil) {
-          info.cooldownUntil = now + 3 * 60 * 1000;
-          console.log(
-          `⏳ ${boss.name} entering 3-minute cooldown until ${new Date(
-          info.cooldownUntil
-          ).toLocaleTimeString()}`
-          );
+            info.cooldownUntil = now + 3 * 60 * 1000;
+            hasChanges = true;
+            console.log(
+              `⏳ ${boss.name} entering 3-minute cooldown until ${new Date(
+                info.cooldownUntil
+              ).toLocaleTimeString()}`
+            );
 
-            // 🟢 Visual: back to normal white glow during cooldown
+            // Visual: back to normal appearance during cooldown
             if (nameElem) nameElem.classList.remove("dead");
 
-            // 💾 Save cooldown state to Firestore
-            savePromises.push(saveTimerToFirestoreOnce(id));
+            // Save cooldown state
+            await saveTimers();
             continue;
           }
 
-          // --- (5) Cooldown ended â€” restart timer automatically ---
+          // (5) Cooldown ended – restart timer automatically
           if (info.cooldownUntil && now >= info.cooldownUntil) {
-            console.log(
-              `✅ ${boss.name} cooldown ended â€” restarting cycle...`
-            );
+            console.log(`✅ ${boss.name} cooldown ended – restarting cycle...`);
+            hasChanges = true;
 
             const nowLater = Date.now();
             let nextTime;
@@ -3989,7 +2036,7 @@
               nextTime = nowLater + boss.respawn * 1000;
             }
 
-            // â™» Reset timer and clear cooldown
+            // Reset timer and clear cooldown
             timers[id] = {
               endTime: nextTime,
               startedAt: nowLater,
@@ -4004,8 +2051,8 @@
               nameElem.classList.add("dead");
             }
 
-            await saveTimerToFirestoreOnce(id);
-            addOrUpdateTimerElement(id);
+            await saveTimers();
+            rebuildTimersPanel();
             renderBossList();
 
             console.log(`🔁 ${boss.name} timer restarted after cooldown.`);
@@ -4013,116 +2060,102 @@
           }
         }
 
-        // --- (6) Commit pending Firestore writes ---
-        if (savePromises.length) {
-          try {
-            await Promise.all(savePromises);
-            console.log(
-              `💾 tickUpdate: completed ${savePromises.length} save ops`
-            );
-          } catch (e) {
-            console.warn("⚠️  tickUpdate savePromises error", e);
-          }
-        }
-
-        // --- (7) Update UI layout ---
-        computeNextBoss();
-        sortActiveTimersSmoothly();
-      }
-
-      // Optional lightweight visual update every second (no Firestore writes)
-      function updateCountdownDisplay() {
-        const now = Date.now();
-        for (const [bossId, info] of Object.entries(timers)) {
-          const el = document.querySelector(`.timer[data-id="${bossId}"]`);
-          if (!el || !info?.endTime) continue;
-          const remainingSec = Math.max(
-            0,
-            Math.round((info.endTime - now) / 1000)
-          );
-          const timeSpan = el.querySelector(".timer-remaining");
-          if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
-          el.dataset.remaining = String(remainingSec);
-          if (remainingSec === 0) el.classList.add("ready");
-          else el.classList.remove("ready");
+        // Only update UI if there were actual state changes
+        if (hasChanges) {
+          computeNextBoss();
+          rebuildTimersPanel();
         }
       }
 
-      // fast visual refresh (every 1s, no Firestore writes)
-      setInterval(updateCountdownDisplay, 1000);
+      // Run tickUpdate every 1 second
+      setInterval(() => tickUpdate(), 1000);
 
-      // slower background sync + notifications (every 1s)
-      setInterval(() => {
-        if (firebaseLoaded) tickUpdate();
-      }, 1000);
+      // Update next boss countdown every 100ms for smooth display without flickering
+      setInterval(() => updateNextBossTime(), 100);
 
-      // -------------------------
-      // UI wiring
-      // -------------------------
-      // Function to update clear button visibility
-      const updateClearButtonVisibility = () => {
-        const hasText = !!searchInput.value;
-        clearSearch.style.display = hasText ? "inline" : "none";
-        document
-          .querySelector(".search-wrapper")
-          ?.classList.toggle("has-text", hasText);
-      };
+      // Search functionality
+      function updateSearchClearButton() {
+        if (searchBox.value.trim()) {
+          searchClear.classList.add("visible");
+        } else {
+          searchClear.classList.remove("visible");
+        }
+      }
 
-      searchInput.addEventListener("input", () => {
+      searchBox.addEventListener("input", () => {
         renderBossList();
-        updateClearButtonVisibility();
+        updateSearchClearButton();
       });
 
-      // Keep clear button visible on focus/blur if text exists
-      searchInput.addEventListener("focus", () => {
-        updateClearButtonVisibility();
-      });
-
-      searchInput.addEventListener("blur", () => {
-        updateClearButtonVisibility();
-      });
-
-      clearSearch.addEventListener("click", () => {
-        searchInput.value = "";
-        document.querySelector(".search-wrapper")?.classList.remove("has-text");
-        updateClearButtonVisibility();
+      searchClear.addEventListener("click", () => {
+        searchBox.value = "";
         renderBossList();
+        updateSearchClearButton();
+        searchBox.focus();
       });
 
-      // Initialize on page load
-      updateClearButtonVisibility();
-
-      // === SETTINGS BUTTON + MODAL TOGGLE ===
-      settingsBtn.addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        settingsModalBackdrop.style.display = "flex";
-        console.log(`⚙️ settings modal opened`);
+      sortBtn.addEventListener("click", () => {
+        sortMode = sortMode === "time" ? "name" : "time";
+        sortBtn.textContent = `Sort: ${sortMode === "time" ? "Time" : "Name"}`;
+        rebuildTimersPanel();
       });
 
-      settingsModalBackdrop.addEventListener("click", (ev) => {
-        if (ev.target === settingsModalBackdrop)
-          settingsModalBackdrop.style.display = "none";
-      });
-
-      discordWebhookBtn.addEventListener("click", async (e) => {
-        e.stopPropagation();
-        settingsModalBackdrop.style.display = "none";
+      settingsBtn.addEventListener("click", async () => {
         await loadWebhookFromFirestore();
-        webhookBackdrop.style.display = "flex";
-        console.log("ðŸ”§ open webhook modal");
+        settingsModalBackdrop.style.display = "flex";
       });
 
-      webhookBackdrop.addEventListener("click", (ev) => {
-        if (ev.target === webhookBackdrop)
-          webhookBackdrop.style.display = "none";
+      settingsModalBackdrop.addEventListener("click", (e) => {
+        if (e.target === settingsModalBackdrop) {
+          settingsModalBackdrop.style.display = "none";
+        }
       });
 
-      const exportBtn = document.getElementById("exportBtn");
-      const importBtn = document.getElementById("importBtn");
-      const resetBtn = document.getElementById("resetBtn");
+      timeModalBackdrop.addEventListener("click", (e) => {
+        if (e.target === timeModalBackdrop) {
+          timeModalBackdrop.style.display = "none";
+        }
+      });
+
+      saveTimeBtn.addEventListener("click", async () => {
+        if (!currentBossForTime || !datetimeInput.value) return;
+
+        const boss = BOSSES.find((b) => b.id === currentBossForTime);
+        if (!boss) return;
+
+        const selectedTime = new Date(datetimeInput.value).getTime();
+        const now = Date.now();
+
+        timers[currentBossForTime] = {
+          endTime: selectedTime,
+          startedAt: now,
+          notifiedSoon: false,
+          spawnAnnounced: false,
+          cooldownUntil: null,
+          weekly: false,
+        };
+
+        saveTimers();
+        rebuildTimersPanel();
+        renderBossList();
+        computeNextBoss();
+        timeModalBackdrop.style.display = "none";
+
+        setDoc(
+          doc(db, "meta", "deadLocks"),
+          { [currentBossForTime]: now + 5000 },
+          { merge: true }
+        );
+
+        // Send Discord embed notification (deduplicated)
+        await sendDiscordEmbedOnce("manual", boss);
+      });
+
+      cancelTimeBtn.addEventListener("click", () => {
+        timeModalBackdrop.style.display = "none";
+      });
 
       exportBtn.addEventListener("click", () => {
-        settingsModalBackdrop.style.display = "none";
         try {
           const blob = new Blob([JSON.stringify(timers, null, 2)], {
             type: "application/json",
@@ -4135,10 +2168,9 @@
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
-          alert("✅ Timers exported successfully.");
-          console.log("ðŸ“¤ Exported timers.json");
+          alert("✅ Timers exported successfully");
         } catch (e) {
-          alert("❌ Failed to export timers.");
+          alert("❌ Failed to export timers");
         }
       });
 
@@ -4162,11 +2194,10 @@
               await saveTimers();
               rebuildTimersPanel();
               renderBossList();
-              alert("✅ Timers imported successfully.");
-              console.log("ðŸ“¥ Imported timers from file.");
+              alert("✅ Timers imported successfully");
             }
           } catch (e) {
-            alert("❌ Invalid JSON file.");
+            alert("❌ Invalid JSON file");
           }
         };
         input.click();
@@ -4177,7 +2208,6 @@
         if (confirm("Are you sure you want to reset all timers?")) resetAll();
       });
 
-      // ✅ Firestore document for lock management
       const deadLockRef = doc(db, "meta", "deadLocks");
       onSnapshot(deadLockRef, (snapshot) => {
         const data = snapshot.data() || {};
@@ -4191,11 +2221,8 @@
             const lockedUntil = deadLocks[bossId] || 0;
             btn.disabled = now < lockedUntil;
           });
-
-        console.log("🔔 deadLocks updated from Firestore:", deadLocks);
       });
 
-      // Periodically re-check (every 10s)
       setInterval(() => {
         const now = Date.now();
         document
@@ -4226,13 +2253,49 @@
         await clearWebhookInFirestore();
       });
 
-      // -------------------------
-      // Init sequence
-      // -------------------------
+      // Sync functionality
+      let lastTriggeredBySelf = null;
+      const refreshDocRef = doc(db, "meta", "refresh");
+
+      syncBtn.addEventListener("click", async () => {
+        settingsModalBackdrop.style.display = "none";
+        if (
+          confirm(
+            "Synchronize all clients? This will reload every user's page."
+          )
+        ) {
+          const now = Date.now();
+          lastTriggeredBySelf = now;
+          await setDoc(refreshDocRef, { forceRefresh: now });
+          alert("✅ Synchronization triggered for all connected users.");
+          console.log("🔁 Sync triggered at", new Date(now).toISOString());
+        }
+      });
+
+      // Auto-refresh on Firestore update
+      let hasInitialized = false;
+      onSnapshot(refreshDocRef, (snapshot) => {
+        const data = snapshot.data();
+        if (!data) return;
+        const lastTrigger = data.forceRefresh;
+        const lastTriggerMs =
+          lastTrigger && lastTrigger.toMillis
+            ? lastTrigger.toMillis()
+            : lastTrigger;
+
+        if (!hasInitialized) {
+          hasInitialized = true;
+          return;
+        }
+        if (lastTriggerMs === lastTriggeredBySelf) return;
+
+        console.log("🔄 Firestore refresh triggered, reloading page.");
+        location.reload();
+      });
+
       async function init() {
         loadingOverlay.style.display = "flex";
 
-        // ✅ Wait until the DOM is fully loaded
         await new Promise((resolve) => {
           if (
             document.readyState === "complete" ||
@@ -4251,14 +2314,9 @@
         nextTimeEl.textContent = "";
 
         try {
-          // ✅ Firestore real-time listener (safe merge that respects cooldowns)
           const docRef = doc(db, "timers", "global");
           onSnapshot(docRef, async (snap) => {
-            // ✅ Auto-create if the timers document doesnâ€™t exist
             if (!snap.exists()) {
-              console.log(
-                "â„¹ No Firestore timers document found. Creating empty one..."
-              );
               await setDoc(docRef, { timers: {} }, { merge: true });
               return;
             }
@@ -4266,43 +2324,16 @@
             const remoteTimers = snap.data().timers || {};
             const now = Date.now();
 
-            // 🔒 Merge remote timers into local safely
-            for (const [id, remoteInfo] of Object.entries(remoteTimers)) {
-              const localInfo = timers[id] || {};
-              const boss = BOSSES.find((b) => b.id === id);
-              if (!boss) continue;
-
-              // ✅ If local cooldown is active, keep it â€” donâ€™t overwrite
-              if (localInfo.cooldownUntil && localInfo.cooldownUntil > now) {
-                console.log(
-                  `⏸️ ${boss.name} in local cooldown â€” preserving local timer.`
-                );
-                remoteTimers[id] = {
-                  ...remoteInfo,
-                  cooldownUntil: localInfo.cooldownUntil,
-                };
-                continue;
-              }
-
-              // ✅ If remote has cooldown, preserve it too
-              if (remoteInfo.cooldownUntil && remoteInfo.cooldownUntil > now) {
-                console.log(`💾 ${boss.name} cooldown synced from Firestore.`);
-              }
-            }
-
+            // Use Firebase as source of truth - just update local state from remote
             timers = remoteTimers;
-
             rebuildTimersPanel();
             renderBossList();
             computeNextBoss();
-
-            console.log("ðŸ”„ Timers merged from Firestore:", timers);
           });
         } catch (e) {
           console.warn("Firestore load failed", e);
         }
 
-        // ✅ Normalize expired timers so everything is forward-looking (safe version)
         const now = Date.now();
         let timersChanged = false;
 
@@ -4310,15 +2341,8 @@
           const boss = BOSSES.find((b) => b.id === id);
           if (!boss || !info || !info.endTime) continue;
 
-          // ðŸš« Skip normalization if cooldown is active
-          if (info.cooldownUntil && info.cooldownUntil > now) {
-            console.log(
-              `⏸️ ${boss.name} still in cooldown â€” skipping normalization.`
-            );
-            continue;
-          }
+          if (info.cooldownUntil && info.cooldownUntil > now) continue;
 
-          // ðŸ§­ Normal advance logic for expired timers only
           if (info.endTime <= now) {
             if (boss.weeklyRespawns) {
               const next = getNextWeeklyRespawn(boss.weeklyRespawns, now + 1);
@@ -4331,7 +2355,6 @@
                 cooldownUntil: null,
               };
               timersChanged = true;
-              console.log(`ðŸ§­ ${boss.name} normalized to next weekly cycle.`);
             } else if (boss.respawn) {
               const respMs = boss.respawn * 1000;
               const cycles = Math.floor((now - info.endTime) / respMs) + 1;
@@ -4344,24 +2367,18 @@
                 cooldownUntil: null,
               };
               timersChanged = true;
-              console.log(
-                `ðŸ§­ ${boss.name} normalized to next respawn cycle.`
-              );
             }
           }
         }
 
-        // ✅ Save normalized timers if any changed
         if (timersChanged) {
           try {
             await saveTimers();
-            console.log("🔁 Timers normalized and saved after init.");
           } catch (err) {
-            console.error("❌ Failed to save normalized timers:", err);
+            console.error("Failed to save normalized timers:", err);
           }
         }
 
-        // ✅ Ensure Discord webhook is ready before any future notification
         await autoLoadWebhook();
 
         firebaseLoaded = true;
@@ -4369,19 +2386,15 @@
         rebuildTimersPanel();
         computeNextBoss();
         loadingOverlay.style.display = "none";
-
-        console.log("✅ init completed successfully.");
       }
 
       window.addEventListener("load", () => init());
 
-      // ✅ Online presence tracking (Realtime Database)
       const presenceRef = ref(rtdb, "presence");
       const myConnection = push(presenceRef);
       set(myConnection, { connected: true, timestamp: rtdbServerTimestamp() });
       onDisconnect(myConnection).remove();
 
-      // ✅ Create or update the online users badge (🟢 icon now handled by CSS)
       onValue(presenceRef, (snap) => {
         const count = snap.size || snap.numChildren();
         let el = document.getElementById("onlineCount");
@@ -4390,7 +2403,6 @@
           el = document.createElement("div");
           el.id = "onlineCount";
           el.classList.add("online-users");
-          // 🟢 icon handled via CSS ::before â€” only insert count span here
           el.innerHTML = `<span class="count">${count}</span>`;
           document.body.appendChild(el);
         } else {
@@ -4401,87 +2413,43 @@
         }
       });
 
-      // === GLOBAL CHAT FUNCTIONALITY ===
       const chatBox = document.getElementById("chatBox");
       const chatMessages = document.getElementById("chatMessages");
       const chatInput = document.getElementById("chatInput");
       const chatSend = document.getElementById("chatSend");
       const chatMinimize = document.getElementById("chatMinimize");
 
-      let lastSeenTimestamp = 0; // used to detect truly new messages
+      let lastSeenTimestamp = 0;
       let initialLoadComplete = false;
 
-      // ðŸ§  Generate random boss-based username (new each reload)
       function generateRandomUsername() {
         const prefixes = [
-          "The",
           "Dark",
-          "Crimson",
-          "Iron",
           "Shadow",
-          "Arcane",
-          "Silent",
-          "Ancient",
-          "Eternal",
-          "Solar",
-          "Lunar",
+          "Iron",
           "Neon",
-          "Fallen",
           "Cyber",
           "Storm",
-          "Infernal",
-          "Frozen",
-          "Radiant",
-          "Cursed",
-          "Sacred",
           "Phantom",
-          "Celestial",
-          "Venomous",
-          "Emerald",
-          "Golden",
-          "Azure",
-          "Scarlet",
-          "Mystic",
-          "Quantum",
-          "Obsidian",
-          "Violet",
-          "Titan",
-          "Echo",
-          "Prime",
-          "Nova",
-          "Omega",
-          "Spectral",
-          "Astral",
-          "Dire",
           "Eclipse",
-          "Wraith",
-          "Void",
-          "Ironclad",
-          "Lucent",
-          "Abyssal",
         ];
-
         const boss = BOSSES[Math.floor(Math.random() * BOSSES.length)];
         const prefix =
           Math.random() < 0.8
             ? prefixes[Math.floor(Math.random() * prefixes.length)] + " "
             : "";
-
         return prefix + boss.name;
       }
 
       const localUserName = generateRandomUsername();
 
-      // ✅ Wait until #onlineCount exists (created dynamically by Firebase)
       function attachChatToggle() {
         const onlineUsers = document.getElementById("onlineCount");
         if (!onlineUsers) return setTimeout(attachChatToggle, 300);
 
         onlineUsers.style.cursor = "pointer";
 
-        // Clicking the online counter toggles chat open/close
         onlineUsers.addEventListener("click", () => {
-          // If hidden (minimized), show it again
           if (chatBox.classList.contains("hidden")) {
             chatBox.classList.remove("hidden");
             chatBox.classList.add("active");
@@ -4490,17 +2458,14 @@
 
           chatBox.classList.toggle("active");
 
-          // ðŸ”• Clear notification + tooltip when chat opens
           if (chatBox.classList.contains("active")) {
             onlineUsers.classList.remove("notify");
             lastSeenTimestamp = Date.now();
-            onlineUsers.style.transition = "all 0.3s ease";
           }
         });
       }
       attachChatToggle();
 
-      // === Minimize Button Functionality ===
       if (chatMinimize) {
         chatMinimize.addEventListener("click", () => {
           chatBox.classList.add("hidden");
@@ -4508,10 +2473,8 @@
         });
       }
 
-      // Reference to chat messages in Firebase
       const chatRef = ref(rtdb, "globalChat");
 
-      // âœ‰ Send message
       chatSend.addEventListener("click", sendMessage);
       chatInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") sendMessage();
@@ -4523,23 +2486,19 @@
 
         push(chatRef, { name: localUserName, text, timestamp: Date.now() });
         chatInput.value = "";
-
-        // Update last seen when user sends (so they donâ€™t get notified of their own)
         lastSeenTimestamp = Date.now();
       }
 
-      // 🎨 Generate a consistent glowing color per username
       function getUserColor(name) {
-        if (name === localUserName) return "hsl(180, 80%, 70%)"; // your color: cyan-blue glow
+        if (name === localUserName) return "hsl(180, 80%, 70%)";
         let hash = 0;
         for (let i = 0; i < name.length; i++) {
           hash = name.charCodeAt(i) + ((hash << 5) - hash);
         }
         const hue = Math.abs(hash) % 360;
-        return `hsl(${hue}, 70%, 70%)`; // others: soft rainbow hues
+        return `hsl(${hue}, 70%, 70%)`;
       }
 
-      // 💬 Detect last message before user loads (to prevent false notifications)
       get(chatRef).then((snapshot) => {
         if (snapshot.exists()) {
           let latest = 0;
@@ -4552,7 +2511,6 @@
         initialLoadComplete = true;
       });
 
-      // 💬 Listen for incoming messages
       onChildAdded(chatRef, (snapshot) => {
         const data = snapshot.val();
         const msgEl = document.createElement("div");
@@ -4579,19 +2537,13 @@
         chatMessages.appendChild(msgEl);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        // Ignore notifications before initial load
         if (!initialLoadComplete) return;
-
-        // Only notify for messages newer than last seen
         if (data.timestamp <= lastSeenTimestamp) return;
 
-        // 🔔 Show visual notification & tooltip if chat is closed
         const onlineUsers = document.getElementById("onlineCount");
         if (onlineUsers && !chatBox.classList.contains("active")) {
           if (!onlineUsers.classList.contains("notify")) {
             onlineUsers.classList.add("notify");
-
-            // small bounce animation
             onlineUsers.animate(
               [
                 { transform: "translateY(0)" },
@@ -4604,25 +2556,9 @@
         }
       });
 
-      // Auto-refresh the page every 5 minutes
       setTimeout(() => {
         location.reload();
-      }, 300000); // 300,000 ms = 5 minutes
+      }, 300000);
     </script>
-
-    <!-- Chat Box (hidden by default) -->
-    <div id="chatBox" class="chat-box">
-      <div class="chat-header">
-        SERVER CHAT
-        <button id="chatMinimize" class="chat-minimize-btn">−</button>
-      </div>
-
-      <div id="chatMessages" class="chat-messages"></div>
-
-      <div class="chat-input-area">
-        <input id="chatInput" type="text" placeholder="Type a message..." />
-        <button id="chatSend">Send</button>
-      </div>
-    </div>
   </body>
 </html>
