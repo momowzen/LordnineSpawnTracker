@@ -3,29 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width,initial-scale=1" name="viewport" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;900&amp;display=swap"
-      rel="stylesheet"
-    />
+
     <title>LORDNINE TIME TRACKER</title>
     <link
-      href="assets/images/logo5.png"
+      href="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/logo5.png"
       rel="icon"
       sizes="64x64"
       type="image/png"
     />
     <style>
       :root {
-        --bg: #07101a;
-        --muted: #9aa6b2;
-        --accent: #00f0ff;
-        --accent-2: #7dd3fc;
-        --glass: rgba(255, 255, 255, 0.03);
-        --radius: 10px;
-        --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
-        --glass-border: rgba(0, 240, 255, 0.08);
-        --text: #dff7ff;
-      }
+         --bg: #050f1a;
+         --muted: #9aa6b2;
+         --accent: #00f0ff;
+         --accent-2: #7dd3fc;
+         --glass: rgba(255, 255, 255, 0.03);
+         --radius: 10px;
+         --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
+         --glass-border: rgba(0, 240, 255, 0.08);
+         --text: #dff7ff;
+       }
 
       * {
         box-sizing: border-box;
@@ -53,27 +50,21 @@
         gap: 12px;
       }
 
-      /* === HEADER CONTAINER - CYBER THEME === */
+      /* === HEADER CONTAINER - DARK MINIMAL === */
       header.app-header {
         flex: 0 0 auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.8),
-          rgba(0, 15, 25, 0.9)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-top: 2px solid rgba(0, 240, 255, 0.5);
+        background: #0a0a0a;
+        border: 1px solid #2a2a2a;
         padding: 10px 16px;
-        border-radius: 8px;
-        box-shadow: 0 0 30px rgba(0, 240, 255, 0.15),
-          inset 0 0 40px rgba(0, 240, 255, 0.03);
-        backdrop-filter: blur(10px);
+        border-radius: 4px;
+        box-shadow: none;
+        backdrop-filter: none;
         box-sizing: border-box;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
       }
 
       /* === HEADER TOP ROW (Logo + Title + Settings) === */
@@ -86,45 +77,12 @@
 
       /* Animated scan line across header */
       header.app-header::before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          rgba(0, 240, 255, 0.8),
-          transparent
-        );
-        animation: headerScan 5s linear infinite;
-      }
-
-      @keyframes headerScan {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
+        display: none;
       }
 
       /* Corner accents */
       header.app-header::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 80px;
-        height: 80px;
-        background: radial-gradient(
-          circle at top right,
-          rgba(0, 240, 255, 0.1),
-          transparent 70%
-        );
-        pointer-events: none;
+        display: none;
       }
 
       /* === APP TITLE GROUP (logo + text) === */
@@ -133,7 +91,7 @@
         align-items: center; /* centers logo + text vertically */
         gap: 10px;
         font-weight: 700;
-        color: var(--accent);
+        color: #cccccc;
       }
 
       /* === LOGO WRAPPER === */
@@ -151,64 +109,26 @@
         display: block;
         object-fit: contain;
         margin: 0;
-        animation: logoPulse 3s ease-in-out infinite;
-      }
-
-      /* === Logo pulse animation === */
-      @keyframes logoPulse {
-        0%,
-        100% {
-          transform: scale(1);
-          filter: brightness(1);
-        }
-        50% {
-          transform: scale(1.1);
-          filter: brightness(1.3);
-        }
+        animation: none;
       }
 
       /* === MAIN TITLE (Refined Techy HUD Style, aligned & continuous) === */
       .main-title {
-        font-size: 16px;
-        font-family: "Orbitron", sans-serif;
+        font-size: 20px;
+        font-family: Inter, "Segoe UI", sans-serif;
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 1.3px;
-        color: #00f6ff;
-        background: linear-gradient(90deg, #00f6ff, #42c5ff, #00f6ff);
-        background-size: 200% auto;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 4px rgba(0, 255, 255, 0.3),
-          0 0 8px rgba(0, 255, 255, 0.15);
-        animation: gradientMove 6s linear infinite,
-          flicker 8s ease-in-out infinite;
+        color: #cccccc;
+        background: none;
+        text-shadow: none;
+        animation: none;
         position: relative;
-        display: block; /* aligns perfectly with warning text */
-        margin-left: 1px; /* matches left start with warning-text */
+        display: block;
+        margin-left: 1px;
         line-height: 1.1;
-        overflow: hidden; /* prevents bleed outside */
+        overflow: hidden;
         z-index: 1;
-      }
-
-      /* Softer flicker for digital realism */
-      @keyframes flicker {
-        0%,
-        19%,
-        21%,
-        23%,
-        25%,
-        54%,
-        56%,
-        100% {
-          opacity: 1;
-        }
-        20%,
-        24%,
-        55% {
-          opacity: 0.9;
-        }
       }
 
       /* Continuous underline scan line (non-looping bounce) */
@@ -219,47 +139,25 @@
         left: 0;
         height: 2px;
         width: 100%;
-        background: linear-gradient(90deg, rgba(0, 255, 255, 0.6), transparent);
-        background-size: 200% auto;
-        animation: scanLineContinuous 5s linear infinite;
+        background: none;
+        animation: none;
         border-radius: 1px;
-        opacity: 0.4;
-      }
-
-      @keyframes scanLineContinuous {
-        0% {
-          background-position-x: 0%;
-        }
-        100% {
-          background-position-x: 200%;
-        }
+        opacity: 0;
+        display: none;
       }
 
       /* === WARNING TEXT (aligned, modern subtle glow gradient) === */
       .warning-text {
         font-size: 11px;
         font-weight: 700;
-        background: linear-gradient(90deg, #ff0000, #ffaa00, #ff0000);
-        background-size: 200%;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradientMove 4s linear infinite;
-        text-shadow: 0 0 3px rgba(255, 120, 0, 0.35);
-        margin-left: 1px; /* aligns with title */
+        background: none;
+        color: #888888;
+        animation: none;
+        text-shadow: none;
+        margin-left: 1px;
         margin-top: 2px;
         line-height: 1.1;
         vertical-align: middle;
-      }
-
-      /* Unified gradient animation for all gradient-text elements */
-      @keyframes gradientMove {
-        0% {
-          background-position: 0%;
-        }
-        100% {
-          background-position: 200%;
-        }
       }
 
       .header-controls {
@@ -274,25 +172,20 @@
 
       .search {
         width: 200px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.6),
-          rgba(0, 10, 20, 0.8)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
+        background: #1a1a1a;
+        border: 1px solid #333;
         padding: 6px 10px;
-        border-radius: 8px;
+        border-radius: 2px;
         color: var(--text);
         font-size: 13px;
-        box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.05);
-        transition: all 0.3s ease;
+        box-shadow: none;
+        transition: none;
       }
 
       .search:focus {
         outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
-          inset 0 0 20px rgba(0, 240, 255, 0.1);
+        border-color: #333;
+        box-shadow: none;
       }
 
       .search::placeholder {
@@ -305,13 +198,13 @@
         border: none;
         border-radius: 0;
         background: transparent;
-        color: var(--accent);
+        color: #9aa6b2;
         cursor: pointer;
         display: flex;
         flex-direction: column;
         justify-content: center;
         gap: 4px;
-        transition: all 0.25s ease;
+        transition: none;
         position: relative;
         z-index: 10001;
         padding: 0;
@@ -323,40 +216,35 @@
       }
 
       .settings::before {
-        content: "";
-        display: block;
-        width: 24px;
-        height: 2px;
-        background-color: var(--accent);
-        border-radius: 1px;
+        display: none;
       }
 
       .settings .line {
         width: 24px;
         height: 2px;
-        background-color: var(--accent);
+        background-color: #9aa6b2;
         border-radius: 1px;
-        transition: all 0.25s ease;
+        transition: background-color 0.3s ease;
       }
 
       .settings:hover {
-        color: #00ffff;
+        color: #00f0ff;
       }
 
       .settings:hover .line {
-        background-color: #00ffff;
+        background-color: #00f0ff;
       }
 
       .settings:active {
-        transform: scale(0.95);
+        color: #9aa6b2;
       }
 
       .settings.active {
-        color: #00ff88;
+        color: #9aa6b2;
       }
 
       .settings.active .line {
-        background-color: #00ff88;
+        background-color: #9aa6b2;
       }
 
       .main {
@@ -395,13 +283,19 @@
         }
 
         .main-title {
-          font-size: clamp(14px, 6vw, 24px) !important;
-          letter-spacing: 0.8px !important;
-          line-height: 1.2;
+          font-size: clamp(10px, 4vw, 16px) !important;
+          letter-spacing: 0.5px !important;
+          line-height: 1;
+          display: inline !important;
+          margin-left: 0 !important;
+          margin-right: 4px;
         }
 
         .warning-text {
-          font-size: 9px !important;
+          font-size: clamp(8px, 3vw, 12px) !important;
+          margin-top: 0 !important;
+          display: inline;
+          line-height: 1;
         }
 
         .header-controls {
@@ -505,24 +399,63 @@
         }
 
         .timer {
-          padding: 5px 8px !important;
-          min-height: 40px !important;
+          padding: 8px 10px !important;
+          min-height: 50px !important;
           font-size: 10px !important;
+          width: 98% !important;
+          margin: 0 auto !important;
         }
 
         .timer-left {
-          gap: 1px !important;
+          gap: 2px !important;
         }
 
         .timer-name {
-          font-size: 11px !important;
+          font-size: 12px !important;
+        }
+
+        .timer-spawn {
+          font-size: 9px !important;
         }
 
         .timer-time {
           font-size: 10px !important;
         }
 
-        #nextBoss {
+        .timer-content {
+          padding: 4px 0 !important;
+        }
+
+        .timer-actions {
+          gap: 4px !important;
+        }
+
+        .clear-timer-btn {
+           padding: 4px 8px !important;
+           font-size: 9px !important;
+         }
+
+         /* Mobile: Always show expanded section on timers */
+         .timer-expanded {
+           height: 18px !important;
+           padding: 4px 10px 4px 0 !important;
+           opacity: 1 !important;
+           padding-left: 0 !important;
+         }
+
+         .timer {
+           min-height: 60px !important;
+         }
+
+         .timer-remaining-label {
+           font-size: 9px !important;
+         }
+
+         .timer-remaining-value {
+           font-size: 9px !important;
+         }
+
+         #nextBoss {
           min-height: 75px !important;
           padding: 6px 8px !important;
         }
@@ -548,46 +481,20 @@
       }
 
       .card {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 20, 30, 0.4),
-          rgba(0, 5, 10, 0.6)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: var(--radius);
+        background: #0f0f0f;
+        border: 1px solid #222;
+        border-radius: 4px;
         padding: 10px;
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.08),
-          inset 0 0 30px rgba(0, 240, 255, 0.02);
+        box-shadow: none;
         display: flex;
         flex-direction: column;
         min-height: 0;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
       }
 
       .card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        animation: cardScanLine 4s linear infinite;
-      }
-
-      @keyframes cardScanLine {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
+        display: none;
       }
 
       .right-column {
@@ -612,62 +519,58 @@
         scroll-behavior: smooth;
       }
 
-      /* === BOSS LIST CYBER THEME === */
+      /* === BOSS LIST === */
       .boss {
         display: flex;
         justify-content: space-between;
         align-items: center;
         width: 95%;
         padding: 4px 6px;
-        border-radius: 6px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.6),
-          rgba(0, 10, 20, 0.4)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.15);
-        border-left: 3px solid rgba(0, 240, 255, 0.3);
+        border-radius: 2px;
+        background: #1a1a1a;
+        border: 1px solid #222;
         font-size: 12px;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.1),
-          inset 0 0 20px rgba(0, 240, 255, 0.03);
-        transition: all 0.3s ease;
+        box-shadow: none;
+        transition: background 0.2s ease, border-color 0.2s ease;
         box-sizing: border-box;
         position: relative;
       }
 
       .boss::after {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 4px;
-        height: 60%;
-        background: linear-gradient(
-          180deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        display: none;
       }
 
       .boss:hover {
-        transform: translateX(4px);
-        border-color: rgba(0, 240, 255, 0.4);
-        border-left-color: var(--accent);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 240, 255, 0.12),
-          rgba(0, 100, 150, 0.08)
-        );
-        box-shadow: 0 0 25px rgba(0, 240, 255, 0.25),
-          inset 0 0 30px rgba(0, 240, 255, 0.08);
+        background: #1a1a1a;
+        border-color: #222;
       }
 
       .boss:hover::after {
-        opacity: 0.6;
+        display: none;
+      }
+
+      /* Red accent for dead boss */
+      .boss.is-dead {
+        border-left: 4px solid rgba(239, 68, 68, 0.8) !important;
+        padding-left: 4px !important;
+      }
+
+      /* Blue accent for alive boss */
+      .boss.is-alive {
+        border-left: 4px solid rgba(59, 130, 246, 0.8) !important;
+        padding-left: 4px !important;
+      }
+
+      /* Red hover effect when boss is dead */
+      .boss.is-dead:hover {
+        background: rgba(239, 68, 68, 0.15) !important;
+        border-color: rgba(239, 68, 68, 0.5) !important;
+      }
+
+      /* Blue hover effect when boss is alive */
+      .boss.is-alive:hover {
+        background: rgba(59, 130, 246, 0.15) !important;
+        border-color: rgba(59, 130, 246, 0.5) !important;
       }
 
       .boss .meta {
@@ -678,15 +581,14 @@
 
       /* Normal (alive / cooldown) */
       .boss .name {
-        font-family: "Orbitron", sans-serif;
+        font-family: Inter, "Segoe UI", sans-serif;
         color: #ffffff;
         font-weight: 900;
         font-size: 0.85rem;
         letter-spacing: 0.5px;
         text-transform: uppercase;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.5),
-          0 0 20px rgba(0, 240, 255, 0.3);
-        transition: all 0.3s ease;
+        text-shadow: none;
+        transition: none;
         display: inline-flex;
         align-items: center;
         gap: 4px;
@@ -700,38 +602,36 @@
 
       .kbtn {
         padding: 4px 6px;
-        border-radius: 5px;
-        border: 1px solid rgba(0, 240, 255, 0.14);
-        background: var(--glass);
-        color: var(--accent);
+        border-radius: 2px;
+        border: 1px solid #333;
+        background: #1a1a1a;
+        color: var(--text);
         cursor: pointer;
         font-size: 11px;
         font-weight: 700;
-        transition: all 0.2s ease;
+        transition: none;
       }
 
       .kbtn:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.15),
-          rgba(125, 211, 252, 0.15)
-        );
-        border-color: rgba(0, 240, 255, 0.4);
-        color: #fff;
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-        transform: translateY(-1px);
+        background: #222;
+        border-color: #333;
+        color: var(--text);
       }
 
       /* Smaller delete button in active timers */
       .clear-timer-btn {
         padding: 4px 6px;
         font-size: 10px;
-        border-radius: 4px;
-        opacity: 0.8;
+        border-radius: 2px;
+        border: none;
+        background: transparent;
+        color: #999999;
       }
 
       .clear-timer-btn:hover {
-        opacity: 1;
+        background: #222;
+        border: 1px solid #333;
+        color: var(--text);
       }
 
       /* === NEXT BOSS - CYBER HEXAGON THEME (reduced margins) === */
@@ -749,21 +649,16 @@
         width: 100%; /* match timer width */
         min-height: 90px; /* taller panel */
 
-        border-radius: 10px;
-        border: 2px solid rgba(0, 240, 255, 0.3);
-        border-right: 3px solid rgba(0, 240, 255, 0.3);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 40, 60, 0.6),
-          rgba(0, 20, 30, 0.8)
-        );
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
-          inset 0 0 40px rgba(0, 240, 255, 0.05);
-        font-family: "Orbitron", sans-serif;
-        text-transform: uppercase;
+        border-radius: 4px;
+        border: 1px solid #222;
+        border-right: 1px solid #222;
+        background: #0f0f0f;
+        box-shadow: none;
+        font-family: Inter, "Segoe UI", sans-serif;
+        text-transform: none;
         letter-spacing: 1px;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
       }
 
       #nextBoss::before {
@@ -773,22 +668,9 @@
         left: -100%;
         width: 100%;
         height: 4px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        animation: nextBossScan 3s linear infinite;
-      }
-
-      @keyframes nextBossScan {
-        0% {
-          left: -100%;
-        }
-        100% {
-          left: 100%;
-        }
+        background: none;
+        animation: none;
+        display: none;
       }
 
       #nextBoss::after {
@@ -797,170 +679,131 @@
         inset: 0;
         border-radius: 10px;
         padding: 2px;
-        background: linear-gradient(
-          45deg,
-          transparent 30%,
-          rgba(0, 240, 255, 0.1) 50%,
-          transparent 70%
-        );
-        -webkit-mask: linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        animation: borderRotate 4s linear infinite;
+        background: none;
+        -webkit-mask: none;
+        mask: none;
+        -webkit-mask-composite: unset;
+        mask-composite: unset;
+        animation: none;
         pointer-events: none;
+        display: none;
       }
 
-      @keyframes borderRotate {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* === NEXT BOSS NAME: NEON RED GLOW WITH PULSE === */
+      /* === NEXT BOSS NAME: DARK MINIMALIST === */
       #nextBoss .boss-name {
         font-size: 1.8rem;
         font-weight: 900;
-        color: #ff4d4d;
+        color: #ff9500;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         display: inline-flex;
         align-items: center;
         position: relative;
-        text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-          0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
-        animation: bossNamePulse 2s ease-in-out infinite;
+        text-shadow: none;
+        animation: none;
         z-index: 1;
         white-space: nowrap;
         flex-shrink: 0;
       }
 
-      @keyframes bossNamePulse {
-        0%,
-        100% {
-          text-shadow: 0 0 15px rgba(255, 80, 80, 1),
-            0 0 30px rgba(255, 0, 0, 0.6), 0 0 45px rgba(255, 0, 0, 0.4);
-          transform: scale(1);
-        }
-        50% {
-          text-shadow: 0 0 20px rgba(255, 80, 80, 1),
-            0 0 40px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.5);
-          transform: scale(1.02);
-        }
-      }
-
       #nextBoss .time-remaining {
         font-size: 0.95rem;
         font-weight: 700;
-        color: var(--accent);
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.8),
-          0 0 20px rgba(0, 240, 255, 0.5);
+        color: #999999;
+        text-shadow: none;
         margin-top: 0;
-        animation: timeGlow 2s ease-in-out infinite;
+        animation: none;
         z-index: 1;
         white-space: nowrap;
         flex-shrink: 1;
         min-width: 0;
       }
 
-      @keyframes timeGlow {
-        0%,
-        100% {
-          opacity: 0.9;
-        }
-        50% {
-          opacity: 1;
-        }
-      }
-
-      @keyframes bossGlow {
-        0%,
-        100% {
-          text-shadow: 0 0 8px rgba(0, 240, 255, 0.8),
-            0 0 16px rgba(0, 240, 255, 0.6);
-        }
-
-        50% {
-          text-shadow: 0 0 14px rgba(0, 240, 255, 1),
-            0 0 28px rgba(0, 240, 255, 0.8);
-        }
-      }
-
       /* === ACTIVE TIMER CARD â€” CYBER THEME === */
       .timer {
         position: relative;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
         width: 95%;
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.5),
-          rgba(0, 15, 25, 0.3)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-right: 3px solid rgba(0, 240, 255, 0.3);
+        border-radius: 2px;
+        background: #1a1a1a;
+        border: 1px solid #222;
         font-size: 11px;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.12),
-          inset 0 0 25px rgba(0, 240, 255, 0.04);
-        transition: all 0.3s ease;
+        box-shadow: none;
+        transition: background 0.2s ease, border-color 0.2s ease, min-height 0.3s ease-out;
         overflow: hidden;
         height: auto;
         min-height: 48px;
       }
 
-      .timer::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 70%;
-        background: linear-gradient(
-          180deg,
-          transparent,
-          rgba(0, 240, 255, 0.5),
-          transparent
-        );
+      .timer:hover {
+        min-height: 70px;
+      }
+
+      .timer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+      }
+
+      .timer-expanded {
+        height: 0;
+        overflow: hidden;
+        transition: height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         opacity: 0;
-        transition: opacity 0.3s ease;
+      }
+
+      .timer:hover .timer-expanded {
+        height: 18px;
+        padding: 4px 12px;
+        opacity: 1;
+      }
+
+      .timer-remaining-label {
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        font-size: 10px;
+        color: #888888;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        line-height: 1;
+        display: flex;
+        align-items: baseline;
+      }
+
+      .timer-remaining-value {
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        font-weight: 500;
+        font-size: 10px;
+        color: var(--accent);
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        line-height: 1;
+        display: flex;
+        align-items: baseline;
+      }
+
+      .timer::before {
+        display: none;
       }
 
       .timer:hover::before {
-        opacity: 1;
+        display: none;
       }
 
       /* Glow state â€” Ready to respawn */
       .timer.ready {
-        border-color: rgba(0, 255, 100, 0.4);
-        border-right-color: rgba(0, 255, 100, 0.6);
-        box-shadow: 0 0 25px rgba(0, 255, 100, 0.3),
-          inset 0 0 35px rgba(0, 255, 100, 0.1);
-        background: linear-gradient(
-          135deg,
-          rgba(0, 255, 100, 0.15),
-          rgba(0, 150, 80, 0.1)
-        );
-        animation: timerReadyPulse 2s ease-in-out infinite;
-      }
-
-      @keyframes timerReadyPulse {
-        0%,
-        100% {
-          box-shadow: 0 0 20px rgba(0, 255, 100, 0.25),
-            inset 0 0 30px rgba(0, 255, 100, 0.08);
-        }
-        50% {
-          box-shadow: 0 0 35px rgba(0, 255, 100, 0.4),
-            inset 0 0 45px rgba(0, 255, 100, 0.15);
-        }
+        border-color: #222;
+        border-right-color: #222;
+        border-left: 4px solid #22c55e;
+        box-shadow: none;
+        background: #1a1a1a;
+        animation: none;
       }
 
       /* Timer layout */
@@ -987,78 +830,61 @@
 
       /* === TIMER TEXT - CYBER THEME === */
       .timer .timer-name {
-        font-family: "Orbitron", sans-serif;
-        font-weight: 900;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        font-weight: 600;
         font-size: 12px;
         color: #fff;
-        text-transform: uppercase;
         letter-spacing: 0.5px;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4),
-          0 0 12px rgba(0, 240, 255, 0.2);
       }
 
       .timer .timer-spawn {
-        font-size: 7px;
-        color: var(--accent);
-        opacity: 0.7;
-        font-weight: 600;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        font-size: 10px;
+        color: #888888;
+        font-weight: 500;
         letter-spacing: 0.3px;
       }
 
       .timer .timer-remaining {
-        font-family: "Orbitron", sans-serif;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
         font-weight: 500;
-        font-size: 7px;
+        font-size: 11px;
         color: var(--accent);
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.5),
-          0 0 15px rgba(0, 240, 255, 0.3);
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
       }
 
       /* Ready state - green glow */
       .timer.ready .timer-remaining {
         color: #00ff88;
-        text-shadow: 0 0 10px rgba(0, 255, 136, 0.8),
-          0 0 20px rgba(0, 255, 136, 0.5);
-        animation: readyBlink 1s ease-in-out infinite;
+        text-shadow: none;
+        animation: none;
       }
 
-      @keyframes readyBlink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.7;
-        }
-      }
-
-      /* Hover glow */
+      /* Hover */
       .timer:hover {
-        transform: translateX(3px);
-        border-color: rgba(0, 240, 255, 0.4);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.25),
-          inset 0 0 30px rgba(0, 240, 255, 0.08);
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+      }
+
+      /* Preserve green left border on ready timer when hovered */
+      .timer.ready:hover {
+        border-left-color: #22c55e !important;
       }
 
       .timer:hover .timer-name {
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.7),
-          0 0 20px rgba(0, 240, 255, 0.4);
+        text-shadow: none;
       }
 
       /* Hover â€” bright neon red glow */
       .timer .kbtn:hover {
-        background: rgba(255, 60, 60, 0.15);
-        border-color: rgba(255, 100, 100, 0.6);
-        color: #fff;
-        box-shadow: 0 0 14px rgba(255, 80, 80, 0.5);
-        transform: translateY(-1px);
+        background: #222;
+        border-color: #333;
+        color: var(--text);
       }
 
       /* Active press effect */
       .timer .kbtn:active {
-        transform: scale(0.97);
-        box-shadow: 0 0 8px rgba(255, 60, 60, 0.3);
+        background: #1a1a1a;
       }
 
       @media (max-width: 900px) {
@@ -1121,12 +947,8 @@
         /* Keep both panels the same background for seamless look */
         #timersPanel,
         #bossListPanel {
-          background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.015),
-            rgba(0, 0, 0, 0.05)
-          );
-          border: 1px solid var(--glass-border);
+          background: #0f0f0f;
+          border: 1px solid #222;
         }
 
         /* Compact headers to minimize space */
@@ -1164,120 +986,91 @@
         }
       }
 
-      /* === SETTINGS MODAL === */
-      .settings-modal {
+      /* === SETTINGS DROPDOWN === */
+      .settings-dropdown {
+        position: fixed;
+        top: 65px;
+        right: 12px;
+        background: #0f0f0f;
+        border: 1px solid #222;
+        border-radius: 4px;
+        z-index: 10000;
         width: auto;
-        min-width: 300px;
-        max-width: 90%;
-        padding: 24px;
+        display: block;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       }
 
-      .settings-modal h3 {
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 18px;
-        margin-bottom: 20px;
+      .settings-dropdown.hidden {
+        display: none;
+      }
+
+      .settings-modal {
+        padding: 0 !important;
+        width: auto !important;
+        max-width: none !important;
       }
 
       .settings-list {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        margin-top: 16px;
+        gap: 0;
+        margin: 0;
         border: none;
         border-radius: 0;
-        overflow: visible;
+        overflow: hidden;
         background: transparent;
+        padding: 4px 0;
       }
 
       .settings-item {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.6),
-          rgba(0, 15, 25, 0.8)
-        );
-        border: 1.5px solid rgba(0, 240, 255, 0.3);
-        border-radius: 8px;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 7px 12px;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #1a1a1a;
         cursor: pointer;
-        transition: all 0.25s ease;
-        font-family: "Orbitron", sans-serif;
-        text-align: left;
-        text-transform: uppercase;
+        transition: background 0.15s ease;
+        font-family: Inter, "Segoe UI", sans-serif;
+        font-size: 12px;
+        white-space: nowrap;
+        color: #888888;
         position: relative;
-        overflow: hidden;
       }
 
-      /* Dead code - not used: .settings-item:last-child border-bottom removed (gap-based layout now) */
-
-      .settings-item::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(0, 240, 255, 0.1),
-          transparent
-        );
-        transform: translateX(-100%);
-        transition: transform 0.5s ease;
-      }
-
-      .settings-item:hover::before {
-        transform: translateX(100%);
+      .settings-item:last-child {
+        border-bottom: none;
       }
 
       .settings-item:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(0, 50, 80, 0.8),
-          rgba(0, 30, 50, 0.9)
-        );
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
-          inset 0 0 20px rgba(0, 240, 255, 0.1);
-        transform: translateY(-2px);
+        background: #1a1a1a;
+        color: #cccccc;
       }
 
       .settings-item .icon {
         font-size: 20px;
         flex-shrink: 0;
-        filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.4));
+        filter: none;
         position: relative;
         z-index: 1;
-        transition: all 0.25s ease;
+        transition: none;
       }
 
       .settings-item:hover .icon {
-        filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.8));
-        transform: scale(1.15);
+        filter: none;
       }
 
       .settings-item .label {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 1.2px;
-        color: var(--accent);
-        text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
+        font-size: 11px;
+        font-weight: 400;
+        color: inherit;
         flex: 1;
-        text-transform: uppercase;
-        position: relative;
-        z-index: 1;
-      }
-
-      .settings-item:hover .label {
-        color: #fff;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
       }
 
       .settings-item:active {
-        transform: translateY(0);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.25),
-          inset 0 0 30px rgba(0, 240, 255, 0.15);
+        background: #1a1a1a;
       }
 
       /* --- Compact Cyber Modal (Webhook window) --- */
@@ -1288,9 +1081,13 @@
         align-items: center;
         justify-content: center;
         z-index: 2000;
-        background: rgba(0, 10, 20, 0.75);
-        backdrop-filter: blur(10px);
-        animation: cyberFadeIn 0.3s ease forwards;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: none;
+        animation: none;
+      }
+
+      .modal-backdrop.active {
+        display: flex;
       }
 
       @keyframes cyberFadeIn {
@@ -1304,24 +1101,19 @@
       }
 
       .modal {
-        background: linear-gradient(
-          180deg,
-          rgba(5, 15, 25, 0.96),
-          rgba(0, 10, 20, 0.9)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.15),
-          inset 0 0 12px rgba(0, 240, 255, 0.05);
+        background: #0f0f0f;
+        border: 1px solid #222;
+        border-radius: 2px;
+        box-shadow: none;
         padding: 22px 20px;
         width: 340px;
         max-width: 90%;
         color: var(--text);
         text-align: center;
-        transform: translateY(30px) scale(0.96);
-        opacity: 0;
-        animation: cyberModalIn 0.4s ease-out forwards;
-        backdrop-filter: blur(12px);
+        transform: none;
+        opacity: 1;
+        animation: none;
+        backdrop-filter: none;
       }
 
       @keyframes cyberModalIn {
@@ -1340,42 +1132,40 @@
       .modal h3 {
         margin: 0 0 10px 0;
         font-size: 16px;
-        color: var(--accent);
+        color: #cccccc;
         text-transform: uppercase;
         letter-spacing: 1px;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7),
-          0 0 14px rgba(0, 240, 255, 0.4);
+        text-shadow: none;
       }
 
-      /* --- Cyber-styled Webhook Input --- */
+      /* --- Webhook Input --- */
       #webhookInput {
         width: 100%;
         margin: 16px 0 18px 0;
         padding: 10px 12px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 8px;
-        color: var(--accent);
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 2px;
+        color: var(--text);
         font-family: Consolas, monospace;
         font-size: 12px;
         text-align: center;
         outline: none;
-        transition: all 0.3s ease;
-        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.08);
+        transition: none;
+        box-shadow: none;
       }
 
       #webhookInput::placeholder {
-        color: rgba(125, 211, 252, 0.35);
+        color: #555;
         font-style: italic;
       }
 
       #webhookInput:focus {
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.4),
-          inset 0 0 8px rgba(0, 240, 255, 0.25);
-        background: rgba(0, 240, 255, 0.08);
-        color: #fff;
-        animation: inputPulse 2.2s ease-in-out infinite;
+        border-color: #333;
+        box-shadow: none;
+        background: #1a1a1a;
+        color: var(--text);
+        animation: none;
       }
 
       @keyframes inputPulse {
@@ -1403,78 +1193,63 @@
       #webhookTest,
       #webhookClear {
         flex: 1;
-        background: rgba(0, 240, 255, 0.08);
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        color: var(--accent);
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #888888;
         font-weight: 700;
         font-size: 12px;
         padding: 8px 10px;
-        border-radius: 8px;
+        border-radius: 2px;
         cursor: pointer;
         letter-spacing: 0.5px;
         text-transform: uppercase;
-        transition: all 0.25s ease;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.15);
-        backdrop-filter: blur(4px);
+        transition: none;
+        box-shadow: none;
+        backdrop-filter: none;
       }
 
-      /* --- SAVE button: bright cyan accent --- */
+      /* --- SAVE button --- */
       #webhookSave:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.18),
-          rgba(125, 211, 252, 0.18)
-        );
-        color: #fff;
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
-        transform: translateY(-1px);
+        background: #222;
+        color: #cccccc;
+        border-color: #333;
       }
 
       #webhookSave:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+        background: #1a1a1a;
       }
 
-      /* --- TEST button: purple accent --- */
+      /* --- TEST button --- */
       #webhookTest {
-        border-color: rgba(180, 100, 255, 0.3);
-        color: #bfaeff;
-        background: rgba(150, 80, 255, 0.08);
-        box-shadow: 0 0 6px rgba(180, 100, 255, 0.15);
+        border-color: #333;
+        color: #888888;
+        background: #1a1a1a;
       }
 
       #webhookTest:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(150, 80, 255, 0.25),
-          rgba(0, 240, 255, 0.2)
-        );
-        color: #fff;
-        box-shadow: 0 0 14px rgba(180, 100, 255, 0.45);
+        background: #222;
+        color: #cccccc;
       }
 
-      /* --- CLEAR button: danger red accent --- */
+      /* --- CLEAR button --- */
       #webhookClear {
-        border-color: rgba(255, 80, 80, 0.4);
-        color: #ff8080;
-        background: rgba(255, 60, 60, 0.05);
-        box-shadow: 0 0 6px rgba(255, 80, 80, 0.2);
+        border-color: #333;
+        color: #888888;
+        background: #1a1a1a;
       }
 
       #webhookClear:hover {
-        background: rgba(255, 60, 60, 0.15);
-        box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
-        color: #fff;
+        background: #222;
+        color: #cccccc;
       }
 
       #webhookClear:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 8px rgba(255, 80, 80, 0.3);
+        background: #1a1a1a;
       }
 
       .small {
         font-size: 12px;
-        color: var(--muted);
+        color: #888888;
       }
 
       /* === LOADING OVERLAY === */
@@ -1485,12 +1260,8 @@
         align-items: center;
         justify-content: center;
         z-index: 9999;
-        backdrop-filter: blur(12px);
-        background: radial-gradient(
-          circle at center,
-          rgba(0, 10, 20, 0.98) 0%,
-          rgba(0, 0, 0, 0.99) 100%
-        );
+        backdrop-filter: none;
+        background: #000;
       }
 
       .loading-container {
@@ -1516,42 +1287,19 @@
       }
 
       .hex-layer {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border: 3px solid transparent;
-        border-radius: 50%;
-        animation: spinHex 3s linear infinite;
+        display: none;
       }
 
       .hex-1 {
-        border-top-color: var(--accent);
-        border-right-color: var(--accent);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-        animation-duration: 2s;
+        display: none;
       }
 
       .hex-2 {
-        border-bottom-color: var(--accent-2);
-        border-left-color: var(--accent-2);
-        box-shadow: 0 0 20px rgba(125, 211, 252, 0.3);
-        animation-duration: 3s;
-        animation-direction: reverse;
-        width: 75%;
-        height: 75%;
-        top: 12.5%;
-        left: 12.5%;
+        display: none;
       }
 
       .hex-3 {
-        border-top-color: #fff;
-        border-right-color: #fff;
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        animation-duration: 4s;
-        width: 50%;
-        height: 50%;
-        top: 25%;
-        left: 25%;
+        display: none;
       }
 
       @keyframes spinHex {
@@ -1573,29 +1321,29 @@
       .core-icon {
         width: 100%;
         height: 100%;
-        filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.8));
-        animation: corePulse 2s ease-in-out infinite;
+        filter: none;
+        animation: none;
       }
 
       .core-ring {
         fill: none;
-        stroke: var(--accent);
+        stroke: #9aa6b2;
         stroke-width: 2;
-        opacity: 0.6;
-        animation: ringGlow 2s ease-in-out infinite;
+        opacity: 0.5;
+        animation: none;
       }
 
       .core-pulse {
         fill: none;
-        stroke: var(--accent-2);
+        stroke: #9aa6b2;
         stroke-width: 2;
-        opacity: 0.8;
-        animation: ringPulse 2s ease-in-out infinite;
+        opacity: 0.3;
+        animation: none;
       }
 
       .core-center {
-        fill: var(--accent);
-        animation: centerGlow 1.5s ease-in-out infinite;
+        fill: #9aa6b2;
+        animation: none;
       }
 
       @keyframes corePulse {
@@ -1645,20 +1393,19 @@
       }
 
       .loader-text {
-        font-family: "Orbitron", sans-serif;
+        font-family: Inter, "Segoe UI", sans-serif;
         font-size: 2rem;
-        font-weight: 900;
-        letter-spacing: 4px;
+        font-weight: 700;
+        letter-spacing: 2px;
         display: flex;
         align-items: center;
         gap: 4px;
       }
 
       .loading-word {
-        color: var(--accent);
-        text-shadow: 0 0 20px rgba(0, 240, 255, 0.8),
-          0 0 40px rgba(0, 240, 255, 0.4);
-        animation: textGlow 2s ease-in-out infinite;
+        color: #9aa6b2;
+        text-shadow: none;
+        animation: none;
       }
 
       @keyframes textGlow {
@@ -1679,9 +1426,9 @@
       }
 
       .loading-dots span {
-        color: var(--accent);
-        animation: dotBounce 1.5s ease-in-out infinite;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+        color: #9aa6b2;
+        animation: none;
+        text-shadow: none;
       }
 
       .loading-dots span:nth-child(1) {
@@ -1712,10 +1459,10 @@
         font-size: 0.9rem;
         font-weight: 600;
         letter-spacing: 2px;
-        color: var(--muted);
+        color: #9aa6b2;
         text-transform: uppercase;
         opacity: 0.7;
-        animation: subtitleFade 2s ease-in-out infinite;
+        animation: none;
       }
 
       @keyframes subtitleFade {
@@ -1765,28 +1512,23 @@
         align-items: center;
         justify-content: center;
         z-index: 5000;
-        background: rgba(0, 10, 20, 0.8);
-        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: none;
       }
 
       #timeModal .modal-content {
-        background: linear-gradient(
-          180deg,
-          rgba(5, 15, 25, 0.96),
-          rgba(0, 10, 20, 0.9)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 12px;
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.2),
-          inset 0 0 12px rgba(0, 240, 255, 0.05);
+        background: #0f0f0f;
+        border: 1px solid #222;
+        border-radius: 2px;
+        box-shadow: none;
         padding: 20px 18px;
         width: 340px;
         max-width: 90%;
         color: var(--text);
         text-align: center;
-        animation: popupRise 0.28s ease-out;
-        transform: translateY(0);
-        font-family: "Orbitron", sans-serif;
+        animation: none;
+        transform: none;
+        font-family: Inter, "Segoe UI", sans-serif;
       }
 
       @keyframes popupRise {
@@ -1803,17 +1545,16 @@
 
       #timeModal h3 {
         font-size: 16px;
-        color: var(--accent);
+        color: #9aa6b2;
         margin: 0 0 10px 0;
         text-transform: uppercase;
         letter-spacing: 1px;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.7),
-          0 0 14px rgba(0, 240, 255, 0.4);
+        text-shadow: none;
       }
 
       #timeModal .modal-subtitle {
         font-size: 12px;
-        color: var(--muted);
+        color: #9aa6b2;
         margin-bottom: 14px;
         letter-spacing: 0.5px;
         text-transform: none;
@@ -1824,24 +1565,23 @@
         width: 100%;
         margin-bottom: 14px;
         padding: 10px 12px;
-        background: rgba(0, 240, 255, 0.04);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 8px;
-        color: var(--accent);
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 2px;
+        color: var(--text);
         font-family: Consolas, monospace;
         font-size: 13px;
         text-align: center;
         outline: none;
-        box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.06);
-        transition: all 0.22s ease;
+        box-shadow: none;
+        transition: all 0.2s ease;
       }
 
       #killTimeInput:focus {
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.32),
-          inset 0 0 8px rgba(0, 240, 255, 0.18);
-        background: rgba(0, 240, 255, 0.08);
-        color: #fff;
+        border-color: #333;
+        box-shadow: none;
+        background: #1a1a1a;
+        color: var(--text);
       }
 
       #timeModal .actions {
@@ -1857,30 +1597,24 @@
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.6px;
-        background: rgba(0, 240, 255, 0.08);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 8px;
-        color: var(--accent);
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 2px;
+        color: #9aa6b2;
         padding: 8px 10px;
         cursor: pointer;
-        transition: all 0.25s ease;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.12);
+        transition: none;
+        box-shadow: none;
       }
 
       #timeModal .kbtn:hover {
-        background: linear-gradient(
-          90deg,
-          rgba(0, 240, 255, 0.18),
-          rgba(125, 211, 252, 0.18)
-        );
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.38);
-        color: #fff;
-        transform: translateY(-1px);
+        background: #222;
+        border-color: #333;
+        color: #9aa6b2;
       }
 
       #timeModal .kbtn:active {
-        transform: scale(0.98);
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.2);
+        background: #1a1a1a;
       }
 
       /* Mobile tweak */
@@ -1897,35 +1631,22 @@
       }
 
       .boss.shake {
-        animation: shakeFlash 1.2s ease-in-out;
+        animation: none;
         z-index: 10;
         position: relative;
-        transition: none !important;
       }
 
-      /* === DEAD BOSS - ENHANCED CARD DESIGN === */
+      /* === DEAD BOSS === */
       /* Entire boss card gets different styling when dead */
       .boss:has(.name.dead) {
-        background: linear-gradient(
-          135deg,
-          rgba(0, 20, 40, 0.6),
-          rgba(0, 10, 20, 0.4)
-        ); /* same neutral background as alive bosses */
-        border-color: rgba(255, 68, 68, 0.4);
-        border-left-color: rgba(255, 0, 0, 0.6);
-        box-shadow: 0 0 20px rgba(255, 68, 68, 0.15),
-          inset 0 0 30px rgba(255, 68, 68, 0.05);
-        animation: deadCardPulse 3s ease-in-out infinite;
+        background: #1a1a1a;
+        border-color: #222;
+        box-shadow: none;
+        animation: none;
       }
 
       .boss:has(.name.dead)::after {
-        background: linear-gradient(
-          180deg,
-          transparent,
-          rgba(255, 68, 68, 0.4),
-          transparent
-        );
-        opacity: 0.8;
+        display: none;
       }
 
       @keyframes deadCardPulse {
@@ -1941,34 +1662,28 @@
       }
 
       .boss:has(.name.dead):hover {
-        background: linear-gradient(
-          135deg,
-          rgba(60, 0, 0, 0.8),
-          rgba(30, 0, 15, 0.6)
-        );
-        border-color: rgba(255, 68, 68, 0.6);
-        box-shadow: 0 0 35px rgba(255, 68, 68, 0.3),
-          inset 0 0 45px rgba(255, 68, 68, 0.12);
+        background: #1a1a1a;
+        border-color: #222;
+        box-shadow: none;
       }
 
-      /* Dead boss portrait gets red tint */
+      /* Dead boss portrait */
       .boss:has(.name.dead) .boss-portrait {
-        border-color: rgba(255, 68, 68, 0.5);
-        filter: sepia(0.3) hue-rotate(-20deg) saturate(1.5);
-        box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+        border-color: #222;
+        filter: none;
+        box-shadow: none;
       }
 
       /* Dead boss name styling */
       .boss .name.dead {
-        font-family: "Orbitron", sans-serif;
-        color: #ff5555;
-        font-weight: 900;
+        font-family: Inter, "Segoe UI", sans-serif;
+        color: #888888;
+        font-weight: 600;
         font-size: 0.95rem;
         letter-spacing: 1px;
         text-transform: uppercase;
-        text-shadow: 0 0 12px rgba(255, 68, 68, 0.8),
-          0 0 24px rgba(255, 0, 0, 0.5), 0 0 36px rgba(255, 0, 0, 0.3);
-        transition: all 0.4s ease;
+        text-shadow: none;
+        transition: none;
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -1977,23 +1692,7 @@
 
       /* Status badge */
       .boss .name.dead::before {
-        content: "⚠️  RESPAWNING"; /* non-breaking space after ⚠️  */
-        position: absolute;
-        top: -18px;
-        left: 0;
-        display: inline-flex;
-        align-items: center;
-        white-space: nowrap; /* ensures symbol + text stay together */
-        font-size: 8px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        color: #ff8888;
-        background: rgba(255, 0, 0, 0.15);
-        padding: 2px 6px;
-        border-radius: 3px;
-        border: 1px solid rgba(255, 68, 68, 0.4);
-        box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
-        animation: badgeBlink 2s ease-in-out infinite;
+        display: none;
       }
 
       @keyframes badgeBlink {
@@ -2008,22 +1707,20 @@
 
       /* === CLEAN HEADERS: BOSS LIST & ACTIVE TIMERS (Responsive + Centered) === */
       .card-header {
-        font-family: "Orbitron", sans-serif;
+        font-family: Inter, "Segoe UI", sans-serif;
         font-size: clamp(13px, 2vw, 16px);
-        /* auto-scales for screen size */
-        color: var(--accent);
-        text-transform: uppercase;
+        color: #888888;
+        text-transform: none;
         letter-spacing: 1px;
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 35px;
         position: relative;
-        overflow: hidden;
-        border-bottom: 0px solid rgba(0, 240, 255, 0.12);
+        overflow: visible;
+        border-bottom: none;
         padding: 8px 0;
-        text-shadow: 0 0 5px rgba(0, 240, 255, 0.4),
-          0 0 10px rgba(0, 240, 255, 0.2);
+        text-shadow: none;
         box-sizing: border-box;
         margin: 0;
         width: 100%;
@@ -2043,19 +1740,20 @@
 
       .clear-icon {
         position: absolute;
-        right: 10px;
+        right: 8px;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
         display: none;
-        color: var(--muted);
+        color: #9aa6b2;
         font-size: 14px;
         line-height: 1;
-        transition: color 0.2s ease;
+        transition: color 0.2s;
+        user-select: none;
       }
 
       .clear-icon:hover {
-        color: var(--accent);
+        color: #9aa6b2;
       }
 
       /* === Custom Scrollbars for Boss List & Timers === */
@@ -2073,33 +1771,23 @@
 
       #bossList::-webkit-scrollbar-thumb,
       #timers::-webkit-scrollbar-thumb {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.4),
-          rgba(125, 211, 252, 0.4)
-        );
-        border-radius: 10px;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.3),
-          inset 0 0 4px rgba(0, 240, 255, 0.2);
-        transition: background 0.3s ease;
+        background: #333;
+        border-radius: 4px;
+        box-shadow: none;
+        transition: none;
       }
 
       #bossList::-webkit-scrollbar-thumb:hover,
       #timers::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.7),
-          rgba(125, 211, 252, 0.7)
-        );
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.6),
-          inset 0 0 6px rgba(0, 240, 255, 0.3);
+        background: #444;
+        box-shadow: none;
       }
 
       /* Firefox scrollbar customization */
       #bossList,
       #timers {
         scrollbar-width: thin;
-        scrollbar-color: rgba(0, 240, 255, 0.6) rgba(0, 20, 30, 0.3);
+        scrollbar-color: #333 #1a1a1a;
       }
 
       /* --- Online Users Indicator --- */
@@ -2110,15 +1798,15 @@
         padding: 6px 10px;
         font-family: Consolas, monospace;
         font-size: 12px;
-        color: var(--accent);
-        background: rgba(0, 240, 255, 0.06);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 8px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
-        transition: opacity 0.3s ease, transform 0.3s ease;
-        animation: fadeInUsers 0.5s ease-out;
+        color: #9aa6b2;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 2px;
+        backdrop-filter: none;
+        box-shadow: none;
+        text-shadow: none;
+        transition: none;
+        animation: none;
         z-index: 3000;
         display: inline-flex;
         align-items: center;
@@ -2129,16 +1817,15 @@
       .online-users::before {
         content: "🟢";
         margin-right: 4px;
-        transition: transform 0.3s ease, opacity 0.3s ease;
+        transition: none;
       }
 
       /* 💬 replaces 🟢 when there's a new chat message */
       .online-users.notify::before {
         content: "🗨️";
-        color: #ff4d4d;
-        text-shadow: 0 0 6px rgba(255, 80, 80, 0.9),
-          0 0 12px rgba(255, 0, 0, 0.7), 0 0 18px rgba(255, 0, 0, 0.5);
-        animation: pulseNotify 1.4s infinite ease-in-out;
+        color: #9aa6b2;
+        text-shadow: none;
+        animation: none;
       }
 
       /* Count text (only number updates via JS) */
@@ -2148,8 +1835,8 @@
 
       /* Hover effect */
       .online-users:hover {
-        box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
-        transform: translateY(-1px);
+        box-shadow: none;
+        color: #9aa6b2;
       }
 
       /* Fade-in animation */
@@ -2183,41 +1870,15 @@
 
       /* --- Tooltip: Softer Red Chat Bubble --- */
       .online-users::after {
-        content: "";
-        position: absolute;
-        top: -36px; /* slightly higher */
-        right: 50%;
-        transform: translateX(50%);
-        background: transparent;
-        color: #fff;
-        font-size: 11px;
-        font-family: Consolas, monospace;
-        padding: 0;
-        border-radius: 0;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        display: none;
       }
 
       /* Show tooltip when new message arrives */
       .online-users.notify::after {
-        content: "New message";
-        position: absolute;
-        top: -36px;
-        right: 50%;
-        transform: translateX(50%) translateY(-3px);
-        background: rgba(255, 70, 70, 0.25); /* âœ¨ translucent red */
-        border: 1px solid rgba(255, 90, 90, 0.4);
-        backdrop-filter: blur(6px);
-        padding: 4px 9px;
-        border-radius: 14px;
-        box-shadow: 0 0 10px rgba(255, 80, 80, 0.4),
-          0 0 20px rgba(255, 0, 0, 0.2);
-        opacity: 1;
-        animation: tooltipPulse 1.4s infinite ease-in-out;
+        display: none;
       }
 
-      /* Chat bubble tail (now visible and glowy) */
+      /* Chat bubble tail */
       .online-users.notify::after::before {
         content: "";
         position: absolute;
@@ -2228,8 +1889,8 @@
         height: 0;
         border-left: 6px solid transparent;
         border-right: 6px solid transparent;
-        border-top: 6px solid rgba(255, 90, 90, 0.4);
-        filter: drop-shadow(0 0 4px rgba(255, 60, 60, 0.5));
+        border-top: 6px solid #333;
+        filter: none;
       }
 
       /* Tooltip glow animation */
@@ -2252,33 +1913,33 @@
         right: 16px;
         width: 300px;
         height: 350px;
-        background: rgba(0, 10, 20, 0.95);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 10px;
-        box-shadow: 0 0 18px rgba(0, 240, 255, 0.25);
-        transform: translateY(120%);
-        opacity: 0;
-        transition: all 0.4s ease-in-out;
+        background: #0f0f0f;
+        border: 1px solid #222;
+        border-radius: 2px;
+        box-shadow: none;
+        transform: none;
+        opacity: 1;
+        transition: none;
         display: flex;
         flex-direction: column;
         overflow: hidden;
         z-index: 4000;
-        backdrop-filter: blur(8px);
+        backdrop-filter: none;
       }
 
       /* Open animation */
       .chat-box.active {
-        transform: translateY(0);
+        transform: none;
         opacity: 1;
-        box-shadow: 0 0 24px rgba(0, 240, 255, 0.4);
+        box-shadow: none;
       }
 
       /* Fully hidden (when minimized) */
       .chat-box.hidden {
-        transform: translateY(160%);
+        transform: none;
         opacity: 0;
         pointer-events: none;
-        transition: all 0.5s ease-in-out;
+        transition: none;
       }
 
       /* --- Chat Header --- */
@@ -2287,16 +1948,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: "Orbitron", sans-serif;
-        background: rgba(0, 240, 255, 0.1);
-        color: var(--accent);
+        font-family: Inter, "Segoe UI", sans-serif;
+        background: #1a1a1a;
+        color: #888888;
         padding: 8px 10px;
         text-align: center;
         font-size: 14px;
         letter-spacing: 1px;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.25);
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.5);
-        box-shadow: 0 2px 8px rgba(0, 240, 255, 0.1);
+        border-bottom: 1px solid #222;
+        text-shadow: none;
+        box-shadow: none;
       }
 
       /* --- Minimize Button --- */
@@ -2304,25 +1965,24 @@
         position: absolute;
         right: 8px;
         top: 4px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.25);
+        background: #222;
+        border: 1px solid #333;
         color: var(--accent);
         font-size: 16px;
         line-height: 1;
         cursor: pointer;
         padding: 2px 6px;
-        border-radius: 6px;
-        transition: all 0.25s ease;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
-        backdrop-filter: blur(6px);
+        border-radius: 2px;
+        transition: none;
+        text-shadow: none;
+        box-shadow: none;
+        backdrop-filter: none;
       }
 
       .chat-minimize-btn:hover {
-        color: #fff;
-        background: rgba(0, 240, 255, 0.15);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
-        transform: scale(1.1);
+        color: #9aa6b2;
+        background: transparent;
+        box-shadow: none;
       }
 
       /* --- Messages --- */
@@ -2334,7 +1994,7 @@
         line-height: 1.4;
         color: var(--text);
         scrollbar-width: thin;
-        scrollbar-color: rgba(0, 240, 255, 0.3) rgba(0, 240, 255, 0.05);
+        scrollbar-color: #333 #1a1a1a;
       }
 
       /* Custom scrollbar (Chrome / Edge / Safari) */
@@ -2342,26 +2002,18 @@
         width: 8px;
       }
       .chat-messages::-webkit-scrollbar-track {
-        background: rgba(0, 240, 255, 0.05);
-        border-radius: 10px;
+        background: #1a1a1a;
+        border-radius: 2px;
       }
       .chat-messages::-webkit-scrollbar-thumb {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 240, 255, 0.5),
-          rgba(0, 180, 255, 0.8)
-        );
-        border-radius: 10px;
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-        transition: background 0.3s ease, box-shadow 0.3s ease;
+        background: #333;
+        border-radius: 2px;
+        box-shadow: none;
+        transition: none;
       }
       .chat-messages::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 255, 255, 0.8),
-          rgba(0, 200, 255, 1)
-        );
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+        background: #444;
+        box-shadow: none;
       }
 
       /* --- Each Message --- */
@@ -2375,45 +2027,44 @@
         display: flex;
         padding: 6px;
         gap: 6px;
-        border-top: 1px solid rgba(0, 240, 255, 0.2);
-        background: rgba(0, 240, 255, 0.03);
-        backdrop-filter: blur(6px);
+        border-top: 1px solid #222;
+        background: #1a1a1a;
+        backdrop-filter: none;
       }
 
       /* Input field */
       .chat-input-area input {
         flex: 1;
         padding: 6px 8px;
-        background: rgba(0, 240, 255, 0.05);
-        border: 1px solid rgba(0, 240, 255, 0.2);
-        border-radius: 6px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 2px;
         color: var(--text);
         outline: none;
-        transition: all 0.3s ease;
+        transition: none;
       }
       .chat-input-area input:focus {
-        border-color: rgba(0, 240, 255, 0.6);
-        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-        background: rgba(0, 240, 255, 0.08);
+        border-color: #333;
+        box-shadow: none;
+        background: #1a1a1a;
       }
 
       /* Send button */
       .chat-input-area button {
-        background: rgba(0, 240, 255, 0.15);
-        border: 1px solid rgba(0, 240, 255, 0.4);
-        color: var(--accent);
-        border-radius: 6px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #9aa6b2;
+        border-radius: 2px;
         cursor: pointer;
         padding: 0 10px;
         font-weight: 600;
-        text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
-        transition: all 0.25s ease;
+        text-shadow: none;
+        transition: none;
       }
       .chat-input-area button:hover {
-        background: rgba(0, 240, 255, 0.3);
-        box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
-        color: #fff;
-        transform: translateY(-1px);
+        background: #222;
+        border-color: #333;
+        color: #9aa6b2;
       }
 
       .name-wrapper {
@@ -2438,8 +2089,8 @@
       }
 
       .boss-portrait:hover {
-        transform: scale(1.3);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+        transform: none;
+        box-shadow: none;
       }
 
       .info {
@@ -2471,122 +2122,94 @@
 
       .icon-btn {
         position: relative;
-        background: linear-gradient(
-          135deg,
-          rgba(0, 30, 50, 0.6),
-          rgba(0, 15, 25, 0.8)
-        );
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-radius: 6px;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 2px;
         cursor: pointer;
         padding: 8px;
-        color: var(--accent);
-        transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.1),
-          inset 0 0 15px rgba(0, 240, 255, 0.03);
+        color: #9aa6b2;
+        transition: none;
+        box-shadow: none;
         overflow: hidden;
       }
 
       .icon-btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(0, 240, 255, 0.1),
-          transparent
-        );
-        transform: translateX(-100%);
-        transition: transform 0.5s ease;
+        display: none;
       }
 
       .icon-btn:hover::before {
-        transform: translateX(100%);
+        display: none;
       }
 
       .icon-btn:hover {
-        transform: translateY(-2px) scale(1.05);
-        border-color: var(--accent);
-        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4),
-          inset 0 0 20px rgba(0, 240, 255, 0.1);
-        color: #fff;
+        transform: none;
+        border-color: #333;
+        box-shadow: none;
+        color: #9aa6b2;
       }
 
       .icon-btn:active {
-        transform: translateY(0) scale(1);
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3),
-          inset 0 0 25px rgba(0, 240, 255, 0.15);
+        transform: none;
+        box-shadow: none;
+        background: #1a1a1a;
       }
 
       .icon-btn svg {
         position: relative;
         z-index: 1;
-        filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.3));
+        filter: none;
       }
 
       .icon-btn:hover svg {
-        filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.6));
+        filter: none;
       }
 
-      /* Mark Dead Button - Red/Danger Colors */
+      /* Mark Dead Button - Minimal style */
       .icon-btn[data-action="mark"]:hover {
-        border-color: rgba(255, 80, 80, 0.6);
-        box-shadow: 0 0 20px rgba(255, 80, 80, 0.4),
-          inset 0 0 20px rgba(255, 80, 80, 0.1);
-        color: #ff8888;
+        border-color: #3b82f6;
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        color: #3b82f6;
       }
 
       .icon-btn[data-action="mark"]:hover svg {
-        filter: drop-shadow(0 0 8px rgba(255, 80, 80, 0.6));
+        filter: none;
       }
 
       .icon-btn[data-action="mark"]::before {
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(255, 80, 80, 0.1),
-          transparent
-        );
+        display: none;
       }
 
-      /* Set Timer Button - Green/Success Colors */
+      /* Set Timer Button - Minimal style */
       .icon-btn[data-action="set"]:hover {
-        border-color: rgba(0, 255, 100, 0.6);
-        box-shadow: 0 0 20px rgba(0, 255, 100, 0.4),
-          inset 0 0 20px rgba(0, 255, 100, 0.1);
-        color: #88ff88;
+        border-color: #22c55e;
+        box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+        color: #22c55e;
       }
 
       .icon-btn[data-action="set"]:hover svg {
-        filter: drop-shadow(0 0 8px rgba(0, 255, 100, 0.6));
+        filter: none;
       }
 
       .icon-btn[data-action="set"]::before {
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(0, 255, 100, 0.1),
-          transparent
-        );
+        display: none;
       }
 
       .icon-label {
-        font-family: "Orbitron", sans-serif;
-        font-size: 6px;
-        font-weight: 700;
+        font-family: "Courier New", monospace;
+        font-size: 9px;
+        font-weight: 400;
         opacity: 0.8;
-        text-transform: uppercase;
+        text-transform: none;
         letter-spacing: 0.8px;
-        color: var(--accent);
-        text-shadow: 0 0 4px rgba(0, 240, 255, 0.3);
-        transition: all 0.3s ease;
+        color: #9aa6b2;
+        text-shadow: none;
+        transition: none;
       }
 
       .action-btn:hover .icon-label {
-        opacity: 1;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
-        color: #fff;
+        opacity: 0.8;
+        text-shadow: none;
+        color: #9aa6b2;
       }
     </style>
   </head>
@@ -2597,7 +2220,7 @@
         <div class="header-top">
           <div class="app-title">
             <div class="logo">
-              <img alt="logo" class="logo-img" src="assets/images/logo5.png" />
+              <img alt="logo" class="logo-img" src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/logo5.png" />
             </div>
             <div>
               <div class="main-title">FIELD BOSS TIME TRACKER</div>
@@ -2612,7 +2235,7 @@
               id="bossSearch"
               placeholder="Search boss..."
             />
-            <span class="clear-icon" id="clearSearch"> ❌ </span>
+            <span class="clear-icon" id="clearSearch"> 🗑️ </span>
           </div>
           <button aria-label="Settings" class="settings" id="settingsBtn">
             <span class="line"></span>
@@ -2679,34 +2302,28 @@
       </div>
     </div>
 
-    <div class="modal-backdrop" id="settingsModalBackdrop">
+    <div class="settings-dropdown hidden" id="settingsDropdown">
       <div
         aria-labelledby="settingsTitle"
         aria-modal="true"
         class="modal cyber-modal settings-modal"
         role="dialog"
       >
-        <h3 id="settingsTitle">⚙️ Settings</h3>
         <div class="settings-list">
           <button class="settings-item" id="exportBtn">
-            <span class="icon">📤</span>
             <span class="label">Export JSON</span>
           </button>
           <button class="settings-item" id="importBtn">
-            <span class="icon">📥</span>
             <span class="label">Import JSON</span>
           </button>
           <button class="settings-item" id="resetBtn">
-            <span class="icon">🗑️</span>
             <span class="label">Reset Timers</span>
           </button>
           <button class="settings-item" id="syncBtn">
-            <span class="icon">🔄</span>
-            <span class="label">Synchronize Users</span>
+            <span class="label">Sync Users</span>
           </button>
           <button class="settings-item" id="discordWebhookBtn">
-            <span class="icon">💬</span>
-            <span class="label">Discord Webhook URL</span>
+            <span class="label">Webhook URL</span>
           </button>
         </div>
       </div>
@@ -2856,9 +2473,7 @@
       const saveTimeBtn = document.getElementById("saveTimeBtn");
       const loadingOverlay = document.getElementById("loadingOverlay");
       const settingsBtn = document.getElementById("settingsBtn");
-      const settingsModalBackdrop = document.getElementById(
-        "settingsModalBackdrop"
-      );
+      const settingsDropdown = document.getElementById("settingsDropdown");
       const discordWebhookBtn = document.getElementById("discordWebhookBtn");
       const webhookBackdrop = document.getElementById("webhookModalBackdrop");
       const webhookInput = document.getElementById("webhookInput");
@@ -2993,7 +2608,7 @@
 
       // --- Trigger Sync ---
       syncBtn.addEventListener("click", async () => {
-        settingsModalBackdrop.style.display = "none";
+        settingsDropdown.classList.add("hidden");
         if (
           confirm(
             "Synchronize all clients? This will reload every user's page."
@@ -3596,14 +3211,14 @@
             : b.respawn / 3600 + " hr";
 
           const node = document.createElement("div");
-          node.className = "boss";
+          node.className = isActive ? "boss is-dead" : "boss is-alive";
 
           const nameClass = isActive ? "name dead" : "name";
 
           node.innerHTML = `
 					<div class="meta">
 						<div class="portrait-meta">
-							<img class="boss-portrait" src="assets/images/${b.id}.png" alt="${b.name}">
+							<img class="boss-portrait" src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${b.id}.png" alt="${b.name}">
 							<div class="info">
 								<div class="${nameClass}">${b.name}</div>
 								<div class="sub">${subText}</div>
@@ -3613,21 +3228,20 @@
 					<div class="actions">
 					<div class="action-btn ${isWeekly ? "hidden" : ""}">
 					<button class="kbtn icon-btn" title="Manual Set" data-action="set" data-id="${
-            b.id
-          }">
+					b.id
+					}">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
 					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 					<circle cx="12" cy="12" r="10"></circle>
 					<polyline points="12 6 12 12 16 14"></polyline>
 					</svg>
 					</button>
-					<div class="icon-label">Manual</div>
 					</div>
 
 					<div class="action-btn">
 					 <button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${
-             b.id
-           }">
+					b.id
+					}">
 					 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
 					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M12 2C7 2 3 6 3 11c0 3 2 6 5 7v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c3-1 5-4 5-7 0-5-4-9-9-9z"></path>
@@ -3635,7 +3249,6 @@
 					<circle cx="15" cy="11" r="1"></circle>
 					</svg>
 					</button>
-					<div class="icon-label">Killed</div>
 					</div>
 					</div>
 					`;
@@ -3766,12 +3379,15 @@
         if (existing) {
           existing.dataset.remaining = String(remainingSec);
           const nameEl = existing.querySelector(".timer-name");
-          const remainEl = existing.querySelector(".timer-remaining");
           const spawnEl = existing.querySelector(".timer-spawn");
+          const remainingValueEl = existing.querySelector(".timer-remaining-value");
+
+          // Format remaining time using original format
+          const remainingTimeStr = formatSec(remainingSec);
 
           if (nameEl) nameEl.textContent = boss.name;
-          if (remainEl) remainEl.textContent = formatSec(remainingSec);
           if (spawnEl) spawnEl.textContent = spawnStr;
+          if (remainingValueEl) remainingValueEl.textContent = remainingTimeStr;
           if (remainingSec === 0) existing.classList.add("ready");
           else existing.classList.remove("ready");
         } else {
@@ -3779,18 +3395,25 @@
           node.className = "timer";
           node.dataset.id = bossId;
           node.dataset.remaining = String(remainingSec);
+          
+          // Format remaining time using original format
+          const remainingTimeStr = formatSec(remainingSec);
+          
           node.innerHTML = `
-          <div class="timer-left">
-            <div class="timer-name">${boss.name}</div>
-            <div class="timer-spawn">🔄 SPAWN TIME: ${spawnStr}</div>
-          </div>
-          <div class="timer-right">
-            <div class="timer-remaining">${formatSec(remainingSec)}</div>
+          <div class="timer-content">
+            <div class="timer-left">
+             <div class="timer-name">${boss.name}</div>
+             <div class="timer-spawn">Spawn Time: ${spawnStr}</div>
+            </div>
             <div class="timer-actions">
-              <button class="kbtn clear-timer-btn" data-id="${bossId}">Delete</button>
+             <button class="kbtn clear-timer-btn" data-id="${bossId}">Remove</button>
             </div>
           </div>
-        `;
+          <div class="timer-expanded">
+            <span class="timer-remaining-label">Remaining Time:</span>
+            <span class="timer-remaining-value">${remainingTimeStr}</span>
+          </div>
+          `;
           if (remainingSec === 0) node.classList.add("ready");
           timersEl.appendChild(node);
 
@@ -3851,9 +3474,13 @@
         const seconds = Math.floor(totalSeconds % 60);
 
         nextBossNameEl.textContent = `${soon.boss.name}`;
-        nextTimeEl.textContent = `${String(hours).padStart(2, "0")}:${String(
-          minutes
-        ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        if (totalSeconds === 0) {
+          nextTimeEl.textContent = "SPAWNED";
+        } else {
+          nextTimeEl.textContent = `${String(hours).padStart(2, "0")}:${String(
+            minutes
+          ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+        }
 
         // Auto-resize next boss name if it overflows
         adjustNextBossNameSize();
@@ -3955,12 +3582,12 @@
 
           // --- (4) Start 3-minute cooldown when reaching 0 ---
           if (remainingMs <= 0 && !info.cooldownUntil) {
-          info.cooldownUntil = now + 3 * 60 * 1000;
-          console.log(
-          `⏳ ${boss.name} entering 3-minute cooldown until ${new Date(
-          info.cooldownUntil
-          ).toLocaleTimeString()}`
-          );
+            info.cooldownUntil = now + 3 * 60 * 1000;
+            console.log(
+              `⏳ ${boss.name} entering 3-minute cooldown until ${new Date(
+                info.cooldownUntil
+              ).toLocaleTimeString()}`
+            );
 
             // 🟢 Visual: back to normal white glow during cooldown
             if (nameElem) nameElem.classList.remove("dead");
@@ -4095,18 +3722,19 @@
       // === SETTINGS BUTTON + MODAL TOGGLE ===
       settingsBtn.addEventListener("click", (ev) => {
         ev.stopPropagation();
-        settingsModalBackdrop.style.display = "flex";
+        settingsDropdown.classList.toggle("hidden");
         console.log(`⚙️ settings modal opened`);
       });
 
-      settingsModalBackdrop.addEventListener("click", (ev) => {
-        if (ev.target === settingsModalBackdrop)
-          settingsModalBackdrop.style.display = "none";
+      document.addEventListener("click", (ev) => {
+        if (!settingsBtn.contains(ev.target) && !settingsDropdown.contains(ev.target)) {
+          settingsDropdown.classList.add("hidden");
+        }
       });
 
       discordWebhookBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        settingsModalBackdrop.style.display = "none";
+        settingsDropdown.classList.add("hidden");
         await loadWebhookFromFirestore();
         webhookBackdrop.style.display = "flex";
         console.log("ðŸ”§ open webhook modal");
@@ -4122,7 +3750,7 @@
       const resetBtn = document.getElementById("resetBtn");
 
       exportBtn.addEventListener("click", () => {
-        settingsModalBackdrop.style.display = "none";
+        settingsDropdown.classList.add("hidden");
         try {
           const blob = new Blob([JSON.stringify(timers, null, 2)], {
             type: "application/json",
@@ -4143,7 +3771,7 @@
       });
 
       importBtn.addEventListener("click", () => {
-        settingsModalBackdrop.style.display = "none";
+        settingsDropdown.classList.add("hidden");
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "application/json";
@@ -4173,7 +3801,7 @@
       });
 
       resetBtn.addEventListener("click", () => {
-        settingsModalBackdrop.style.display = "none";
+        settingsDropdown.classList.add("hidden");
         if (confirm("Are you sure you want to reset all timers?")) resetAll();
       });
 
@@ -4485,17 +4113,14 @@
           if (chatBox.classList.contains("hidden")) {
             chatBox.classList.remove("hidden");
             chatBox.classList.add("active");
+            onlineUsers.classList.remove("notify");
+            lastSeenTimestamp = Date.now();
             return;
           }
 
-          chatBox.classList.toggle("active");
-
-          // ðŸ”• Clear notification + tooltip when chat opens
-          if (chatBox.classList.contains("active")) {
-            onlineUsers.classList.remove("notify");
-            lastSeenTimestamp = Date.now();
-            onlineUsers.style.transition = "all 0.3s ease";
-          }
+          // If visible, hide it
+          chatBox.classList.add("hidden");
+          chatBox.classList.remove("active");
         });
       }
       attachChatToggle();
@@ -4611,7 +4236,7 @@
     </script>
 
     <!-- Chat Box (hidden by default) -->
-    <div id="chatBox" class="chat-box">
+    <div id="chatBox" class="chat-box hidden">
       <div class="chat-header">
         SERVER CHAT
         <button id="chatMinimize" class="chat-minimize-btn">−</button>
