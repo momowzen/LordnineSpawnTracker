@@ -2169,13 +2169,13 @@
       });
 
       saveTimeBtn.addEventListener("click", async () => {
-        if (!currentBossForTime || !datetimeInput.value) return;
+         if (!currentBossForTime || !datetimeInput.value) return;
 
-        const boss = BOSSES.find((b) => b.id === currentBossForTime);
-        if (!boss) return;
+         const boss = BOSSES.find((b) => b.id === currentBossForTime);
+         if (!boss) return;
 
-        const selectedTime = new Date(datetimeInput.value).getTime();
-        const now = Date.now();
+         const selectedTime = datetimeInput.valueAsNumber;
+         const now = Date.now();
 
         timers[currentBossForTime] = {
           endTime: selectedTime,
