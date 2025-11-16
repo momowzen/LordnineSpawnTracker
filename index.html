@@ -3662,21 +3662,26 @@
 
       // Optional lightweight visual update every second (no Firestore writes)
       function updateCountdownDisplay() {
-        const now = Date.now();
-        for (const [bossId, info] of Object.entries(timers)) {
-          const el = document.querySelector(`.timer[data-id="${bossId}"]`);
-          if (!el || !info?.endTime) continue;
-          const remainingSec = Math.max(
-            0,
-            Math.round((info.endTime - now) / 1000)
-          );
-          const timeSpan = el.querySelector(".timer-remaining");
-          if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
-          el.dataset.remaining = String(remainingSec);
-          if (remainingSec === 0) el.classList.add("ready");
-          else el.classList.remove("ready");
-        }
-      }
+         const now = Date.now();
+         
+         // Update active timers
+         for (const [bossId, info] of Object.entries(timers)) {
+           const el = document.querySelector(`.timer[data-id="${bossId}"]`);
+           if (!el || !info?.endTime) continue;
+           const remainingSec = Math.max(
+             0,
+             Math.round((info.endTime - now) / 1000)
+           );
+           const timeSpan = el.querySelector(".timer-remaining-value");
+           if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
+           el.dataset.remaining = String(remainingSec);
+           if (remainingSec === 0) el.classList.add("ready");
+           else el.classList.remove("ready");
+         }
+         
+         // Update next boss countdown
+         computeNextBoss();
+       }
 
       // fast visual refresh (every 1s, no Firestore writes)
       setInterval(updateCountdownDisplay, 1000);
