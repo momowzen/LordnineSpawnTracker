@@ -13,17 +13,17 @@
     />
     <style>
       :root {
-         --bg: #000000;
-         --panel-bg: #0f0f0f;
-         --muted: #9aa6b2;
-         --accent: #00f0ff;
-         --accent-2: #7dd3fc;
-         --glass: rgba(255, 255, 255, 0.03);
-         --radius: 10px;
-         --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
-         --glass-border: rgba(0, 240, 255, 0.08);
-         --text: #dff7ff;
-       }
+        --bg: #000000;
+        --panel-bg: #0f0f0f;
+        --muted: #9aa6b2;
+        --accent: #00f0ff;
+        --accent-2: #7dd3fc;
+        --glass: rgba(255, 255, 255, 0.03);
+        --radius: 10px;
+        --shadow: 0 6px 20px rgba(0, 240, 255, 0.04);
+        --glass-border: rgba(0, 240, 255, 0.08);
+        --text: #dff7ff;
+      }
 
       * {
         box-sizing: border-box;
@@ -432,31 +432,31 @@
         }
 
         .clear-timer-btn {
-           padding: 4px 8px !important;
-           font-size: 9px !important;
-         }
+          padding: 4px 8px !important;
+          font-size: 9px !important;
+        }
 
-         /* Mobile: Always show expanded section on timers */
-         .timer-expanded {
-           height: 18px !important;
-           padding: 4px 10px 4px 0 !important;
-           opacity: 1 !important;
-           padding-left: 0 !important;
-         }
+        /* Mobile: Always show expanded section on timers */
+        .timer-expanded {
+          height: 18px !important;
+          padding: 4px 10px 4px 0 !important;
+          opacity: 1 !important;
+          padding-left: 0 !important;
+        }
 
-         .timer {
-           min-height: 60px !important;
-         }
+        .timer {
+          min-height: 60px !important;
+        }
 
-         .timer-remaining-label {
-           font-size: 9px !important;
-         }
+        .timer-remaining-label {
+          font-size: 9px !important;
+        }
 
-         .timer-remaining-value {
-           font-size: 9px !important;
-         }
+        .timer-remaining-value {
+          font-size: 9px !important;
+        }
 
-         #nextBoss {
+        #nextBoss {
           min-height: 75px !important;
           padding: 6px 8px !important;
         }
@@ -532,7 +532,8 @@
         border: 1px solid #222;
         font-size: 12px;
         box-shadow: none;
-        transition: background 0.35s ease-in-out, border-color 0.35s ease-in-out, transform 0.35s ease-in-out, box-shadow 0.35s ease-in-out;
+        transition: background 0.35s ease-in-out, border-color 0.35s ease-in-out,
+          transform 0.35s ease-in-out, box-shadow 0.35s ease-in-out;
         box-sizing: border-box;
         position: relative;
       }
@@ -733,7 +734,8 @@
         border: 1px solid #222;
         font-size: 11px;
         box-shadow: none;
-        transition: background 0.2s ease, border-color 0.2s ease, min-height 0.3s ease-out;
+        transition: background 0.2s ease, border-color 0.2s ease,
+          min-height 0.3s ease-out;
         overflow: hidden;
         height: auto;
         min-height: 48px;
@@ -753,7 +755,8 @@
       .timer-expanded {
         height: 0;
         overflow: hidden;
-        transition: height 0.3s ease-out, padding 0.3s ease-out, opacity 0.3s ease-out;
+        transition: height 0.3s ease-out, padding 0.3s ease-out,
+          opacity 0.3s ease-out;
         padding: 0 12px;
         display: flex;
         align-items: center;
@@ -1295,7 +1298,9 @@
         display: none;
       }
 
-      .hex-1, .hex-2, .hex-3 {
+      .hex-1,
+      .hex-2,
+      .hex-3 {
         display: none;
       }
 
@@ -1331,8 +1336,12 @@
       }
 
       @keyframes spinCore {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       .loader-text {
@@ -1369,8 +1378,13 @@
       }
 
       @keyframes dotPulse {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 1; }
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 1;
+        }
       }
 
       .loading-subtitle {
@@ -2098,7 +2112,11 @@
         <div class="header-top">
           <div class="app-title">
             <div class="logo">
-              <img alt="logo" class="logo-img" src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/logo5.png" />
+              <img
+                alt="logo"
+                class="logo-img"
+                src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/logo5.png"
+              />
             </div>
             <div>
               <div class="main-title">FIELD BOSS TIME TRACKER</div>
@@ -3096,7 +3114,9 @@
           node.innerHTML = `
 					<div class="meta">
 						<div class="portrait-meta">
-							<img class="boss-portrait" src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${b.id}.png" alt="${b.name}">
+							<img class="boss-portrait" src="https://raw.githubusercontent.com/momowzen/DFck.LordnineSpawnTracker/refs/heads/main/assets/images/${
+                b.id
+              }.png" alt="${b.name}">
 							<div class="info">
 								<div class="${nameClass}">${b.name}</div>
 								<div class="sub">${subText}</div>
@@ -3106,8 +3126,8 @@
 					<div class="actions">
 					<div class="action-btn ${isWeekly ? "hidden" : ""}">
 					<button class="kbtn icon-btn" title="Manual Set" data-action="set" data-id="${
-					b.id
-					}">
+            b.id
+          }">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
 					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 					<circle cx="12" cy="12" r="10"></circle>
@@ -3118,8 +3138,8 @@
 
 					<div class="action-btn">
 					 <button class="kbtn icon-btn" title="Mark Dead" data-action="mark" data-id="${
-					b.id
-					}">
+             b.id
+           }">
 					 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
 					 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M12 2C7 2 3 6 3 11c0 3 2 6 5 7v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2c3-1 5-4 5-7 0-5-4-9-9-9z"></path>
@@ -3258,7 +3278,9 @@
           existing.dataset.remaining = String(remainingSec);
           const nameEl = existing.querySelector(".timer-name");
           const spawnEl = existing.querySelector(".timer-spawn");
-          const remainingValueEl = existing.querySelector(".timer-remaining-value");
+          const remainingValueEl = existing.querySelector(
+            ".timer-remaining-value"
+          );
 
           // Format remaining time using original format
           const remainingTimeStr = formatSec(remainingSec);
@@ -3273,10 +3295,10 @@
           node.className = "timer";
           node.dataset.id = bossId;
           node.dataset.remaining = String(remainingSec);
-          
+
           // Format remaining time using original format
           const remainingTimeStr = formatSec(remainingSec);
-          
+
           node.innerHTML = `
           <div class="timer-content">
             <div class="timer-left">
@@ -3537,26 +3559,26 @@
 
       // Optional lightweight visual update every second (no Firestore writes)
       function updateCountdownDisplay() {
-         const now = Date.now();
-         
-         // Update active timers
-         for (const [bossId, info] of Object.entries(timers)) {
-           const el = document.querySelector(`.timer[data-id="${bossId}"]`);
-           if (!el || !info?.endTime) continue;
-           const remainingSec = Math.max(
-             0,
-             Math.round((info.endTime - now) / 1000)
-           );
-           const timeSpan = el.querySelector(".timer-remaining-value");
-           if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
-           el.dataset.remaining = String(remainingSec);
-           if (remainingSec === 0) el.classList.add("ready");
-           else el.classList.remove("ready");
-         }
-         
-         // Update next boss countdown
-         computeNextBoss();
-       }
+        const now = Date.now();
+
+        // Update active timers
+        for (const [bossId, info] of Object.entries(timers)) {
+          const el = document.querySelector(`.timer[data-id="${bossId}"]`);
+          if (!el || !info?.endTime) continue;
+          const remainingSec = Math.max(
+            0,
+            Math.round((info.endTime - now) / 1000)
+          );
+          const timeSpan = el.querySelector(".timer-remaining-value");
+          if (timeSpan) timeSpan.textContent = formatSec(remainingSec);
+          el.dataset.remaining = String(remainingSec);
+          if (remainingSec === 0) el.classList.add("ready");
+          else el.classList.remove("ready");
+        }
+
+        // Update next boss countdown
+        computeNextBoss();
+      }
 
       // fast visual refresh (every 1s, no Firestore writes)
       setInterval(updateCountdownDisplay, 1000);
@@ -3610,7 +3632,10 @@
       });
 
       document.addEventListener("click", (ev) => {
-        if (!settingsBtn.contains(ev.target) && !settingsDropdown.contains(ev.target)) {
+        if (
+          !settingsBtn.contains(ev.target) &&
+          !settingsDropdown.contains(ev.target)
+        ) {
           settingsDropdown.classList.add("hidden");
         }
       });
