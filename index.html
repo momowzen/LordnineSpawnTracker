@@ -2836,7 +2836,7 @@
           case "killed":
             embed = buildEmbed(
               `💀 ${boss.name} has been defeated!`,
-              `Next respawn (${TIME_ZONE_LABEL}): ${formattedTime}`,
+              `Next respawn (${TIME_ZONE_LABEL}):\n${formattedTime}`,
               0xff3333,
               boss
             );
@@ -2845,7 +2845,7 @@
           case "soon":
             embed = buildEmbed(
               `⚠️ ${boss.name} will respawn soon!`,
-              `Spawn expected in 5 minutes.\nSpawn Time (${TIME_ZONE_LABEL}): ${formattedTime}`,
+              `Spawn expected in 5 minutes.\nSpawn Time (${TIME_ZONE_LABEL}):\n${formattedTime}`,
               0xffcc00,
               boss
             );
@@ -2863,7 +2863,7 @@
           case "manual":
             embed = buildEmbed(
               `⏰ ${boss.name} manual time set.`,
-              `Next respawn (${TIME_ZONE_LABEL}): ${formattedTime}`,
+              `Next respawn (${TIME_ZONE_LABEL}):\n${formattedTime}`,
               0x3399ff,
               boss
             );
