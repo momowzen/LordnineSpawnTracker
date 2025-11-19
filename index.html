@@ -273,6 +273,7 @@
     .server-time {
       display: flex;
       align-items: center;
+      justify-content: center;
       font-family: Inter, "Segoe UI", sans-serif;
       font-size: 12px;
       font-weight: 600;
@@ -284,6 +285,8 @@
       letter-spacing: 0;
       text-shadow: none;
       white-space: nowrap;
+      min-width: 240px;
+      font-variant-numeric: tabular-nums;
     }
 
     .main {
@@ -2586,7 +2589,8 @@
       if (currentLanguage === "jp") {
         const weekdayIndex = date.getDay();
         const weekdayLabel = getWeekdayLabel(weekdayIndex);
-        return `${monthTranslated} ${day}日 (${weekdayLabel}曜日) ${periodTranslated} ${hour}:${minute}`.trim();
+        const dayLabel = translations[currentLanguage].day;
+        return `${monthTranslated} ${day}${dayLabel} (${weekdayLabel}曜日) ${periodTranslated} ${hour}:${minute}`.trim();
       }
       
       return `${monthTranslated} ${day} ${hour}:${minute} ${periodTranslated}`.trim();
@@ -4269,6 +4273,7 @@
         remainingTime: "Remaining Time",
         remove: "Remove",
         hour: "hr",
+        day: "",
         serverTimeLabel: "SERVER TIME:",
         am: "AM",
         pm: "PM",
@@ -4303,6 +4308,7 @@
         remainingTime: "残り時間",
         remove: "削除",
         hour: "時間",
+        day: "日",
         serverTimeLabel: "サーバー時間:",
         am: "午前",
         pm: "午後",
@@ -4459,17 +4465,30 @@
       const now = new Date();
       const formatter = new Intl.DateTimeFormat("en-US", {
         timeZone: TIME_ZONE,
+        month: "short",
+        day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: true,
       });
       const parts = formatter.formatToParts(now);
+      const month = parts.find(p => p.type === "month").value;
+      const day = parts.find(p => p.type === "day").value;
       const hour = parts.find(p => p.type === "hour").value;
       const minute = parts.find(p => p.type === "minute").value;
       const second = parts.find(p => p.type === "second").value;
       const dayPeriod = parts.find(p => p.type === "dayPeriod").value;
-      serverTimeEl.textContent = `${hour}:${minute}:${second} ${dayPeriod}`;
+      
+      // Translate month and period
+      const monthIndex = now.getMonth();
+      const monthTranslated = getMonthLabel(monthIndex);
+      const periodTranslated = dayPeriod === "AM" 
+        ? translations[currentLanguage].am 
+        : translations[currentLanguage].pm;
+      const dayLabel = translations[currentLanguage].day;
+      
+      serverTimeEl.textContent = `${monthTranslated} ${day}${dayLabel} ${hour}:${minute}:${second} ${periodTranslated}`;
     }
     updateServerTime();
     setInterval(updateServerTime, 1000);
