@@ -282,13 +282,13 @@
       font-family: "Courier New", monospace;
       font-size: 13px;
       font-weight: 600;
-      color: #00f0ff;
+      color: #9aa6b2;
       padding: 6px 10px;
       border: 1px solid #333;
-      border-radius: 4px;
-      background: rgba(0, 240, 255, 0.05);
-      letter-spacing: 1px;
-      text-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+      border-radius: 0;
+      background: none;
+      letter-spacing: 0;
+      text-shadow: none;
       white-space: nowrap;
     }
 
@@ -4241,12 +4241,13 @@
         remove: "Remove",
         hour: "hr",
         serverTimeLabel: "SERVER TIME:",
-        modalSubtitle: "Set date and time of death (UTC+9 JST)",
-        manualSet: "Set date and time manually",
-        markDead: "Mark Dead",
-      },
-      jp: {
-        mainTitle: "フィールドボスタイムトラッカー",
+          modalSubtitle: "Set date and time of death (UTC+9 JST)",
+          manualSet: "Set date and time manually",
+          markDead: "Mark Dead",
+          toggleLanguage: "Toggle language",
+        },
+        jp: {
+          mainTitle: "フィールドボスタイムトラッカー",
         warningText: "リカルド01用",
         searchPlaceholder: "ボスを検索...",
         bossListHeader: "ボスリスト",
@@ -4275,8 +4276,9 @@
         modalSubtitle: "死亡時刻を設定してください (UTC+9 JST)",
         manualSet: "日時を手動で設定",
         markDead: "死亡マーク",
-      }
-    };
+        toggleLanguage: "言語を切り替える",
+        }
+        };
 
     // Function to get translated boss name
     function getBossName(bossId) {
@@ -4345,6 +4347,9 @@
       // Chat send button - update the button text
       const chatSend = document.getElementById("chatSend");
       if (chatSend) chatSend.textContent = translations[lang].chatSend;
+      
+      // Language toggle button title
+      langToggle.title = translations[lang].toggleLanguage;
       
       // Translate all boss names in the boss list
       const bossElements = document.querySelectorAll(".boss[data-id]");
