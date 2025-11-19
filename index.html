@@ -2194,7 +2194,7 @@
           <span class="clear-icon" id="clearSearch">✕</span>
         </div>
         <div class="server-time" id="serverTimeBox">
-          <span style="color: #888888; font-size: 12px; margin-right: 6px;">SERVER TIME:</span>
+          <span id="serverTimeLabel" style="color: #888888; font-size: 12px; margin-right: 6px;">SERVER TIME:</span>
           <span id="serverTime">-- : -- : --</span>
         </div>
         <button class="lang-toggle" id="langToggle" title="Toggle language">EN</button>
@@ -4127,7 +4127,7 @@
     // === LANGUAGE TOGGLE FUNCTIONALITY ===
     const langToggle = document.getElementById("langToggle");
     let currentLanguage = localStorage.getItem("language") || "en";
-
+    
     // Set initial button state
     langToggle.textContent = currentLanguage === "en" ? "EN" : "JP";
     if (currentLanguage === "jp") {
@@ -4240,6 +4240,7 @@
         remainingTime: "Remaining Time",
         remove: "Remove",
         hour: "hr",
+        serverTimeLabel: "SERVER TIME:",
         modalSubtitle: "Set date and time of death (UTC+9 JST)",
         manualSet: "Set date and time manually",
         markDead: "Mark Dead",
@@ -4270,6 +4271,7 @@
         remainingTime: "残り時間",
         remove: "削除",
         hour: "時間",
+        serverTimeLabel: "サーバー時間:",
         modalSubtitle: "死亡時刻を設定してください (UTC+9 JST)",
         manualSet: "日時を手動で設定",
         markDead: "死亡マーク",
@@ -4297,40 +4299,41 @@
     // Function to apply translations
     function applyTranslations() {
       const lang = currentLanguage;
-
+      
       document.querySelector(".main-title").textContent = translations[lang].mainTitle;
       document.querySelector(".warning-text").textContent = translations[lang].warningText;
       document.getElementById("bossSearch").placeholder = translations[lang].searchPlaceholder;
+      document.getElementById("serverTimeLabel").textContent = translations[lang].serverTimeLabel;
       document.querySelector("#bossListPanel .card-header").textContent = translations[lang].bossListHeader;
       document.querySelector("#nextBoss .boss-name").textContent = translations[lang].nextBossLabel;
       document.querySelector("#timersPanel .card-header").textContent = translations[lang].activeTimersHeader;
-
+      
       // Settings modal buttons (safe check with optional chaining)
       const exportBtn = document.getElementById("exportBtn");
       if (exportBtn) exportBtn.querySelector(".label").textContent = translations[lang].exportBtn;
-
+      
       const importBtn = document.getElementById("importBtn");
       if (importBtn) importBtn.querySelector(".label").textContent = translations[lang].importBtn;
-
+      
       const resetBtn = document.getElementById("resetBtn");
       if (resetBtn) resetBtn.querySelector(".label").textContent = translations[lang].resetBtn;
-
+      
       const syncBtn = document.getElementById("syncBtn");
       if (syncBtn) syncBtn.querySelector(".label").textContent = translations[lang].syncBtn;
-
+      
       const discordWebhookBtn = document.getElementById("discordWebhookBtn");
       if (discordWebhookBtn) discordWebhookBtn.querySelector(".label").textContent = translations[lang].webhookBtn;
-
+      
       // Modal buttons
       const cancelTimeBtn = document.getElementById("cancelTimeBtn");
       if (cancelTimeBtn) cancelTimeBtn.textContent = translations[lang].cancelBtn;
-
+      
       const saveTimeBtn = document.getElementById("saveTimeBtn");
       if (saveTimeBtn) saveTimeBtn.textContent = translations[lang].saveBtn;
-
+      
       const modalSubtitle = document.querySelector(".modal-subtitle");
       if (modalSubtitle) modalSubtitle.textContent = translations[lang].modalSubtitle;
-
+      
       // Chat elements
       document.getElementById("chatInput").placeholder = translations[lang].chatPlaceholder;
       const chatHeader = document.querySelector(".chat-header");
@@ -4338,11 +4341,11 @@
         const headerText = chatHeader.childNodes[0];
         if (headerText) headerText.textContent = translations[lang].serverChat;
       }
-
+      
       // Chat send button - update the button text
       const chatSend = document.getElementById("chatSend");
       if (chatSend) chatSend.textContent = translations[lang].chatSend;
-
+      
       // Translate all boss names in the boss list
       const bossElements = document.querySelectorAll(".boss[data-id]");
       bossElements.forEach((el) => {
@@ -4352,7 +4355,7 @@
           nameEl.textContent = getBossName(bossId);
         }
       });
-
+      
       // Translate timer names and labels
       const timerElements = document.querySelectorAll(".timer[data-id]");
       timerElements.forEach((el) => {
@@ -4361,9 +4364,9 @@
         const timerSpawnEl = el.querySelector(".timer-spawn");
         const timerRemainingLabelEl = el.querySelector(".timer-remaining-label");
         const removeBtn = el.querySelector(".clear-timer-btn");
-
+        
         if (timerNameEl) timerNameEl.textContent = getBossName(bossId);
-
+        
         if (timerSpawnEl) {
           const info = timers[bossId];
           if (info && info.endTime) {
@@ -4372,11 +4375,11 @@
             timerSpawnEl.textContent = `${spawnTimeLabel} (${TIME_ZONE_LABEL}): ${spawnStr}`;
           }
         }
-
+        
         if (timerRemainingLabelEl) {
           timerRemainingLabelEl.textContent = translations[lang].remainingTime + ":";
         }
-
+        
         if (removeBtn) {
           removeBtn.textContent = translations[lang].remove;
         }
@@ -4386,17 +4389,17 @@
     langToggle.addEventListener("click", () => {
       currentLanguage = currentLanguage === "en" ? "jp" : "en";
       localStorage.setItem("language", currentLanguage);
-
+      
       langToggle.textContent = currentLanguage === "en" ? "EN" : "JP";
       langToggle.classList.toggle("active");
-
+      
       applyTranslations();
-
+      
       // Rebuild dynamic elements
       renderBossList();
       rebuildTimersPanel();
       computeNextBoss();
-
+      
       console.log("🌐 Language toggled to:", currentLanguage);
     });
 
@@ -4571,5 +4574,4 @@
     </div>
   </div>
 </body>
-
 </html>
