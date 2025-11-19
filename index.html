@@ -270,23 +270,17 @@
       box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
     }
 
-    .lang-toggle.active {
-      color: #00f0ff;
-      border-color: #00f0ff;
-      background: rgba(0, 240, 255, 0.1);
-    }
-
     .server-time {
       display: flex;
       align-items: center;
-      font-family: "Courier New", monospace;
-      font-size: 13px;
+      font-family: Inter, "Segoe UI", sans-serif;
+      font-size: 12px;
       font-weight: 600;
       color: #9aa6b2;
       padding: 6px 10px;
       border: 1px solid #333;
-      border-radius: 0;
-      background: none;
+      border-radius: 4px;
+      background: #1a1a1a;
       letter-spacing: 0;
       text-shadow: none;
       white-space: nowrap;
@@ -4130,9 +4124,6 @@
     
     // Set initial button state
     langToggle.textContent = currentLanguage === "en" ? "EN" : "JP";
-    if (currentLanguage === "jp") {
-      langToggle.classList.add("active");
-    }
 
     // Weekday translations
     const weekdayLabels = {
@@ -4396,7 +4387,6 @@
       localStorage.setItem("language", currentLanguage);
       
       langToggle.textContent = currentLanguage === "en" ? "EN" : "JP";
-      langToggle.classList.toggle("active");
       
       applyTranslations();
       
