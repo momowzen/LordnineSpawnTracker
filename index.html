@@ -2556,8 +2556,40 @@
     }
 
     function formatShortDateTime(ms) {
-      const formatted = shortDateTimeFormatter.format(ms);
-      return formatted.replace(/\s{2,}/g, " ").replace(/\s*,\s*/g, ", ").trim();
+      const date = new Date(ms);
+      const parts = shortDateTimeFormatter.formatToParts(date);
+      
+      let month = "";
+      let day = "";
+      let hour = "";
+      let minute = "";
+      let dayPeriod = "";
+      
+      parts.forEach(part => {
+        if (part.type === "month") month = part.value;
+        if (part.type === "day") day = part.value;
+        if (part.type === "hour") hour = part.value;
+        if (part.type === "minute") minute = part.value;
+        if (part.type === "dayPeriod") dayPeriod = part.value;
+      });
+      
+      // Translate month if needed
+      const monthIndex = date.getMonth();
+      const monthTranslated = getMonthLabel(monthIndex);
+      
+      // Translate AM/PM if needed
+      const periodTranslated = dayPeriod === "AM" 
+        ? translations[currentLanguage].am 
+        : translations[currentLanguage].pm;
+      
+      // In Japanese, add the weekday label and period
+      if (currentLanguage === "jp") {
+        const weekdayIndex = date.getDay();
+        const weekdayLabel = getWeekdayLabel(weekdayIndex);
+        return `${monthTranslated} ${day}日 (${weekdayLabel}曜日) ${periodTranslated} ${hour}:${minute}`.trim();
+      }
+      
+      return `${monthTranslated} ${day} ${hour}:${minute} ${periodTranslated}`.trim();
     }
 
     function formatTimeOnly(ms) {
@@ -4131,6 +4163,12 @@
       jp: ["日", "月", "火", "水", "木", "金", "土"]
     };
 
+    // Month translations
+    const monthLabels = {
+      en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      jp: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+    };
+
     // Boss name translations
     const bossNames = {
       en: {
@@ -4232,6 +4270,8 @@
         remove: "Remove",
         hour: "hr",
         serverTimeLabel: "SERVER TIME:",
+        am: "AM",
+        pm: "PM",
           modalSubtitle: "Set date and time of death (UTC+9 JST)",
           manualSet: "Set date and time manually",
           markDead: "Mark Dead",
@@ -4264,6 +4304,8 @@
         remove: "削除",
         hour: "時間",
         serverTimeLabel: "サーバー時間:",
+        am: "午前",
+        pm: "午後",
         modalSubtitle: "死亡時刻を設定してください (UTC+9 JST)",
         manualSet: "日時を手動で設定",
         markDead: "死亡マーク",
@@ -4281,12 +4323,22 @@
       return weekdayLabels[currentLanguage][dayIndex] || weekdayLabels.en[dayIndex];
     }
 
+    // Function to get translated month
+    function getMonthLabel(monthIndex) {
+      return monthLabels[currentLanguage][monthIndex] || monthLabels.en[monthIndex];
+    }
+
     // Function to format weekly respawn slot with translations
     function formatWeeklyRespawnSlotTranslated(slot) {
       const day = getWeekdayLabel(slot.day);
-      return `${day} ${String(slot.hour).padStart(2, "0")}:${String(
-        slot.minute
-      ).padStart(2, "0")}`;
+      const time = `${String(slot.hour).padStart(2, "0")}:${String(slot.minute).padStart(2, "0")}`;
+      
+      // In Japanese, add the day label before the time
+      if (currentLanguage === "jp") {
+        return `${day}曜日 ${time}`;
+      }
+      
+      return `${day} ${time}`;
     }
 
     // Function to apply translations
