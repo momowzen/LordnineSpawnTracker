@@ -1044,8 +1044,6 @@
     /* === SETTINGS DROPDOWN === */
     .settings-dropdown {
       position: fixed;
-      top: 65px;
-      right: 12px;
       background: var(--panel-bg);
       border: 1px solid #222;
       border-radius: 4px;
@@ -2476,6 +2474,15 @@
     const localNotifCache = {}; // { `${bossId}_${type}`: timestamp(ms) }
 
     // -------------------------
+    // Settings Dropdown Positioning
+    // -------------------------
+    function positionSettingsDropdown() {
+      const btnRect = settingsBtn.getBoundingClientRect();
+      settingsDropdown.style.top = (btnRect.bottom + 4) + "px";
+      settingsDropdown.style.right = (window.innerWidth - btnRect.right) + "px";
+    }
+
+    // -------------------------
     // Helpers
     // -------------------------
     function sortActiveTimersSmoothly() {
@@ -3496,15 +3503,75 @@
     // -------------------------
     // Compute next boss helper
     // -------------------------
+    // Function to calculate next weekly respawn time for a boss
+    function getNextWeeklyRespawnTime(boss) {
+      if (!boss.weeklyRespawns || boss.weeklyRespawns.length === 0) {
+        return null;
+      }
+
+      const now = new Date();
+      const currentDayOfWeek = now.getUTCDay(); // 0 = Sunday
+      const currentHour = now.getUTCHours();
+      const currentMinute = now.getUTCMinutes();
+
+      let nextRespawnTime = null;
+
+      // Check each weekly respawn slot
+      for (const slot of boss.weeklyRespawns) {
+        // Create a date for this week's slot
+        let slotDate = new Date(now);
+        const daysUntilSlot = (slot.day - currentDayOfWeek + 7) % 7;
+        slotDate.setUTCDate(slotDate.getUTCDate() + daysUntilSlot);
+        slotDate.setUTCHours(slot.hour, slot.minute, 0, 0);
+
+        // If this slot is in the past (same day but earlier time), move to next week
+        if (daysUntilSlot === 0 && (currentHour > slot.hour || 
+            (currentHour === slot.hour && currentMinute >= slot.minute))) {
+          slotDate.setUTCDate(slotDate.getUTCDate() + 7);
+        }
+
+        if (!nextRespawnTime || slotDate.getTime() < nextRespawnTime.getTime()) {
+          nextRespawnTime = slotDate;
+        }
+      }
+
+      return nextRespawnTime ? nextRespawnTime.getTime() : null;
+    }
+
     function computeNextBoss() {
-      const upcoming = Object.entries(timers)
-        .map(([id, info]) => ({
-          id,
-          endTime: info.endTime,
-          boss: BOSSES.find((b) => b.id === id),
-        }))
-        .filter((x) => x.boss)
-        .sort((a, b) => a.endTime - b.endTime);
+      const upcoming = [];
+
+      // Add manual timer deaths
+      Object.entries(timers)
+        .forEach(([id, info]) => {
+          const boss = BOSSES.find((b) => b.id === id);
+          if (boss) {
+            upcoming.push({
+              id,
+              endTime: info.endTime,
+              boss,
+              isWeekly: false,
+            });
+          }
+        });
+
+      // Add weekly respawns for bosses not in timers
+      BOSSES.forEach((boss) => {
+        if (!timers[boss.id] && boss.weeklyRespawns) {
+          const nextWeeklyTime = getNextWeeklyRespawnTime(boss);
+          if (nextWeeklyTime) {
+            upcoming.push({
+              id: boss.id,
+              endTime: nextWeeklyTime,
+              boss,
+              isWeekly: true,
+            });
+          }
+        }
+      });
+
+      // Sort by endTime
+      upcoming.sort((a, b) => a.endTime - b.endTime);
 
       if (upcoming.length === 0) {
         nextBossNameEl.textContent = "Next Boss: â€”";
@@ -3775,6 +3842,9 @@
     settingsBtn.addEventListener("click", (ev) => {
       ev.stopPropagation();
       settingsDropdown.classList.toggle("hidden");
+      if (!settingsDropdown.classList.contains("hidden")) {
+        positionSettingsDropdown();
+      }
       console.log(`⚙️ settings modal opened`);
     });
 
@@ -3784,6 +3854,13 @@
         !settingsDropdown.contains(ev.target)
       ) {
         settingsDropdown.classList.add("hidden");
+      }
+    });
+
+    // Reposition dropdown on window resize
+    window.addEventListener("resize", () => {
+      if (!settingsDropdown.classList.contains("hidden")) {
+        positionSettingsDropdown();
       }
     });
 
