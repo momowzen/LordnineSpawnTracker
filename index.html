@@ -2197,7 +2197,7 @@
           <span class="line"></span>
           <span class="line"></span>
           <span class="line"></span>
-		  <span class="line"></span>
+          <span class="line"></span>
         </button>
       </div>
     </header>
@@ -2569,13 +2569,13 @@
     function formatShortDateTime(ms) {
       const date = new Date(ms);
       const parts = shortDateTimeFormatter.formatToParts(date);
-      
+
       let month = "";
       let day = "";
       let hour = "";
       let minute = "";
       let dayPeriod = "";
-      
+
       parts.forEach(part => {
         if (part.type === "month") month = part.value;
         if (part.type === "day") day = part.value;
@@ -2583,16 +2583,16 @@
         if (part.type === "minute") minute = part.value;
         if (part.type === "dayPeriod") dayPeriod = part.value;
       });
-      
+
       // Translate month if needed
       const monthIndex = date.getMonth();
       const monthTranslated = getMonthLabel(monthIndex);
-      
+
       // Translate AM/PM if needed
-      const periodTranslated = dayPeriod === "AM" 
-        ? translations[currentLanguage].am 
+      const periodTranslated = dayPeriod === "AM"
+        ? translations[currentLanguage].am
         : translations[currentLanguage].pm;
-      
+
       // In Japanese, add the weekday label and period
       if (currentLanguage === "jp") {
         const weekdayIndex = date.getDay();
@@ -2600,7 +2600,7 @@
         const dayLabel = translations[currentLanguage].day;
         return `${monthTranslated} ${day}${dayLabel} (${weekdayLabel}曜日) ${periodTranslated} ${hour}:${minute}`.trim();
       }
-      
+
       return `${monthTranslated} ${day} ${hour}:${minute} ${periodTranslated}`.trim();
     }
 
@@ -3525,8 +3525,8 @@
         slotDate.setUTCHours(slot.hour, slot.minute, 0, 0);
 
         // If this slot is in the past (same day but earlier time), move to next week
-        if (daysUntilSlot === 0 && (currentHour > slot.hour || 
-            (currentHour === slot.hour && currentMinute >= slot.minute))) {
+        if (daysUntilSlot === 0 && (currentHour > slot.hour ||
+          (currentHour === slot.hour && currentMinute >= slot.minute))) {
           slotDate.setUTCDate(slotDate.getUTCDate() + 7);
         }
 
@@ -4235,7 +4235,7 @@
     // === LANGUAGE TOGGLE FUNCTIONALITY ===
     const langToggle = document.getElementById("langToggle");
     let currentLanguage = localStorage.getItem("language") || "en";
-    
+
     // Set initial button state
     langToggle.textContent = currentLanguage === "en" ? "EN" : "JP";
 
@@ -4355,13 +4355,13 @@
         serverTimeLabel: "SERVER TIME:",
         am: "AM",
         pm: "PM",
-          modalSubtitle: "Set date and time of death (UTC+9 JST)",
-          manualSet: "Set date and time manually",
-          markDead: "Mark Dead",
-          toggleLanguage: "Toggle language",
-        },
-        jp: {
-          mainTitle: "フィールドボスタイムトラッカー",
+        modalSubtitle: "Set date and time of death (UTC+9 JST)",
+        manualSet: "Set date and time manually",
+        markDead: "Mark Dead",
+        toggleLanguage: "Toggle language",
+      },
+      jp: {
+        mainTitle: "フィールドボスタイムトラッカー",
         warningText: "リカルド01用",
         searchPlaceholder: "ボスを検索...",
         bossListHeader: "ボスリスト",
@@ -4394,8 +4394,8 @@
         manualSet: "日時を手動で設定",
         markDead: "死亡マーク",
         toggleLanguage: "言語を切り替える",
-        }
-        };
+      }
+    };
 
     // Function to get translated boss name
     function getBossName(bossId) {
@@ -4416,19 +4416,19 @@
     function formatWeeklyRespawnSlotTranslated(slot) {
       const day = getWeekdayLabel(slot.day);
       const time = `${String(slot.hour).padStart(2, "0")}:${String(slot.minute).padStart(2, "0")}`;
-      
+
       // In Japanese, add the day label before the time
       if (currentLanguage === "jp") {
         return `${day}曜日 ${time}`;
       }
-      
+
       return `${day} ${time}`;
     }
 
     // Function to apply translations
     function applyTranslations() {
       const lang = currentLanguage;
-      
+
       document.querySelector(".main-title").textContent = translations[lang].mainTitle;
       document.querySelector(".warning-text").textContent = translations[lang].warningText;
       document.getElementById("bossSearch").placeholder = translations[lang].searchPlaceholder;
@@ -4436,33 +4436,33 @@
       document.querySelector("#bossListPanel .card-header").textContent = translations[lang].bossListHeader;
       document.querySelector("#nextBoss .boss-name").textContent = translations[lang].nextBossLabel;
       document.querySelector("#timersPanel .card-header").textContent = translations[lang].activeTimersHeader;
-      
+
       // Settings modal buttons (safe check with optional chaining)
       const exportBtn = document.getElementById("exportBtn");
       if (exportBtn) exportBtn.querySelector(".label").textContent = translations[lang].exportBtn;
-      
+
       const importBtn = document.getElementById("importBtn");
       if (importBtn) importBtn.querySelector(".label").textContent = translations[lang].importBtn;
-      
+
       const resetBtn = document.getElementById("resetBtn");
       if (resetBtn) resetBtn.querySelector(".label").textContent = translations[lang].resetBtn;
-      
+
       const syncBtn = document.getElementById("syncBtn");
       if (syncBtn) syncBtn.querySelector(".label").textContent = translations[lang].syncBtn;
-      
+
       const discordWebhookBtn = document.getElementById("discordWebhookBtn");
       if (discordWebhookBtn) discordWebhookBtn.querySelector(".label").textContent = translations[lang].webhookBtn;
-      
+
       // Modal buttons
       const cancelTimeBtn = document.getElementById("cancelTimeBtn");
       if (cancelTimeBtn) cancelTimeBtn.textContent = translations[lang].cancelBtn;
-      
+
       const saveTimeBtn = document.getElementById("saveTimeBtn");
       if (saveTimeBtn) saveTimeBtn.textContent = translations[lang].saveBtn;
-      
+
       const modalSubtitle = document.querySelector(".modal-subtitle");
       if (modalSubtitle) modalSubtitle.textContent = translations[lang].modalSubtitle;
-      
+
       // Chat elements
       document.getElementById("chatInput").placeholder = translations[lang].chatPlaceholder;
       const chatHeader = document.querySelector(".chat-header");
@@ -4470,14 +4470,14 @@
         const headerText = chatHeader.childNodes[0];
         if (headerText) headerText.textContent = translations[lang].serverChat;
       }
-      
+
       // Chat send button - update the button text
       const chatSend = document.getElementById("chatSend");
       if (chatSend) chatSend.textContent = translations[lang].chatSend;
-      
+
       // Language toggle button title
       langToggle.title = translations[lang].toggleLanguage;
-      
+
       // Translate all boss names in the boss list
       const bossElements = document.querySelectorAll(".boss[data-id]");
       bossElements.forEach((el) => {
@@ -4487,7 +4487,7 @@
           nameEl.textContent = getBossName(bossId);
         }
       });
-      
+
       // Translate timer names and labels
       const timerElements = document.querySelectorAll(".timer[data-id]");
       timerElements.forEach((el) => {
@@ -4496,9 +4496,9 @@
         const timerSpawnEl = el.querySelector(".timer-spawn");
         const timerRemainingLabelEl = el.querySelector(".timer-remaining-label");
         const removeBtn = el.querySelector(".clear-timer-btn");
-        
+
         if (timerNameEl) timerNameEl.textContent = getBossName(bossId);
-        
+
         if (timerSpawnEl) {
           const info = timers[bossId];
           if (info && info.endTime) {
@@ -4507,11 +4507,11 @@
             timerSpawnEl.textContent = `${spawnTimeLabel} (${TIME_ZONE_LABEL}): ${spawnStr}`;
           }
         }
-        
+
         if (timerRemainingLabelEl) {
           timerRemainingLabelEl.textContent = translations[lang].remainingTime + ":";
         }
-        
+
         if (removeBtn) {
           removeBtn.textContent = translations[lang].remove;
         }
@@ -4521,16 +4521,16 @@
     langToggle.addEventListener("click", () => {
       currentLanguage = currentLanguage === "en" ? "jp" : "en";
       localStorage.setItem("language", currentLanguage);
-      
+
       langToggle.textContent = currentLanguage === "en" ? "EN" : "JP";
-      
+
       applyTranslations();
-      
+
       // Rebuild dynamic elements
       renderBossList();
       rebuildTimersPanel();
       computeNextBoss();
-      
+
       console.log("🌐 Language toggled to:", currentLanguage);
     });
 
@@ -4557,15 +4557,15 @@
       const minute = parts.find(p => p.type === "minute").value;
       const second = parts.find(p => p.type === "second").value;
       const dayPeriod = parts.find(p => p.type === "dayPeriod").value;
-      
+
       // Translate month and period
       const monthIndex = now.getMonth();
-      const monthTranslated = getMonthLabel(monthIndex);
-      const periodTranslated = dayPeriod === "AM" 
-        ? translations[currentLanguage].am 
+      const monthTranslated = getMonthLabel(monthIndex).toUpperCase();
+      const periodTranslated = dayPeriod === "AM"
+        ? translations[currentLanguage].am
         : translations[currentLanguage].pm;
       const dayLabel = translations[currentLanguage].day;
-      
+
       serverTimeEl.textContent = `${monthTranslated} ${day}${dayLabel} ${hour}:${minute}:${second} ${periodTranslated}`;
     }
     updateServerTime();
@@ -4718,4 +4718,5 @@
     </div>
   </div>
 </body>
+
 </html>
